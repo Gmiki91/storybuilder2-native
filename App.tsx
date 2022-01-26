@@ -34,9 +34,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator >
         <Stack.Screen component={BottomTabs} name="Tabs" options={{
-          header: () => TopTabs,
-
-        }} />
+          header: () => TopTabs}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
