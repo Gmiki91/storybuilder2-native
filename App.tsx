@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/Home';
 import { NewStory } from "./screens/NewStory";
+import Login from "./authentication/Login";
+import Signup from "./authentication/Signup";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -15,6 +17,14 @@ const BottomTabs = () => (
       tabBarIcon: ({ color, size }) => (<Foundation name='list' size={size} color={color} />)
     }} />
     <Tab.Screen component={NewStory} name="New story" options={{
+      header: () => null,
+      tabBarIcon: ({ color, size }) => (<Ionicons name='add-circle-sharp' size={size} color={color} />)
+    }} />
+    <Tab.Screen component={Login} name="Login" options={{
+      header: () => null,
+      tabBarIcon: ({ color, size }) => (<Ionicons name='add-circle-sharp' size={size} color={color} />)
+    }} />
+     <Tab.Screen component={Signup} name="Signup" options={{
       header: () => null,
       tabBarIcon: ({ color, size }) => (<Ionicons name='add-circle-sharp' size={size} color={color} />)
     }} />

@@ -9,6 +9,7 @@ import { StoryList } from "../components/StoryList";
 //import { useAuth } from "context/AuthContext";
 import { Story } from "../models/Story";
 import { SortBy } from "../components/SortBy";
+import Config from "react-native-config";
 
 type SearchCriteria = {
     storyName: string,
@@ -19,7 +20,6 @@ type SearchCriteria = {
     levels: string[],
     openEnded: string;
 }
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 //const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
 const Home: React.FC = () => {
     console.log('[HOME] render');
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         isLoading(true);
-        axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria)
+        axios.post(`${Config.LOCAL_HOST}/stories/all`, searchCriteria)
             .then(result => {
                 setStories(result.data.data);
                 setShowModal(false);

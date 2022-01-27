@@ -1,20 +1,21 @@
 import { default as languages } from '../assets/languages.json';
-import { mainColor, secondaryColor } from '../Colors';
+import { Color } from '../Global';
 import { levels } from '../models/LanguageLevels';
 import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, Pressable, View, TextInput, Button } from 'react-native';
-import { useForm, Controller, FieldValues, SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, FieldValues } from 'react-hook-form'
 // import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, { useRef } from 'react';
+import Config from 'react-native-config';
 // import { LOCAL_HOST } from 'constants/constants';
 
 //const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 export const NewStory = () => {
     //   const navigate = useNavigate();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
     const descriptionRef = useRef<TextInput>(null);
+    
     const handleNewStory = (form: FieldValues) => {
         // const form = event.currentTarget;
         const story = {
@@ -23,7 +24,7 @@ export const NewStory = () => {
             language: form.language,
             level: form.level,
         }
-        axios.post(`${LOCAL_HOST}/stories/`, story)
+        axios.post(`${Config.LOCAL_HOST}/stories/`, story)
             .then(() => console.log('done'))
         //  axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
         //  .then(()=>navigate('/'))
@@ -108,10 +109,10 @@ const styles = StyleSheet.create({
     },
     form: {
         width: '90%',
-        backgroundColor: mainColor,
+        backgroundColor: Color.main,
         padding: 25,
         borderWidth: 5,
-        borderColor: secondaryColor,
+        borderColor: Color.secondary,
         borderRadius: 10,
     },
 
