@@ -15,7 +15,6 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
   const { setToken } = useAuth();
-  // const navigate = useNavigate();
 
   const postSignup = (form: FieldValues) => {
     axios.post(`http://192.168.31.203:3030/api/users/signup`, {

@@ -14,9 +14,9 @@ const Login:React.FC<NavigationProp> = ({navigation}) => {
   const [isError, setIsError] = useState(false);
   const { setToken } = useAuth();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-
+  const Local_host = 'http://192.168.31.203:3030/api';
   const postLogin = (form: FieldValues) => {
-    axios.post(`http://192.168.31.203:3030/api/users/login`, {
+    axios.post(`${Local_host}/users/login`, {
       userInput:form.name,
       password:form.password
     }).then(result => {

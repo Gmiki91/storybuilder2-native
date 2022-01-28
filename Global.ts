@@ -1,5 +1,5 @@
 export const Color ={
-    main: '#f8ea29',
+    main: '#c2e3ff',
     secondary : '#02052c',
-    confirmButton:'#8833ff'
+    confirmButton:'#3f9deb'
 } 

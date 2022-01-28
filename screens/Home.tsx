@@ -6,11 +6,10 @@ import { StoryList } from "../components/StoryList";
 //import { Trigger } from "components/modal/Trigger";
 //import { Modal } from "components/modal/Modal";
 //import { LOCAL_HOST } from "constants/constants";
-//import { useAuth } from "context/AuthContext";
 import { Story } from "../models/Story";
 import { SortBy } from "../components/SortBy";
-import Config from "react-native-config";
-
+import { useAuth } from "../context/AuthContext";
+const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type SearchCriteria = {
     storyName: string,
     sortBy: string,
@@ -20,11 +19,10 @@ type SearchCriteria = {
     levels: string[],
     openEnded: string;
 }
-//const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
 const Home = () => {
+    const {token} = useAuth();
+    const headers = { Authorization: `Bearer ${token}` };
     console.log('[HOME] render');
-    // const token = useAuth().authToken;
-    // const isAuthenticated = token !== '';
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
         storyName: '',
         sortBy: 'rating',
@@ -40,14 +38,14 @@ const Home = () => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const [loading, isLoading] = useState(false);
 
-    // useEffect(() => {
-    //     if (isAuthenticated)
-    //         axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => setFavoriteIds(result.data.data))
-    // }, [isAuthenticated]);
+    useEffect(() => {
+        if (token)
+            axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => setFavoriteIds(result.data.data))
+    }, [token]);
 
     useEffect(() => {
         isLoading(true);
-        axios.post(`${Config.LOCAL_HOST}/stories/all`, searchCriteria)
+        axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria)
             .then(result => {
                 setStories(result.data.data);
                 setShowModal(false);
@@ -80,18 +78,25 @@ const Home = () => {
         setSearchCriteria(prevState => ({ ...prevState, storyName: name }));
     }
 
-    // const addToFavorites = (storyId: string) => {
-    //     setFavoriteIds(prevState => ([...prevState, storyId]))
-    //     axios.post(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
-    // }
-    // const removeFromFavorites = (storyId: string) => {
-    //     const newList = [...favoriteIds];
-    //     const index = newList.indexOf(storyId);
-    //     newList.splice(index, 1);
-    //     setFavoriteIds(newList);
-    //     axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
-    // }
+    const addToFavorites = (storyId: string) => {
+        setFavoriteIds(prevState => ([...prevState, storyId]))
+        axios.post(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+    }
+    const removeFromFavorites = (storyId: string) => {
+        const newList = [...favoriteIds];
+        const index = newList.indexOf(storyId);
+        newList.splice(index, 1);
+        setFavoriteIds(newList);
+        axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+    }
     
-    return <View><Text>Home</Text></View>
+    return (<StoryList 
+        stories={stories}
+        favoriteIds={favoriteIds}
+        removeFromFavorites={removeFromFavorites}
+        addToFavorites={addToFavorites}
+    
+    ></StoryList>
+    )
 }
     export default Home;

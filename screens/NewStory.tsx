@@ -4,18 +4,24 @@ import { levels } from '../models/LanguageLevels';
 import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, Pressable, View, TextInput, Button } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
-// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, { useRef } from 'react';
 import Config from 'react-native-config';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useAuth } from '../context/AuthContext';
+import { RootStackParamList } from '../App';
 // import { LOCAL_HOST } from 'constants/constants';
 
 //const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-export const NewStory = () => {
-    //   const navigate = useNavigate();
+type NavigationProp = {
+    navigation:StackNavigationProp<RootStackParamList, 'NewStory'>;
+  }
+export const NewStory:React.FC<NavigationProp> = ({navigation}) => {
+    const {token} = useAuth();
+    const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
     const descriptionRef = useRef<TextInput>(null);
-    
+    const LOCAL_HOST = 'http://192.168.31.203:3030/api';
     const handleNewStory = (form: FieldValues) => {
         // const form = event.currentTarget;
         const story = {
@@ -26,9 +32,9 @@ export const NewStory = () => {
         }
         axios.post(`${Config.LOCAL_HOST}/stories/`, story)
             .then(() => console.log('done'))
-        //  axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-        //  .then(()=>navigate('/'))
-        // .catch(error=>console.log(error))
+         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
+         .then(()=>navigation.navigate('Stories'))
+       .catch(error=>console.log(error))
     }
 
     const onPressDescription = () => {
@@ -51,6 +57,7 @@ export const NewStory = () => {
                                 onChangeText={value => onChange(value)} />
                         )} />
                 </View>
+          
                 <Pressable onPress={onPressDescription} style={[styles.controllerContainer, styles.description]}>
                     <Controller
                         control={control}
@@ -86,6 +93,7 @@ export const NewStory = () => {
                         name="level"
                         render={({ field: { onChange, value, onBlur } }) => (
                             <Picker
+                            style={styles.controllerContainer}
                                 selectedValue={value}
                                 onBlur={onBlur}
                                 onValueChange={value => onChange(value)} >
@@ -103,16 +111,16 @@ export const NewStory = () => {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor:Color.main,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     form: {
+        backgroundColor:'white',
         width: '90%',
-        backgroundColor: Color.main,
         padding: 25,
         borderWidth: 5,
-        borderColor: Color.secondary,
         borderRadius: 10,
     },
 
@@ -120,10 +128,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         paddingLeft: 5,
         paddingRight: 5,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        borderBottomWidth:1,
     },
+
     description: {
         height: '40%',
+        justifyContent: 'center',
+        borderColor: 'white'
 
     }
 })
