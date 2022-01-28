@@ -21,7 +21,7 @@ type SearchCriteria = {
     openEnded: string;
 }
 //const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-const Home: React.FC = () => {
+const Home = () => {
     console.log('[HOME] render');
     // const token = useAuth().authToken;
     // const isAuthenticated = token !== '';

@@ -1,106 +1,80 @@
 import { useState } from 'react';
-import { Text,TextInput, View, Button, StyleSheet } from 'react-native';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { Text,TextInput, View, Pressable } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
-// import { Card, Form, Input, Button } from 'authentication/AuthForm';
+import axios from 'axios';
+import AuthStyle from './AuthStyle';
+import { useAuth } from '../context/AuthContext';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../App';
 
-const Login = () => {
+type NavigationProp = {
+  navigation:StackNavigationProp<RootStackParamList, 'Login'>;
+}
+const Login:React.FC<NavigationProp> = ({navigation}) => {
   const [isError, setIsError] = useState(false);
   const { setToken } = useAuth();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-  // const navigate = useNavigate();
 
   const postLogin = (form: FieldValues) => {
     axios.post(`http://192.168.31.203:3030/api/users/login`, {
-      userInut:form.name,
+      userInput:form.name,
       password:form.password
     }).then(result => {
-      console.log(result);
       if (result.status === 200) {
         setToken(result.data.token);
-        // navigate("/");
+        
       } else {
         setIsError(true);
       }
     }).catch(e => {
+      console.log(e); 
       setIsError(true);
     });
   }
 
   return (
-    <View>
-      <View style={styles.controllerContainer}>
+<View style={AuthStyle.container}>
+  <View style={AuthStyle.form}>
+      <View style={AuthStyle.inputView}>
         <Controller
           control={control}
           name="name"
           render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
-              style={{ fontSize: 22 }}
+              style={AuthStyle.TextInput}
               placeholder="Name"
               value={value}
               onBlur={onBlur}
               onChangeText={value => onChange(value)} />
           )} />
       </View>
-      <View style={styles.controllerContainer}>
+      <View style={AuthStyle.inputView}>
         <Controller
           control={control}
           name="password"
           render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
-              style={{ fontSize: 22 }}
+            style={AuthStyle.TextInput}
+            secureTextEntry
               placeholder="Password"
               value={value}
               onBlur={onBlur}
               onChangeText={value => onChange(value)} />
           )} />
       </View>
-      <Button title='Submit' onPress={handleSubmit(postLogin)} />
+      <Pressable style={AuthStyle.forgotBtnContainer}>
+        <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
+      </Pressable>
+      <Pressable style={AuthStyle.loginBtn} onPress={handleSubmit(postLogin)}><Text>Login</Text></Pressable>
+      <Text style={{margin:10}}>or</Text>
+      <Pressable onPress={()=> navigation.navigate('Signup')} >
+        <Text >Sign up</Text>
+      </Pressable>
       {isError && <View><Text>Wrong email/password</Text></View>}
+    </View>
     </View>
   )
 }
-const styles = StyleSheet.create({
-  controllerContainer: {}
-})
-export default Login;
-  //   return (
-  //     <Card>
-  //       <Form>
-  //         <Input
-  //           value={userInput}
-  //           onChange={e => {
-  //             setUserInput(e.target.value);
-  //           }}
-  //           placeholder="username or email"
-  //         />
 
-  //         <Input type="password"
-  //           value={password}
-  //           onChange={e => {
-  //             setPassword(e.target.value);
-  //           }}
-  //           placeholder="password"
-  //         />
-  //         <Button onClick={postLogin}>Log In</Button>
-  //       </Form>
-  //       <GoogleSigninButton
-  //     style={{ width: 192, height: 48 }}
-  //     size={GoogleSigninButton.Size.Wide}
-  //     color={GoogleSigninButton.Color.Dark}
-  //     onPress={this._signIn}
-  //     disabled={this.state.isSigninInProgress} />
-  // }
-  //       <GoogleLogin
-  //         clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
-  //         buttonText="Log in with Google"
-  //         onSuccess={googleLogin}
-  //         onFailure={(e) => console.log(e)}
-  //         cookiePolicy={'single_host_origin'} />
-  //       <Link to="/forgotPassword">Forgot your password?</Link>
-  //       <Link to="/signup">Don't have an account?</Link>
-  //       {isError && <div>The username or password provided were incorrect!</div>}
-  //     </Card>
-  //   );
-  // }
+export default Login;
+  
