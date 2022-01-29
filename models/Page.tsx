@@ -4,5 +4,6 @@ export type Page = {
     language: string,
     level: string,
     authorId: string,
+    authorName: string,
     ratings: [{ userId: string, rate: number }]
 }

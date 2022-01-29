@@ -14,27 +14,25 @@ import { RootStackParamList } from '../App';
 
 //const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
 type NavigationProp = {
-    navigation:StackNavigationProp<RootStackParamList, 'NewStory'>;
-  }
-export const NewStory:React.FC<NavigationProp> = ({navigation}) => {
-    const {token} = useAuth();
+    navigation: StackNavigationProp<RootStackParamList, 'NewStory'>;
+}
+export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
+    const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
     const descriptionRef = useRef<TextInput>(null);
     const LOCAL_HOST = 'http://192.168.31.203:3030/api';
     const handleNewStory = (form: FieldValues) => {
-        // const form = event.currentTarget;
         const story = {
             title: form.title,
             description: form.description,
-            language: form.language,
-            level: form.level,
+            language: form.language || languages[0].name,
+            level: form.level || levels[0].code,
         }
-        axios.post(`${Config.LOCAL_HOST}/stories/`, story)
-            .then(() => console.log('done'))
-         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-         .then(()=>navigation.navigate('Stories'))
-       .catch(error=>console.log(error))
+        axios.post(`${Config.LOCAL_HOST}/stories/`, story).catch(error => console.log(error))
+        axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
+            .then(() => navigation.navigate('Stories'))
+            .catch(error => console.log(error))
     }
 
     const onPressDescription = () => {
@@ -57,7 +55,7 @@ export const NewStory:React.FC<NavigationProp> = ({navigation}) => {
                                 onChangeText={value => onChange(value)} />
                         )} />
                 </View>
-          
+
                 <Pressable onPress={onPressDescription} style={[styles.controllerContainer, styles.description]}>
                     <Controller
                         control={control}
@@ -93,7 +91,7 @@ export const NewStory:React.FC<NavigationProp> = ({navigation}) => {
                         name="level"
                         render={({ field: { onChange, value, onBlur } }) => (
                             <Picker
-                            style={styles.controllerContainer}
+                                style={styles.controllerContainer}
                                 selectedValue={value}
                                 onBlur={onBlur}
                                 onValueChange={value => onChange(value)} >
@@ -111,13 +109,13 @@ export const NewStory:React.FC<NavigationProp> = ({navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor:Color.main,
+        backgroundColor: Color.main,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     form: {
-        backgroundColor:'white',
+        backgroundColor: 'white',
         width: '90%',
         padding: 25,
         borderWidth: 5,
@@ -129,7 +127,7 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         paddingRight: 5,
         backgroundColor: 'white',
-        borderBottomWidth:1,
+        borderBottomWidth: 1,
     },
 
     description: {

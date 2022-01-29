@@ -1,6 +1,9 @@
 
 import { Page } from "../models/Page";
-import {View, Text} from 'react-native';
+import { View, Text,Pressable, StyleSheet } from 'react-native';
+import { SimpleLineIcons } from '@expo/vector-icons'; 
+import { Color } from "../Global";
+import { Button } from "./UI/Button";
 
 type Props = {
   page: Page;
@@ -11,6 +14,7 @@ type Props = {
   onRateText: (rate: number, confirming: boolean) => void;
 }
 export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
+
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
   const getVote = (n: number) => {
     let vote = n;
@@ -33,15 +37,59 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
   }
 
   const backgroundColor = getColor();
-  const positiveBtn = toConfirm ? 'Accept' : 'Great';
-  const negativeBtn = toConfirm ? 'Decline' : 'Awful';
+  const positiveBtn = toConfirm ? 'Accept' : <SimpleLineIcons name="like" size={24} color="black" />;
+  const negativeBtn = toConfirm ? 'Decline' : <SimpleLineIcons name="dislike" size={24} color="black" />;
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
-  return (<View>
-      <Text>{page.level}</Text>
-      <Text>{page.text}</Text>
-      <Text>{rating}</Text>
-      
+  return (<View style={styles.container}>
+    <Pressable onPress={onRateLevel}><Text style={[styles.level, {backgroundColor:backgroundColor}]}>{page.level}</Text></Pressable>
+    <Text>{page.text}</Text>
+
+    <View style={styles.footer}>
+      <View style={styles.rating}>
+        <Button label={positiveBtn} hidden={ownContent && !toConfirm} onPress={() => getVote(1)} />
+        <Text>{rating}</Text>
+        <Button label={negativeBtn} hidden={ownContent && !toConfirm} onPress={() => getVote(-1)} />
+      </View>
+      <Text style={styles.authorName}>{page.authorName}</Text>
+    </View>
   </View>)
+
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    height: '70%',
+    width: '80%',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 20,
+  },
+
+  footer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end'
+  },
+
+  level: {
+    alignSelf: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    fontSize:22,
+    width: 32
+  },
+  rating: {
+    width: '30%',
+  },
+  authorName: {
+    textAlign: 'right',
+    width: '70%'
+  },
+})
+
 //   return <>
 //     <div className="card">
 //       <div className="card-level" style={{ backgroundColor: backgroundColor }} onClick={onRateLevel}>
@@ -54,4 +102,3 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
 //       </div>
 //     </div>
 //   </>
-}

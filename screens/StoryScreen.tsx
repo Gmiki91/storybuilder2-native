@@ -1,14 +1,15 @@
-import { View, Text, Button } from "react-native"
+import { View, Text, Button, TextInput, StyleSheet, Pressable, Modal } from "react-native"
 import { useRoute, RouteProp } from '@react-navigation/native';
 import axios from "axios";
-import { useState, useEffect } from "react";
-// import { NewPage } from "components/modal/forms/NewPage";
-// import { RateLevel } from "components/modal/forms/RateLevel";
-// import { Modal } from "components/modal/Modal";
+import React, { useState, useEffect } from "react";
+import { FieldValues } from 'react-hook-form';
+import { NewPage } from "../components/forms/NewPage";
+import { RateLevel } from "../components/forms/RateLevel";
 import { PageCard } from "../components/PageCard";
 import { Page } from "../models/Page";
 import { Story } from "../models/Story";
 import { useAuth } from "../context/AuthContext";
+import { Color } from "../Global";
 
 type ParamList = {
     Params: { storyId: string };
@@ -66,12 +67,10 @@ const StoryScreen = () => {
         }
     }, [currentPageIndex, story, pageStatus, pageType]);
 
-    const addPage = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = event.currentTarget;
+    const addPage = async (form: FieldValues) => {
         const page = {
-            text: form.text.value,
-            level: form.level.value,
+            text: form.text,
+            level: form.level,
             language: story.language,
             rating: []
         }
@@ -138,18 +137,18 @@ const StoryScreen = () => {
         setPageStatus(status);
     }
 
-    //   const getForm = () => {
-    //     if (formType === 'newPage') return <NewPage onSubmit={(e) => addPage(e)} onClose={() => setFormType('')} />
-    //     if (formType === 'rateLevel') return <RateLevel level={page.level} onSubmit={handleRateLevel} onClose={() => setCurrentPageIndex(-1)} />
-    //     return null;
-    //   }
+    const getForm = () => {
+        if (formType === 'newPage') return <NewPage onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
+        if (formType === 'rateLevel') return <RateLevel level={page.level} onSubmit={handleRateLevel} onClose={() => setCurrentPageIndex(-1)} />
+        return null;
+    }
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;
     const addPageVisible = pageStatus !== 'pending' && onLastPage && (story.openEnded || userId === story.authorId);
-    const toggleStatus = pageStatus === 'confirmed' ? story.pendingPageIds && story.pendingPageIds.length > 0 && <div onClick={() => toggleItems('pending')}>
-        Pending: {story.pendingPageIds.length}
-    </div> : <div onClick={() => toggleItems('confirmed')}>Return to confirmed pages</div>
+    const toggleStatus = pageStatus === 'confirmed'
+        ? story.pendingPageIds?.length > 0 && <Pressable onPress={() => toggleItems('pending')}><Text>Pending: {story.pendingPageIds.length}</Text></Pressable>
+        : <Pressable onPress={() => toggleItems('confirmed')}><Text>Return to confirmed pages</Text></Pressable>
 
-    //const form = getForm();
+    const form = getForm();
 
     const pageContent = page._id ? <PageCard
         key={page._id}
@@ -161,36 +160,32 @@ const StoryScreen = () => {
         onRateText={handleRateText}
     /> : <Text>No pages yet </Text>
 
-    return <View>
-
+    return <View style={styles.container}>
         <Text>{story.title}</Text>
         {pageContent}
-        <View>
+        {formType !== '' &&
+            <Modal onRequestClose={() => setFormType('')}>
+                {form}
+            </Modal>}
+        <View style={styles.footer}>
             {currentPageIndex > 0 && <Button title="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
+            {page._id && <View><TextInput value={currentPageIndex + 1 + ''} onChangeText={(value) => jumpTo(value)} /><Text>/ {story[pageType]?.length}</Text></View>}
             {!onLastPage && <Button title="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
         </View>
+        {addPageVisible && <Button title='Add page' onPress={() => setFormType('newPage')} />}
+        {toggleStatus}
     </View>
-    // return error ? <div>{error}</div> :
-    //     loading ? <div>loading</div> :
-    //         <>
-    //             <h1>{story.title}</h1>
-
-    //             {formType !== '' &&
-    //                 <Modal closeModal={() => setFormType('')}>
-    //                     {form}
-    //                 </Modal>}
-    //             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    //                 {pageContent}
-    //             </div>
-    //             <br></br>
-    //             <div className='footer'>
-    //                 {currentPageIndex > 0 && <button onClick={() => setCurrentPageIndex(prevState => prevState - 1)}>prev</button>}
-    //                 {page._id && <div><input value={currentPageIndex + 1} onChange={(event) => jumpTo(event.target.value)} /> / {story[pageType]?.length}</div>}
-    //                 {!onLastPage && <button onClick={() => setCurrentPageIndex(prevState => prevState + 1)}>next</button>}
-    //             </div>
-    //             {addPageVisible && <button onClick={() => { token ? setFormType('newPage') : navigate('/login') }}>Add Page</button>}
-    //             {toggleStatus}
-    //         </>
 }
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: Color.main,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+    },
+    footer: {
 
+    }
+})
 export default StoryScreen;
