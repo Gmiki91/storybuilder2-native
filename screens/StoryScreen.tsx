@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet, Pressable, Modal } from "react-native"
+import { View, Text, TextInput, StyleSheet, Pressable, Modal } from "react-native"
 import { useRoute, RouteProp } from '@react-navigation/native';
 import axios from "axios";
 import React, { useState, useEffect } from "react";
@@ -10,6 +10,7 @@ import { Page } from "../models/Page";
 import { Story } from "../models/Story";
 import { useAuth } from "../context/AuthContext";
 import { Color } from "../Global";
+import { Button } from "../components/UI/Button";
 
 type ParamList = {
     Params: { storyId: string };
@@ -64,7 +65,7 @@ const StoryScreen = () => {
             if (story.pageIds?.length === 0) setPage({} as Page); //if confirmed is also 0, empty page state
         } else {
             isLoading(false);
-            setPage({}as Page);
+            setPage({} as Page);
         }
     }, [currentPageIndex, story, pageStatus, pageType]);
 
@@ -145,8 +146,8 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;
     const addPageVisible = pageStatus !== 'pending' && onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Pressable onPress={() => toggleItems('pending')}><Text>Pending: {story.pendingPageIds.length}</Text></Pressable>
-        : <Pressable onPress={() => toggleItems('confirmed')}><Text>Return to confirmed pages</Text></Pressable>
+        ? story.pendingPageIds?.length > 0 && <Button label={`Pending: ${story.pendingPageIds.length}`} onPress={() => toggleItems('pending')} />
+        : <Button label='Return to confirmed pages' onPress={() => toggleItems('confirmed')} />
 
     const form = getForm();
 
@@ -167,12 +168,12 @@ const StoryScreen = () => {
             <Modal onRequestClose={() => setFormType('')}>
                 {form}
             </Modal>}
+        {page._id && <View style={{ justifyContent: 'center' }}><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
         <View style={styles.footer}>
-            {currentPageIndex > 0 && <Button title="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
-            {page._id && <View><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
-            {!onLastPage && <Button title="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
+            {currentPageIndex > 0 && <Button style={{marginRight:10}} label="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
+            {!onLastPage && <Button label="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
+            {addPageVisible && <Button label='Add page' onPress={() => setFormType('newPage')} />}
         </View>
-        {addPageVisible && <Button title='Add page' onPress={() => setFormType('newPage')} />}
         {toggleStatus}
     </View>
 }
@@ -184,13 +185,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
     },
-    title:{
-        fontSize:32,
-        marginBottom:15,
+    title: {
+        fontSize: 32,
+        marginBottom: 15,
     },
     footer: {
-
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 5,
+        marginBottom: 5
     },
- 
+
 })
 export default StoryScreen;

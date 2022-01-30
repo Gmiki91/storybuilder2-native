@@ -16,6 +16,7 @@ type Props = {
 export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
+ 
 
   const getVote = (n: number) => {
     let vote = n;
@@ -38,6 +39,8 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
   }
 
   const backgroundColor = getColor();
+  const likeButtonColor = rateByUser?.rate===1 ? Color.lightGreen : Color.darkGreen;
+  const dislikeButtonColor = rateByUser?.rate===-1? Color.lightRed : Color.darkRed;
   const positiveBtn = toConfirm ? 'Accept' : <SimpleLineIcons name="like" size={24} color="black" />;
   const negativeBtn = toConfirm ? 'Decline' : <SimpleLineIcons name="dislike" size={24} color="black" />;
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
@@ -47,9 +50,9 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
 
     <View style={styles.footer}>
       <View style={styles.rating}>
-        <Button label={positiveBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(1)} />
+        <Button style={{backgroundColor:likeButtonColor }} label={positiveBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(1)} />
         <Text style={{alignSelf:'center', marginLeft:10, marginRight:10}}>{rating}</Text>
-        <Button label={negativeBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(-1)} />
+        <Button style={{backgroundColor:dislikeButtonColor}} label={negativeBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(-1)} />
       </View>
       <Text style={styles.authorName}>{page.authorName}</Text>
     </View>
@@ -90,16 +93,3 @@ const styles = StyleSheet.create({
     width: '40%',
   },
 })
-
-//   return <>
-//     <div className="card">
-//       <div className="card-level" style={{ backgroundColor: backgroundColor }} onClick={onRateLevel}>
-//         {page.level}</div>
-//       <h2 className="card-text">{page.text}</h2>
-//       <div className="card-rate">
-//         <button disabled={ownContent && !toConfirm} onClick={() => getVote(1)}>{positiveBtn}</button>
-//         <p>{rating}</p>
-//         <button disabled={ownContent && !toConfirm} onClick={() => getVote(-1)}>{negativeBtn}</button>
-//       </div>
-//     </div>
-//   </>
