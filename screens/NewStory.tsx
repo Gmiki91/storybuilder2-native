@@ -6,13 +6,10 @@ import { StyleSheet, Pressable, View, TextInput, Button } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import axios from 'axios';
 import React, { useRef } from 'react';
-import Config from 'react-native-config';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../App';
-// import { LOCAL_HOST } from 'constants/constants';
 
-//const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
 type NavigationProp = {
     navigation: StackNavigationProp<RootStackParamList, 'NewStory'>;
 }
@@ -29,10 +26,9 @@ export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
             language: form.language || languages[0].name,
             level: form.level || levels[0].code,
         }
-        axios.post(`${Config.LOCAL_HOST}/stories/`, story).catch(error => console.log(error))
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(() => navigation.navigate('Stories'))
-            .catch(error => console.log(error))
+            .catch(error => console.log('hiba!!',error))
     }
 
     const onPressDescription = () => {

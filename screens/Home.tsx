@@ -1,6 +1,7 @@
 import axios from "axios";
 import { StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from "react";
+import { useIsFocused } from '@react-navigation/native';
 import { StoryList } from "../components/StoryList";
 //import { Filter } from "components/modal/forms/Filter";
 //import { Trigger } from "components/modal/Trigger";
@@ -20,8 +21,9 @@ type SearchCriteria = {
     openEnded: string;
 }
 const Home = () => {
-    const {token} = useAuth();
+    const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
+    const isFocused = useIsFocused();
     console.log('[HOME] render');
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
         storyName: '',
@@ -44,14 +46,16 @@ const Home = () => {
     }, [token]);
 
     useEffect(() => {
+        if (isFocused) {
         isLoading(true);
-        axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria)
-            .then(result => {
-                setStories(result.data.data);
-                setShowModal(false);
-                isLoading(false);
-            });
-    }, [filters]);
+            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria)
+                .then(result => {
+                    setStories(result.data.data);
+                    setShowModal(false);
+                    isLoading(false);
+                });
+        }
+    }, [filters, isFocused]);
 
     useEffect(() => {
         let timeOut: NodeJS.Timeout;
@@ -89,14 +93,14 @@ const Home = () => {
         setFavoriteIds(newList);
         axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
     }
-    
-    return (<StoryList 
+
+    return (<StoryList
         stories={stories}
         favoriteIds={favoriteIds}
         removeFromFavorites={removeFromFavorites}
         addToFavorites={addToFavorites}
-    
+
     ></StoryList>
     )
 }
-    export default Home;
+export default Home;

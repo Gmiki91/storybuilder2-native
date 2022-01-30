@@ -1,12 +1,13 @@
 import React from "react"
-import { Pressable, Text } from "react-native"
+import { Pressable, StyleProp, Text, ViewStyle } from "react-native"
 
 type Props = {
     label: string | JSX.Element,
     onPress: () => void
     hidden?: boolean
+    style?:StyleProp<ViewStyle>
 }
 
-export const Button: React.FC<Props> = ({ label, onPress, hidden }) => (
+export const Button: React.FC<Props> = ({ label,style, onPress, hidden }) => (
     hidden ? null
-        : <Pressable onPress={onPress}><Text>{label}</Text></Pressable>)
+        : <Pressable style={style} onPress={onPress}><Text>{label}</Text></Pressable>)

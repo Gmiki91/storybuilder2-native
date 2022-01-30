@@ -64,6 +64,7 @@ const StoryScreen = () => {
             if (story.pageIds?.length === 0) setPage({} as Page); //if confirmed is also 0, empty page state
         } else {
             isLoading(false);
+            setPage({}as Page);
         }
     }, [currentPageIndex, story, pageStatus, pageType]);
 
@@ -106,7 +107,6 @@ const StoryScreen = () => {
     }
 
     const handleRateText = async (vote: number, confirming: boolean) => {
-
         if (confirming) {
             confirmPage(vote);
         } else {
@@ -161,7 +161,7 @@ const StoryScreen = () => {
     /> : <Text>No pages yet </Text>
 
     return <View style={styles.container}>
-        <Text>{story.title}</Text>
+        <Text style={styles.title}>{story.title}</Text>
         {pageContent}
         {formType !== '' &&
             <Modal onRequestClose={() => setFormType('')}>
@@ -169,7 +169,7 @@ const StoryScreen = () => {
             </Modal>}
         <View style={styles.footer}>
             {currentPageIndex > 0 && <Button title="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
-            {page._id && <View><TextInput value={currentPageIndex + 1 + ''} onChangeText={(value) => jumpTo(value)} /><Text>/ {story[pageType]?.length}</Text></View>}
+            {page._id && <View><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
             {!onLastPage && <Button title="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
         </View>
         {addPageVisible && <Button title='Add page' onPress={() => setFormType('newPage')} />}
@@ -184,8 +184,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
     },
+    title:{
+        fontSize:32,
+        marginBottom:15,
+    },
     footer: {
 
-    }
+    },
+ 
 })
 export default StoryScreen;

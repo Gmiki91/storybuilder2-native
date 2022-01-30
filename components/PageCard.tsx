@@ -16,6 +16,7 @@ type Props = {
 export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
+
   const getVote = (n: number) => {
     let vote = n;
     switch (rateByUser?.rate) {
@@ -46,9 +47,9 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
 
     <View style={styles.footer}>
       <View style={styles.rating}>
-        <Button label={positiveBtn} hidden={ownContent && !toConfirm} onPress={() => getVote(1)} />
-        <Text>{rating}</Text>
-        <Button label={negativeBtn} hidden={ownContent && !toConfirm} onPress={() => getVote(-1)} />
+        <Button label={positiveBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(1)} />
+        <Text style={{alignSelf:'center', marginLeft:10, marginRight:10}}>{rating}</Text>
+        <Button label={negativeBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(-1)} />
       </View>
       <Text style={styles.authorName}>{page.authorName}</Text>
     </View>
@@ -66,7 +67,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
   },
-
   footer: {
     flex: 1,
     flexDirection: 'row',
@@ -82,11 +82,12 @@ const styles = StyleSheet.create({
     width: 32
   },
   rating: {
-    width: '30%',
+    flexDirection: 'row',
+    width:'60%'
   },
   authorName: {
     textAlign: 'right',
-    width: '70%'
+    width: '40%',
   },
 })
 
