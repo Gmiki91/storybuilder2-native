@@ -7,7 +7,12 @@ export type Story = {
     language: string;
     level: Level;
     authorId: string;
-    rating: number;
+    authorName: string;
+    rating: {
+        positive:number,
+        total:number,
+        average:number
+    }
     updatedAt: Date;
     openEnded: boolean;
     pageIds: string[];

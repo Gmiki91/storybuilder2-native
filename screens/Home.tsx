@@ -47,13 +47,12 @@ const Home = () => {
 
     useEffect(() => {
         if (isFocused) {
-        isLoading(true);
-            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria)
-                .then(result => {
-                    setStories(result.data.data);
-                    setShowModal(false);
-                    isLoading(false);
-                });
+            isLoading(true);
+            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria).then(result => {
+                setStories(result.data.data);
+                if (showModal) setShowModal(false);
+                isLoading(false);
+            })
         }
     }, [filters, isFocused]);
 
@@ -94,13 +93,22 @@ const Home = () => {
         axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
     }
 
-    return (<StoryList
-        stories={stories}
-        favoriteIds={favoriteIds}
-        removeFromFavorites={removeFromFavorites}
-        addToFavorites={addToFavorites}
-
-    ></StoryList>
+    return (
+        <View style={styles.container}>
+            <StoryList
+                stories={stories}
+                favoriteIds={favoriteIds}
+                removeFromFavorites={removeFromFavorites}
+                addToFavorites={addToFavorites} />
+        </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+    }
+
+})
 export default Home;

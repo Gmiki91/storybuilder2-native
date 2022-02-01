@@ -100,7 +100,7 @@ const StoryScreen = () => {
                 .then(result => setStory(result.data.story)) //remove pageId from story
 
         } else { //add Page
-            axios.put(`${LOCAL_HOST}/stories/page`, body, { headers })
+            axios.put(`${LOCAL_HOST}/stories/page`,  {...body,pageRatings:page.ratings}, { headers })
                 .then(result => setStory(result.data.story)); //add page to story 
             story.pendingPageIds.length > 1 && removePendingPages();  //remove all other pending pages
             setPageStatus("confirmed");
@@ -111,9 +111,9 @@ const StoryScreen = () => {
         if (confirming) {
             confirmPage(vote);
         } else {
-            const { newPage, difference } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId: page._id }, { headers }).then(result => result.data);
+            const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId: page._id }, { headers }).then(result => result.data);
             setPage(newPage);
-            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { difference, storyId: params.storyId }); // rate only counts if page is not pending
+            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { vote, storyId:params.storyId }, { headers }); // rate only counts if page is not pending
         }
     }
 
