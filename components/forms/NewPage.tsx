@@ -1,5 +1,6 @@
 import { levels } from '../../models/LanguageLevels';
-import { View,Text, Button, Pressable, TextInput, StyleSheet } from 'react-native';
+import {Button} from '../UI/Button'
+import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { Color } from '../../Global';
@@ -57,8 +58,8 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-      <Button title='Cancel' onPress={onClose} />
-      <Button title='Submit' onPress={handleSubmit(handleForm)} />
+      <Button style={{backgroundColor:Color.lightRed}} label='Cancel' onPress={onClose} />
+      <Button label='Submit' onPress={handleSubmit(handleForm)} />
       </View>
     </View>
   </View>
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop:30
   },
+ 
   description: {
     height: '65%',
     borderWidth:1

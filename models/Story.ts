@@ -1,5 +1,5 @@
 import { Level } from "./LanguageLevels";
-
+type Rate ='Terrible'|'Bad'|'Mixed'|'Good'|'Excellent';
 export type Story = {
     _id:string;
     title: string;
@@ -11,7 +11,7 @@ export type Story = {
     rating: {
         positive:number,
         total:number,
-        average:number
+        average:Rate
     }
     updatedAt: Date;
     openEnded: boolean;

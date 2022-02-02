@@ -10,6 +10,7 @@ import { StoryList } from "../components/StoryList";
 import { Story } from "../models/Story";
 import { SortBy } from "../components/SortBy";
 import { useAuth } from "../context/AuthContext";
+import { Color } from "../Global";
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type SearchCriteria = {
     storyName: string,
@@ -107,6 +108,7 @@ const Home = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:Color.main,
         alignItems: 'center',
     }
 
