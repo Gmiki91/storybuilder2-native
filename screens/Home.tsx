@@ -50,7 +50,7 @@ const Home = () => {
         if (isFocused) {
             isLoading(true);
             axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria).then(result => {
-                setStories(result.data.data);
+                setStories(result.data.stories);
                 if (showModal) setShowModal(false);
                 isLoading(false);
             })

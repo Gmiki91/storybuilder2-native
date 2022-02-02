@@ -12,25 +12,29 @@ type Props = {
     addToFavorites: (storyId: string) => void;
 }
 
-
-
 export const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, removeFromFavorites }) => {
     const navigation = useNavigation();
     const renderItem: ListRenderItem<Story> = ({ item }) => {
         const rate = item.rating.total > 9 ? item.rating.average : item.rating.positive;
         return (
             <Pressable style={styles.container} onPress={() => navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: item._id } }))}>
-                <View style={styles.columnOne}>
+                <View style={styles.row}>
                     <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.author}>{item.authorName}</Text>
-                    <Text style={styles.language}>{item.language} : {item.level}</Text>
-                    <Text>Pages: {item.pageIds.length}</Text>
-                    {item.pendingPageIds.length > 0 && <Text>Pending: {item.pendingPageIds.length}</Text>}
-                </View>
-                <View style={styles.columnTwo}>
                     {favoriteIds.includes(item._id) ?
                         <Pressable style={styles.favorite} onPress={() => removeFromFavorites(item._id)}><MaterialIcons name="favorite" size={36} color={Color.lightRed} /></Pressable> :
                         <Pressable style={styles.favorite} onPress={() => addToFavorites(item._id)}><MaterialIcons name="favorite-outline" size={36} color={Color.darkRed} /></Pressable>}
+                </View>
+                <Text>{item.description}</Text>
+
+                <View style={styles.authorContainer}>
+                    <Pressable style={{ padding:5}} onPress={() => console.log(item.authorName)}>
+                        <Text style={styles.authorText}>{item.authorName}</Text>
+                    </Pressable>
+                </View>
+                    <Text>{item.language}: {item.level}</Text>
+                <View style={styles.row}>
+                    <Text>Pages: {item.pageIds.length}, </Text>
+                    {item.pendingPageIds.length > 0 && <Text>Pending: {item.pendingPageIds.length}</Text>}
                     <View style={styles.rate}>
                         <Text style={{ color: Color[item.rating.average], fontStyle: 'italic' }}>{rate} </Text><Text>({item.rating.total} votes)</Text>
                     </View>
@@ -49,15 +53,14 @@ export const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorite
 const styles = StyleSheet.create({
     list: {
         marginTop: '10%',
-        width: '60%',
-
+        width: '80%',
     },
     container: {
         backgroundColor: 'white',
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         marginBottom: 30,
-        padding: 10,
+        padding: 15,
         borderWidth: 1,
         elevation: 3,
         borderRadius: 4,
@@ -67,28 +70,27 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
-
     },
-    columnOne: {
+    row: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: 'row',
     },
-
+    authorContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+    },
     title: {
-        fontSize: 32
+        fontSize: 32,
+        paddingBottom: 15,
     },
-    author: {
+    authorText:{
+        textDecorationLine: 'underline',
         fontStyle: 'italic',
-        fontSize: 12
     },
-    language: {
 
-    },
-    columnTwo: {
-        flex: 1,
-        flexDirection: 'column',
-    },
     favorite: {
+        flex: 1,
         alignItems: 'flex-end',
     },
     rate: {
