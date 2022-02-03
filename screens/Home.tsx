@@ -1,16 +1,16 @@
 import axios from "axios";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useEffect, useState } from "react";
 import { useIsFocused } from '@react-navigation/native';
 import { StoryList } from "../components/StoryList";
+import { SortBy } from "../components/SortBy";
+import { Story } from "../models/Story";
+import { useAuth } from "../context/AuthContext";
+import { Color } from "../Global";
 //import { Filter } from "components/modal/forms/Filter";
 //import { Trigger } from "components/modal/Trigger";
 //import { Modal } from "components/modal/Modal";
 //import { LOCAL_HOST } from "constants/constants";
-import { Story } from "../models/Story";
-import { SortBy } from "../components/SortBy";
-import { useAuth } from "../context/AuthContext";
-import { Color } from "../Global";
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type SearchCriteria = {
     storyName: string,

@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native';
 import { Button } from '../UI/Button';
 import { Form } from '../UI/Form';
-import { Level, levels } from '../../models/LanguageLevels';
 import { Color } from '../../Global';
+import { Level, levels } from '../../models/LanguageLevels';
 type Props = {
     level: Level;
     onSubmit: (rate: string) => void;

@@ -1,11 +1,11 @@
-import { levels } from '../../models/LanguageLevels';
-import { Button } from '../UI/Button'
 import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
-import { Color } from '../../Global';
 import { useRef } from 'react';
 import { Form } from '../UI/Form';
+import { Button } from '../UI/Button'
+import { levels } from '../../models/LanguageLevels';
+import { Color } from '../../Global';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;

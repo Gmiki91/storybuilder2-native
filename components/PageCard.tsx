@@ -1,7 +1,7 @@
 
-import { Page } from "../models/Page";
 import { View, Text,Pressable, StyleSheet } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons'; 
+import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button } from "./UI/Button";
 import { Author } from "./UI/Author";

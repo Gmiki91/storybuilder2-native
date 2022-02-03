@@ -1,16 +1,16 @@
-import { View, Text, TextInput, StyleSheet, Pressable, Modal } from "react-native"
-import { useRoute, RouteProp } from '@react-navigation/native';
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Modal } from "react-native"
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
+import { Color } from "../Global";
+import { useAuth } from "../context/AuthContext";
 import { NewPage } from "../components/forms/NewPage";
 import { RateLevel } from "../components/forms/RateLevel";
 import { PageCard } from "../components/PageCard";
-import { Page } from "../models/Page";
-import { Story } from "../models/Story";
-import { useAuth } from "../context/AuthContext";
-import { Color } from "../Global";
 import { Button } from "../components/UI/Button";
+import { Story } from "../models/Story";
+import { Page } from "../models/Page";
 
 type ParamList = {
     Params: { storyId: string };

@@ -1,4 +1,4 @@
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 
 type Props = {
     name:string;

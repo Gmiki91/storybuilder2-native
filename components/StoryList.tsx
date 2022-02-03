@@ -1,10 +1,9 @@
-import { Story } from "../models/Story";
+import { FlatList, ListRenderItem, StyleSheet, Pressable, View, Text } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
-import { FlatList, ListRenderItem, StyleSheet, Pressable, View, Text } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Color } from '../Global';
-import React from "react";
+import { Story } from "../models/Story";
 import { Author } from "./UI/Author";
 
 type Props = {

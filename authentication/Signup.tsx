@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { TextInput, Text, View, Pressable } from 'react-native';
-import { useForm, Controller, FieldValues } from 'react-hook-form'
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import AuthStyle from './AuthStyle';
+import { TextInput, View } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
-import { Form } from '../components/UI/Form';
+import AuthStyle from './AuthStyle';
+import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/UI/Button';
+import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 
 type NavigationProp = {
