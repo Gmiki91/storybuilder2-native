@@ -25,7 +25,6 @@ const Home = () => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const isFocused = useIsFocused();
-    console.log('[HOME] render');
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
         storyName: '',
         sortBy: 'rating',

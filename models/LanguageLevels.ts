@@ -1,7 +1,10 @@
-export type Level = 'Beginner'| 'Intermediate'|'Advanced'|'Native';
-
-export const levels=[
-    { text:'Beginner', code:'A'},
+export type LevelText = 'Beginner'|'Lower-intermediate'| 'Intermediate'|'Upper-intermediate'|'Advanced'|'Native';
+export type LevelCode = 'A' | 'A+'|'B' | 'B+'| 'C' | 'N';
+export type Level ={
+    text:LevelText, code:LevelCode
+}
+export const levels:{text:LevelText,code:LevelCode}[]=[
+    {text:'Beginner', code:'A'},
     { text:'Lower-intermediate', code:'A+'},
     { text:'Intermediate', code:'B'},
     { text:'Upper-intermediate', code:'B+'},

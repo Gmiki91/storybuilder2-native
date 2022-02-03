@@ -10,6 +10,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../App';
 import { Button } from '../components/UI/Button';
+import { Form } from '../components/UI/Form';
 
 type NavigationProp = {
     navigation: StackNavigationProp<RootStackParamList, 'NewStory'>;
@@ -37,8 +38,7 @@ export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.form}>
+       <Form>
                 <View style={styles.controllerContainer}>
                     <Controller
                         control={control}
@@ -66,6 +66,7 @@ export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
                                 onBlur={onBlur}
                                 onChangeText={value => onChange(value)} />
                         )} />
+                        
                 </Pressable>
                 <View style={styles.controllerContainer}>
                     <Controller
@@ -88,7 +89,6 @@ export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
                         name="level"
                         render={({ field: { onChange, value, onBlur } }) => (
                             <Picker
-                                style={styles.controllerContainer}
                                 selectedValue={value}
                                 onBlur={onBlur}
                                 onValueChange={value => onChange(value)} >
@@ -99,38 +99,23 @@ export const NewStory: React.FC<NavigationProp> = ({ navigation }) => {
                         )} />
                 </View>
                 <Button  label='Submit' onPress={handleSubmit(handleNewStory)} />
-            </View>
-        </View>
+    </Form>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Color.main,
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    form: {
-        backgroundColor: 'white',
-        width: '90%',
-        padding: 25,
-        borderWidth: 5,
-        borderRadius: 10,
-    },
-
     controllerContainer: {
         marginBottom: 10,
         paddingLeft: 5,
         paddingRight: 5,
-        backgroundColor: 'white',
+        backgroundColor: Color.secondary,
         borderBottomWidth: 1,
     },
 
     description: {
         height: '40%',
         justifyContent: 'center',
-        borderColor: 'white'
+        borderColor: Color.secondary
 
     }
 })

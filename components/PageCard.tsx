@@ -4,6 +4,7 @@ import { View, Text,Pressable, StyleSheet } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons'; 
 import { Color } from "../Global";
 import { Button } from "./UI/Button";
+import { Author } from "./UI/Author";
 
 type Props = {
   page: Page;
@@ -17,7 +18,6 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
  
-
   const getVote = (n: number) => {
     let vote = n;
     switch (rateByUser?.rate) {
@@ -27,25 +27,14 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
     onRateText(vote, toConfirm);
   }
 
-  const getColor = () => {
-    switch (page.level) {
-      case 'A': return '#8fffba';
-      case 'A+': return '#5fd48c';
-      case 'B': return '#fffc80';
-      case 'B+': return '#ffba3b';
-      case 'C': return '#ff8080';
-      case 'N': return '#d6d6d6';
-    }
-  }
-
-  const backgroundColor = getColor();
   const likeButtonColor = rateByUser?.rate===1 ? Color.lightGreen : Color.darkGreen;
   const dislikeButtonColor = rateByUser?.rate===-1? Color.lightRed : Color.darkRed;
   const positiveBtn = toConfirm ? 'Accept' : <SimpleLineIcons name="like" size={24} color="black" />;
   const negativeBtn = toConfirm ? 'Decline' : <SimpleLineIcons name="dislike" size={24} color="black" />;
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
+
   return (<View style={styles.container}>
-    <Pressable onPress={onRateLevel}><Text style={[styles.level, {backgroundColor:backgroundColor}]}>{page.level}</Text></Pressable>
+    <Pressable onPress={onRateLevel}><Text style={[styles.level, {backgroundColor:Color[page.level.code]}]}>{page.level.code}</Text></Pressable>
     <Text>{page.text}</Text>
 
     <View style={styles.footer}>
@@ -54,7 +43,7 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
         <Text style={{alignSelf:'center', marginLeft:10, marginRight:10}}>{rating}</Text>
         <Button style={{backgroundColor:dislikeButtonColor}} label={negativeBtn} hidden={ownContent && !toConfirm} onPress={()=>getVote(-1)} />
       </View>
-      <Text style={styles.authorName}>{page.authorName}</Text>
+      <Author name={page.authorName}/>
     </View>
   </View>)
 
@@ -63,7 +52,7 @@ export const PageCard: React.FC<Props> = ({ page, userId, ownContent, toConfirm,
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    backgroundColor: 'white',
+    backgroundColor: Color.secondary,
     height: '70%',
     width: '80%',
     borderWidth: 1,

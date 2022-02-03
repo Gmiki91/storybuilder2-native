@@ -1,10 +1,11 @@
 import { levels } from '../../models/LanguageLevels';
-import {Button} from '../UI/Button'
+import { Button } from '../UI/Button'
 import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { Color } from '../../Global';
 import { useRef } from 'react';
+import { Form } from '../UI/Form';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;
@@ -20,13 +21,12 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
   }
 
   const handleForm = (form: FieldValues) => {
-   
-    if(!form.level) form.level=levels[0].code;
+    if (!form.level) form.level = levels[0].code;
     onSubmit(form);
   }
 
-  return (<View style={styles.container}>
-    <View style={styles.form}>
+  return (
+  <Form>
       <Pressable onPress={onPressDescription} style={[styles.controllerContainer, styles.description]}>
         <Controller
           control={control}
@@ -47,7 +47,6 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           name="level"
           render={({ field: { onChange, value, onBlur } }) => (
             <Picker
-              style={styles.controllerContainer}
               selectedValue={value}
               onBlur={onBlur}
               onValueChange={value => onChange(value)} >
@@ -58,49 +57,29 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-      <Button style={{backgroundColor:Color.lightRed}} label='Cancel' onPress={onClose} />
-      <Button label='Submit' onPress={handleSubmit(handleForm)} />
+        <Button style={{ backgroundColor: Color.lightRed }} label='Cancel' onPress={onClose} />
+        <Button label='Submit' onPress={handleSubmit(handleForm)} />
       </View>
-    </View>
-  </View>
+</Form>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Color.main,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    
-  },
- 
-  form: {
-    marginTop:'10%',
-    backgroundColor: 'white',
-    width: '90%',
-    padding: 25,
-    borderWidth: 5,
-    borderRadius: 10,
-  },
-
   controllerContainer: {
-  
-    marginBottom: 10,
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: 'white',
+    backgroundColor: Color.secondary,
     borderBottomWidth: 1,
   },
-  buttonContainer:{
-    flexDirection:'row',
+  buttonContainer: {
+    flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop:30
+    paddingTop: 30
   },
- 
+
   description: {
     height: '65%',
-    borderWidth:1
+    borderWidth: 1
 
   }
 })

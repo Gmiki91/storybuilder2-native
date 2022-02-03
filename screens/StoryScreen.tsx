@@ -15,6 +15,7 @@ import { Button } from "../components/UI/Button";
 type ParamList = {
     Params: { storyId: string };
 };
+
 type status = 'pending' | 'confirmed';
 type FormTypes = 'filter' | 'newPage' | 'rateLevel' | '';
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
@@ -31,7 +32,6 @@ const StoryScreen = () => {
     const [loading, isLoading] = useState(false);
     const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
-
     useEffect(() => {
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => setUserId(result.data.user._id))
@@ -121,6 +121,7 @@ const StoryScreen = () => {
         const body = { rate: rate, pageId: page._id };
         axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
             setPage(result.data.updatedPage);
+            setFormType('');
         });
     }
 
@@ -140,7 +141,7 @@ const StoryScreen = () => {
 
     const getForm = () => {
         if (formType === 'newPage') return <NewPage onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
-        if (formType === 'rateLevel') return <RateLevel level={page.level} onSubmit={handleRateLevel} onClose={() => setCurrentPageIndex(-1)} />
+        if (formType === 'rateLevel') return <RateLevel level={page.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
         return null;
     }
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;

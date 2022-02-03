@@ -6,6 +6,9 @@ import { useAuth } from '../context/AuthContext';
 import AuthStyle from './AuthStyle';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
+import { Form } from '../components/UI/Form';
+import { Button } from '../components/UI/Button';
+import { Color } from '../Global';
 
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Signup'>;
@@ -37,9 +40,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   }
 
   return (
-    <View style={AuthStyle.container}>
-      <View style={AuthStyle.form}>
-
+    <Form>
         <View style={AuthStyle.inputView}>
           <Controller
             control={control}
@@ -60,24 +61,17 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
             render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
                 style={AuthStyle.TextInput}
+                secureTextEntry
                 placeholder="Password"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={value => onChange(value)} />
             )} />
         </View>
-        <Pressable style={AuthStyle.loginBtn} onPress={handleSubmit(postSignup)} >
-          <Text>Sign up</Text>
-        </Pressable>
-        <Pressable onPress={() => navigation.navigate('Login')}>
-          <Text style={{ marginTop: 15 }}>Already have an account?</Text>
-        </Pressable>
-      </View>
-    </View>
+        <Button label='Sign up' onPress={handleSubmit(postSignup)} style={{backgroundColor: Color.lightGreen}}/>
+        <Button label='Already have an account?' onPress={() => navigation.navigate('Login')} style={{marginTop:10}}/>
+        </Form>
   )
 }
-
-
-
 
 export default Signup;

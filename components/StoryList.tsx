@@ -4,6 +4,8 @@ import { CommonActions } from '@react-navigation/native';
 import { FlatList, ListRenderItem, StyleSheet, Pressable, View, Text } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Color } from '../Global';
+import React from "react";
+import { Author } from "./UI/Author";
 
 type Props = {
     stories: Story[];
@@ -25,16 +27,12 @@ export const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorite
                         <Pressable style={styles.favorite} onPress={() => addToFavorites(item._id)}><MaterialIcons name="favorite-outline" size={36} color={Color.darkRed} /></Pressable>}
                 </View>
                 <Text>{item.description}</Text>
-
-                <View style={styles.authorContainer}>
-                    <Pressable style={{ padding:5}} onPress={() => console.log(item.authorName)}>
-                        <Text style={styles.authorText}>{item.authorName}</Text>
-                    </Pressable>
-                </View>
+                <Author name={item.authorName}/>
+                
                     <Text>{item.language}: {item.level}</Text>
                 <View style={styles.row}>
-                    <Text>Pages: {item.pageIds.length}, </Text>
-                    {item.pendingPageIds.length > 0 && <Text>Pending: {item.pendingPageIds.length}</Text>}
+                    <Text>Pages: {item.pageIds.length}</Text>
+                    {item.pendingPageIds.length > 0 && <Text>, Pending: {item.pendingPageIds.length}</Text>}
                     <View style={styles.rate}>
                         <Text style={{ color: Color[item.rating.average], fontStyle: 'italic' }}>{rate} </Text><Text>({item.rating.total} votes)</Text>
                     </View>
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     container: {
-        backgroundColor: 'white',
+        backgroundColor: Color.secondary,
         flex: 1,
         flexDirection: 'column',
         marginBottom: 30,
@@ -75,18 +73,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
-    authorContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
+  
     title: {
         fontSize: 32,
         paddingBottom: 15,
-    },
-    authorText:{
-        textDecorationLine: 'underline',
-        fontStyle: 'italic',
     },
 
     favorite: {
