@@ -1,10 +1,9 @@
 import { Ionicons, Foundation } from "@expo/vector-icons";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Home from './screens/Home';
-import { NewStory } from "./screens/NewStory";
 import Login from "./authentication/Login";
 import { useState, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
@@ -16,7 +15,6 @@ export type RootStackParamList = {
   Login: undefined,
   Signup: undefined,
   Stories: undefined,
-  NewStory: undefined,
   Settings: undefined,
   Logout: undefined,
   StoryScreen: undefined,
@@ -45,10 +43,7 @@ export default function App() {
         header: () => null,
         tabBarIcon: ({ color, size }) => (<Foundation name="list" size={size} color={color} />)
       }}  />
-       <Tab.Screen component={NewStory} name="NewStory" options={{
-        header: () => null,
-        tabBarIcon: ({ color, size }) => (<Ionicons name='add-circle-sharp' size={size} color={color} />)
-      }}  />
+      
        <Tab.Screen component={Logout} name="Logout" options={{
         header: () => null,
         tabBarIcon: ({ color, size }) => (<Ionicons name='exit-outline' size={size} color={color} />)

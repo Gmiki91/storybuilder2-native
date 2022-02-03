@@ -4,8 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import { useRef } from 'react';
 import { Form } from '../UI/Form';
 import { Button } from '../UI/Button'
-import { levels } from '../../models/LanguageLevels';
 import { Color } from '../../Global';
+import { levels } from '../../models/LanguageLevels';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;
@@ -74,11 +74,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 30
+    paddingTop: 10
   },
 
   description: {
-    height: '65%',
+    paddingBottom: '50%',
     borderWidth: 1
 
   }

@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Color } from '../Global';
 import { Story } from "../models/Story";
 import { Author } from "./UI/Author";
+import { Entypo } from '@expo/vector-icons'; 
 
 type Props = {
     stories: Story[];
@@ -40,11 +41,13 @@ export const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorite
         )
     }
 
-    return <><FlatList
+    return <FlatList
+    showsVerticalScrollIndicator={false}
         style={styles.list}
         data={stories}
-        renderItem={renderItem} />
-    </>
+        renderItem={renderItem} 
+        ListEmptyComponent={<View style={{ flex:1, justifyContent: 'center', alignItems: 'center'}}><Text>No story to show </Text><Entypo name="emoji-sad" size={24} color="black" /></View>}/>
+
 }
 
 const styles = StyleSheet.create({

@@ -1,16 +1,16 @@
 import axios from "axios";
-import { StyleSheet, View } from 'react-native';
-import { useEffect, useState } from "react";
+import { StyleSheet, View,Text } from 'react-native';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import { useEffect, useState,memo } from "react";
 import { useIsFocused } from '@react-navigation/native';
 import { StoryList } from "../components/StoryList";
 import { SortBy } from "../components/SortBy";
 import { Story } from "../models/Story";
 import { useAuth } from "../context/AuthContext";
 import { Color } from "../Global";
-//import { Filter } from "components/modal/forms/Filter";
-//import { Trigger } from "components/modal/Trigger";
-//import { Modal } from "components/modal/Modal";
-//import { LOCAL_HOST } from "constants/constants";
+import { Filter } from "../components/forms/Filter";
+import { Button } from "../components/UI/Button";
+import { NewStory } from "./NewStory";
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type SearchCriteria = {
     storyName: string,
@@ -21,6 +21,7 @@ type SearchCriteria = {
     levels: string[],
     openEnded: string;
 }
+type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
@@ -36,7 +37,7 @@ const Home = () => {
     });
     const [stories, setStories] = useState<Story[]>([]);
     const [filters, applyFilters] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<ModalType>('');
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const [loading, isLoading] = useState(false);
 
@@ -48,9 +49,9 @@ const Home = () => {
     useEffect(() => {
         if (isFocused) {
             isLoading(true);
-            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria).then(result => {
+            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria, { headers }).then(result => {
                 setStories(result.data.stories);
-                if (showModal) setShowModal(false);
+                if (showModal) setShowModal('');
                 isLoading(false);
             })
         }
@@ -93,23 +94,53 @@ const Home = () => {
         axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
     }
 
+    const getForm = () => {
+        if (showModal === 'Filter') {
+            return <Filter
+                onCloseForm={() => setShowModal('')}
+                onApply={() => applyFilters(prevState => !prevState)}
+                filters={searchCriteria}
+                changeFilter={(changes) => setSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
+        } else if (showModal === 'NewStory') {
+            return <NewStory onCloseForm={() => setShowModal('')} />
+        } else {
+            return null;
+        }
+    }
+    const form = getForm();
+
     return (
-        <View style={styles.container}>
-            <StoryList
-                stories={stories}
-                favoriteIds={favoriteIds}
-                removeFromFavorites={removeFromFavorites}
-                addToFavorites={addToFavorites} />
-        </View>
+        <Provider>
+            <View style={styles.container}>
+                <Portal>
+                    <Modal
+                        visible={showModal !== ''}
+                        onDismiss={() => setShowModal('')}>
+                        {form}
+                    </Modal>
+                </Portal>
+                <Button label="Filter" onPress={() => setShowModal('Filter')} />
+                <Button label="Start a new story" onPress={() => setShowModal('NewStory')} />
+                
+                    <StoryList
+                    stories={stories}
+                    favoriteIds={favoriteIds}
+                    removeFromFavorites={removeFromFavorites}
+                    addToFavorites={addToFavorites} />
+                 
+            </View>
+        </Provider>
     )
 }
 
+
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 30,
         flex: 1,
-        backgroundColor:Color.main,
+        backgroundColor: Color.main,
         alignItems: 'center',
     }
 
 })
-export default Home;
+export default memo(Home);

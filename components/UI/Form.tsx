@@ -1,28 +1,25 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView} from "react-native";
 import { Color } from "../../Global";
 
 
-export const Form: React.FC<React.ReactNode> = ({ children }) => (
-    <View style={styles.container}>
+export const Form: React.FC<React.ReactNode>  = ({ children }) => (
+    <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.form}>
             {children}
         </View>
-    </View>
+    </ScrollView>
 )
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Color.main,
-        flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center'
     },
 
     form: {
-        marginTop: '10%',
         backgroundColor: Color.secondary,
-        width: '90%',
-        padding: 25,
+        width: '80%',
+        padding: 15,
         borderWidth: 5,
         borderRadius: 10,
     }

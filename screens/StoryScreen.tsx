@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Modal } from "react-native"
+import { View, Text, StyleSheet } from "react-native"
+import { Modal, Portal, Provider } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from "../Global";
@@ -100,7 +101,7 @@ const StoryScreen = () => {
                 .then(result => setStory(result.data.story)) //remove pageId from story
 
         } else { //add Page
-            axios.put(`${LOCAL_HOST}/stories/page`,  {...body,pageRatings:page.ratings}, { headers })
+            axios.put(`${LOCAL_HOST}/stories/page`, { ...body, pageRatings: page.ratings }, { headers })
                 .then(result => setStory(result.data.story)); //add page to story 
             story.pendingPageIds.length > 1 && removePendingPages();  //remove all other pending pages
             setPageStatus("confirmed");
@@ -113,7 +114,7 @@ const StoryScreen = () => {
         } else {
             const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId: page._id }, { headers }).then(result => result.data);
             setPage(newPage);
-            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { vote, storyId:params.storyId }, { headers }); // rate only counts if page is not pending
+            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { vote, storyId: params.storyId }, { headers }); // rate only counts if page is not pending
         }
     }
 
@@ -162,21 +163,26 @@ const StoryScreen = () => {
         onRateText={handleRateText}
     /> : <Text>No pages yet </Text>
 
-    return <View style={styles.container}>
-        <Text style={styles.title}>{story.title}</Text>
-        {pageContent}
-        {formType !== '' &&
-            <Modal onRequestClose={() => setFormType('')}>
-                {form}
-            </Modal>}
-        {page._id && <View style={{ justifyContent: 'center' }}><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
-        <View style={styles.footer}>
-            {currentPageIndex > 0 && <Button style={{marginRight:10}} label="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
-            {!onLastPage && <Button label="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
-            {addPageVisible && <Button label='Add page' onPress={() => setFormType('newPage')} />}
+    return <Provider>
+        <View style={styles.container}>
+            <Text style={styles.title}>{story.title}</Text>
+            {pageContent}
+            <Portal>
+                <Modal
+                    visible={formType !== ''}
+                    onDismiss={() => setFormType('')}>
+                    {form}
+                </Modal>
+            </Portal>
+            {page._id && <View style={{ justifyContent: 'center' }}><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
+            <View style={styles.footer}>
+                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} label="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
+                {!onLastPage && <Button label="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
+                {addPageVisible && <Button label='Add page' onPress={() => setFormType('newPage')} />}
+            </View>
+            {toggleStatus}
         </View>
-        {toggleStatus}
-    </View>
+    </Provider>
 }
 const styles = StyleSheet.create({
     container: {
