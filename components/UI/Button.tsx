@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
-        backgroundColor: Color.confirmButton,
+        backgroundColor: Color.button,
     },
     text: {
         fontSize: 16,

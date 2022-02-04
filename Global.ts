@@ -1,7 +1,7 @@
 export const Color = {
     main: '#c2e3ff',
     secondary: 'white',
-    confirmButton: '#3f9deb',
+    button: '#3f9deb',
     darkGreen: '#32a83c',
     darkRed: '#ab030f',
     'Excellent': '#058700',

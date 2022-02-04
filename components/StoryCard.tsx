@@ -28,9 +28,9 @@ export const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToF
         <Text>{story.language}: {story.level}</Text>
         <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
     </View>
-    <View style={styles.row}>
         <Text>Pages: {story.pageIds.length}</Text>
-        {story.pendingPageIds.length > 0 && <Text>, Pending: {story.pendingPageIds.length}</Text>}
+    <View style={styles.row}>
+        <Text>Pending: {story.pendingPageIds.length}</Text>
         {!story.openEnded && <FontAwesome name="lock" size={24} color="black" />}
         <View style={{ flexDirection: 'row' }}>
             {story.rating.total > 10 && <Text style={{ color: Color[story.rating.average], fontStyle: 'italic' }}>{story.rating.average} </Text>}<Text>({story.rating.total} votes)</Text>

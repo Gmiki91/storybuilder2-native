@@ -2,11 +2,10 @@ import { levels } from '../../models/LanguageLevels';
 import data from '../../assets/languages.json';
 import { Form } from '../UI/Form';
 import {  Text, View, StyleSheet  } from 'react-native';
-import { Button } from '../UI/Button';
 import { Picker } from '@react-native-picker/picker';
 import { Radio } from '../UI/Radio';
 import { Color } from '../../Global';
-import { Chip, Divider } from 'react-native-paper';
+import { Chip, Divider,Button } from 'react-native-paper';
 
 export type FilterTypes = {
     from: string,
@@ -118,8 +117,8 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClos
 
         <Divider/>
         <View style={styles.buttonContainer}>
-            <Button style={{ backgroundColor: Color.lightRed }} label='Cancel' onPress={onCloseForm} />
-            <Button label='Apply' onPress={onApply} />
+            <Button color={Color.lightRed}  onPress={onCloseForm} >Cancel</Button>
+            <Button color={Color.button} onPress={onApply} >Apply</Button>
         </View>
     </Form>
 }

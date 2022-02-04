@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import AuthStyle from './AuthStyle';
 import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/UI/Button';
+import { Button } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 
@@ -36,6 +36,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
   }
 
   return (
+    <View style={{marginTop:'40%'}}>
     <Form>
       <View style={AuthStyle.inputView}>
         <Controller
@@ -67,11 +68,12 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       <Pressable style={AuthStyle.forgotBtnContainer}>
         <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
       </Pressable>
-      <Button label='Login' onPress={handleSubmit(postLogin)}/>
+      <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
       <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
-      <Button label='Sign up' style={{backgroundColor: Color.lightGreen}} onPress={() => navigation.navigate('Signup')} />
+      <Button color={Color.lightGreen} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
       {isError && <View><Text>Wrong email/password</Text></View>}
     </Form>
+    </View>
   )
 }
 

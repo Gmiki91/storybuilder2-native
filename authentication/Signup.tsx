@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { TextInput, View } from 'react-native';
+import { TextInput, View, Pressable,Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
 import AuthStyle from './AuthStyle';
 import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/UI/Button';
+import { Button } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 
@@ -40,6 +40,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   }
 
   return (
+    <View style={{marginTop:'40%'}}>
     <Form>
         <View style={AuthStyle.inputView}>
           <Controller
@@ -68,9 +69,10 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
                 onChangeText={value => onChange(value)} />
             )} />
         </View>
-        <Button label='Sign up' onPress={handleSubmit(postSignup)} style={{backgroundColor: Color.lightGreen}}/>
-        <Button label='Already have an account?' onPress={() => navigation.navigate('Login')} style={{marginTop:10}}/>
+        <Button color={Color.lightGreen} onPress={handleSubmit(postSignup)}>Sign up</Button>
+        <Pressable  onPress={() => navigation.navigate('Login')} style={{marginTop:10, alignItems: 'center'}}><Text>Already have an account?</Text></Pressable>
         </Form>
+        </View>
   )
 }
 

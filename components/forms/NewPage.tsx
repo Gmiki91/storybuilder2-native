@@ -3,7 +3,7 @@ import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { useRef } from 'react';
 import { Form } from '../UI/Form';
-import { Button } from '../UI/Button'
+import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
 
@@ -57,8 +57,8 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button style={{ backgroundColor: Color.lightRed }} label='Cancel' onPress={onClose} />
-        <Button label='Submit' onPress={handleSubmit(handleForm)} />
+        <Button color={ Color.lightRed }  onPress={onClose}>Cancel</Button>
+        <Button color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
       </View>
 </Form>
   );

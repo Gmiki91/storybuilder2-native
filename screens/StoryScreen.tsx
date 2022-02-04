@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native"
-import { Modal, Portal, Provider } from 'react-native-paper';
+import { Modal, Portal, Provider, Button } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from "../Global";
@@ -9,7 +9,6 @@ import { useAuth } from "../context/AuthContext";
 import { NewPage } from "../components/forms/NewPage";
 import { RateLevel } from "../components/forms/RateLevel";
 import { PageCard } from "../components/PageCard";
-import { Button } from "../components/UI/Button";
 import { Story } from "../models/Story";
 import { Page } from "../models/Page";
 import { Fab } from "../components/UI/Fab";
@@ -149,8 +148,8 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button label={`Pending: ${story.pendingPageIds.length}`} onPress={() => toggleItems('pending')} />
-        : <Button label='Return to confirmed pages' onPress={() => toggleItems('confirmed')} />
+        ? story.pendingPageIds?.length > 0 && <Button color={Color.button} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        : <Button color={Color.button} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
 
     const form = getForm();
 
@@ -178,8 +177,8 @@ const StoryScreen = () => {
             </Portal>
             {page._id && <View style={{ justifyContent: 'center' }}><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
             <View style={styles.footer}>
-                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} label="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
-                {!onLastPage && <Button label="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
+                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }}  color={Color.button}  onPress={() => setCurrentPageIndex(prevState => prevState - 1)} >prev</Button>}
+                {!onLastPage && <Button  color={Color.button}  onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
             </View>
             {toggleStatus}
         </View>

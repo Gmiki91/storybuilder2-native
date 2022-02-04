@@ -7,9 +7,8 @@ import { default as languages } from '../../assets/languages.json';
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
-import { Button } from '../UI/Button';
 import { Form } from '../UI/Form';
-import { Divider } from 'react-native-paper';
+import { Divider,Button } from 'react-native-paper';
 
 type Props = {
     onCloseForm: () => void;
@@ -101,8 +100,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             </View>
             <Divider />
             <View style={styles.buttonContainer}>
-                <Button style={{ backgroundColor: Color.lightRed }} label='Cancel' onPress={onCloseForm} />
-                <Button label='Submit' onPress={handleSubmit(handleNewStory)} />
+                <Button color= {Color.lightRed }  onPress={onCloseForm} >Cancel</Button>
+                <Button color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>
     );
