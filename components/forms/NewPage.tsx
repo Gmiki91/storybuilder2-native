@@ -1,11 +1,11 @@
-import { View, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
-import { useRef } from 'react';
 import { Form } from '../UI/Form';
 import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
+import {MultilineTextInput} from '../UI/MutlilneTextInput';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;
@@ -14,11 +14,6 @@ type Props = {
 
 export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-  const descriptionRef = useRef<TextInput>(null);
-
-  const onPressDescription = () => {
-    descriptionRef.current?.focus()
-  }
 
   const handleForm = (form: FieldValues) => {
     if (!form.level) form.level = levels[0].code;
@@ -26,21 +21,19 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
   }
 
   return (
-  <Form>
-      <Pressable onPress={onPressDescription} style={[styles.controllerContainer, styles.description]}>
+    <Form>
+      <View  style={styles.controllerContainer}>
         <Controller
           control={control}
           name="text"
           render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              ref={descriptionRef}
-              multiline
-              placeholder="Write here..."
+            <MultilineTextInput
+            placeholder={'Write here...'}
               value={value}
               onBlur={onBlur}
-              onChangeText={value => onChange(value)} />
+              onChangeText={onChange} />
           )} />
-      </Pressable>
+      </View>
       <View style={styles.controllerContainer}>
         <Controller
           control={control}
@@ -57,10 +50,10 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button color={ Color.lightRed }  onPress={onClose}>Cancel</Button>
+        <Button color={Color.lightRed} onPress={onClose}>Cancel</Button>
         <Button color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
       </View>
-</Form>
+    </Form>
   );
 };
 
@@ -69,18 +62,12 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     backgroundColor: Color.secondary,
-    borderBottomWidth: 1,
   },
   buttonContainer: {
+    borderTopWidth:1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 10
   },
-
-  description: {
-    paddingBottom: '50%',
-    borderWidth: 1
-
-  }
 })
 

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useRef } from 'react';
 import { StyleSheet, Pressable, View, TextInput } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
@@ -9,6 +8,7 @@ import { levels } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
 import { Form } from '../UI/Form';
 import { Divider,Button } from 'react-native-paper';
+import { MultilineTextInput } from '../UI/MutlilneTextInput';
 
 type Props = {
     onCloseForm: () => void;
@@ -18,7 +18,6 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-    const descriptionRef = useRef<TextInput>(null);
     const LOCAL_HOST = 'http://192.168.31.203:3030/api';
     const handleNewStory = (form: FieldValues) => {
         const story = {
@@ -32,9 +31,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             .catch(error => console.log('hiba!!', error))
     }
 
-    const onPressDescription = () => {
-        descriptionRef.current?.focus()
-    }
+
 
     return (
         <Form>
@@ -52,14 +49,12 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     )} />
             </View>
             <Divider />
-            <Pressable onPress={onPressDescription} style={[styles.controllerContainer, styles.description]}>
+            <Pressable  style={styles.controllerContainer}>
                 <Controller
                     control={control}
                     name="description"
                     render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput
-                            ref={descriptionRef}
-                            multiline
+                        <MultilineTextInput
                             placeholder="Write a short description"
                             value={value}
                             onBlur={onBlur}
@@ -120,9 +115,4 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 10,
     },
-    description: {
-        justifyContent: 'center',
-        borderColor: Color.secondary,
-        paddingBottom: '40%'
-    }
 })
