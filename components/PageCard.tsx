@@ -61,8 +61,9 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 1,
+    alignItems: 'flex-end',
     flexDirection: 'row',
-    alignItems: 'flex-end'
+   justifyContent:'space-between',
   },
 
   level: {
@@ -75,10 +76,5 @@ const styles = StyleSheet.create({
   },
   rating: {
     flexDirection: 'row',
-    width:'60%'
-  },
-  authorName: {
-    textAlign: 'right',
-    width: '40%',
   },
 })

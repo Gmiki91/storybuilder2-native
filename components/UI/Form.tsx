@@ -13,7 +13,7 @@ export const Form: React.FC<React.ReactNode>  = ({ children }) => (
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     form: {

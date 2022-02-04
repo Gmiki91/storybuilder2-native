@@ -1,16 +1,18 @@
 import axios from "axios";
-import { StyleSheet, View,Text } from 'react-native';
-import { Modal, Portal, Provider } from 'react-native-paper';
-import { useEffect, useState,memo } from "react";
+import { StyleSheet, View, Pressable } from 'react-native';
+import { Modal, Portal, Provider, Searchbar } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useEffect, useState, memo } from "react";
 import { useIsFocused } from '@react-navigation/native';
-import { StoryList } from "../components/StoryList";
+import  StoryList  from "../components/StoryList";
 import { SortBy } from "../components/SortBy";
 import { Story } from "../models/Story";
 import { useAuth } from "../context/AuthContext";
 import { Color } from "../Global";
 import { Filter } from "../components/forms/Filter";
 import { Button } from "../components/UI/Button";
-import { NewStory } from "./NewStory";
+import { NewStory } from "../components/forms/NewStory";
+import { Fab } from "../components/UI/Fab";
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type SearchCriteria = {
     storyName: string,
@@ -21,6 +23,7 @@ type SearchCriteria = {
     levels: string[],
     openEnded: string;
 }
+
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
     const { token } = useAuth();
@@ -28,7 +31,7 @@ const Home = () => {
     const isFocused = useIsFocused();
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
         storyName: '',
-        sortBy: 'rating',
+        sortBy: 'ratingAvg',
         sortDirection: 1,
         from: 'all',
         languages: [],
@@ -74,6 +77,11 @@ const Home = () => {
         applyFilters(prevState => !prevState);
     }
 
+    const filtersOn = () => {
+        const { from, languages, levels, openEnded } = searchCriteria;
+        return from !== 'all' || languages.length > 0 || levels.length > 0 || openEnded !== 'both'
+    }
+
 
     const handleStoryNameSearch = (name: string) => {
         if (name.length < 3 && searchCriteria.storyName.length >= 3) {
@@ -108,10 +116,11 @@ const Home = () => {
         }
     }
     const form = getForm();
-
+    const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
     return (
         <Provider>
             <View style={styles.container}>
+                <Fab onPress={() => setShowModal('NewStory')} />
                 <Portal>
                     <Modal
                         visible={showModal !== ''}
@@ -119,15 +128,26 @@ const Home = () => {
                         {form}
                     </Modal>
                 </Portal>
-                <Button label="Filter" onPress={() => setShowModal('Filter')} />
-                <Button label="Start a new story" onPress={() => setShowModal('NewStory')} />
-                
-                    <StoryList
+                <Searchbar
+                    style={{ width: '80%' }}
+                    autoComplete={true}
+                    placeholder="Search by name"
+                    onChangeText={handleStoryNameSearch}
+                    value={searchCriteria.storyName} />
+                <View style={styles.criteriaContainer}>
+
+                    <SortBy direction={searchCriteria.sortDirection}
+                        currentCriteria={searchCriteria.sortBy}
+                        criteriaChanged={(value) => handleSort(value)} />
+                    <Pressable style={{ padding: 5 }} onPress={() => setShowModal('Filter')} >
+                        <MaterialCommunityIcons name={filterIcon} size={24} color="black" />
+                    </Pressable>
+                </View>
+                <StoryList
                     stories={stories}
                     favoriteIds={favoriteIds}
                     removeFromFavorites={removeFromFavorites}
                     addToFavorites={addToFavorites} />
-                 
             </View>
         </Provider>
     )
@@ -140,6 +160,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Color.main,
         alignItems: 'center',
+    },
+
+    criteriaContainer: {
+        width: '80%',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 
 })

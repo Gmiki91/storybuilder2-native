@@ -3,12 +3,12 @@ import { useRef } from 'react';
 import { StyleSheet, Pressable, View, TextInput } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
-import { default as languages } from '../assets/languages.json';
-import { Color } from '../Global';
-import { levels } from '../models/LanguageLevels';
-import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/UI/Button';
-import { Form } from '../components/UI/Form';
+import { default as languages } from '../../assets/languages.json';
+import { Color } from '../../Global';
+import { levels } from '../../models/LanguageLevels';
+import { useAuth } from '../../context/AuthContext';
+import { Button } from '../UI/Button';
+import { Form } from '../UI/Form';
 import { Divider } from 'react-native-paper';
 
 type Props = {

@@ -12,6 +12,7 @@ import { PageCard } from "../components/PageCard";
 import { Button } from "../components/UI/Button";
 import { Story } from "../models/Story";
 import { Page } from "../models/Page";
+import { Fab } from "../components/UI/Fab";
 
 type ParamList = {
     Params: { storyId: string };
@@ -146,7 +147,7 @@ const StoryScreen = () => {
         return null;
     }
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;
-    const addPageVisible = pageStatus !== 'pending' && onLastPage && (story.openEnded || userId === story.authorId);
+    const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
         ? story.pendingPageIds?.length > 0 && <Button label={`Pending: ${story.pendingPageIds.length}`} onPress={() => toggleItems('pending')} />
         : <Button label='Return to confirmed pages' onPress={() => toggleItems('confirmed')} />
@@ -165,6 +166,7 @@ const StoryScreen = () => {
 
     return <Provider>
         <View style={styles.container}>
+        {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
             <Text style={styles.title}>{story.title}</Text>
             {pageContent}
             <Portal>
@@ -178,7 +180,6 @@ const StoryScreen = () => {
             <View style={styles.footer}>
                 {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} label="prev" onPress={() => setCurrentPageIndex(prevState => prevState - 1)} />}
                 {!onLastPage && <Button label="next" onPress={() => setCurrentPageIndex(prevState => prevState + 1)} />}
-                {addPageVisible && <Button label='Add page' onPress={() => setFormType('newPage')} />}
             </View>
             {toggleStatus}
         </View>
