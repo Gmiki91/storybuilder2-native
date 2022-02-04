@@ -1,10 +1,10 @@
 import axios from "axios";
 import { StyleSheet, View, Pressable } from 'react-native';
-import { Modal, Portal, Provider, Searchbar } from 'react-native-paper';
+import { Modal, Portal, Provider, Searchbar, Snackbar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState, memo } from "react";
 import { useIsFocused } from '@react-navigation/native';
-import  StoryList  from "../components/StoryList";
+import StoryList from "../components/StoryList";
 import { SortBy } from "../components/SortBy";
 import { Story } from "../models/Story";
 import { useAuth } from "../context/AuthContext";
@@ -81,6 +81,13 @@ const Home = () => {
         return from !== 'all' || languages.length > 0 || levels.length > 0 || openEnded !== 'both'
     }
 
+    const onStoryNameSearch = () => {
+        if (searchCriteria.storyName.length >= 3) {
+            applyFilters(prevState => !prevState);
+        } else {
+            console.log('length min is 3')
+        }
+    }
 
     const handleStoryNameSearch = (name: string) => {
         if (name.length < 3 && searchCriteria.storyName.length >= 3) {
@@ -128,17 +135,19 @@ const Home = () => {
                     </Modal>
                 </Portal>
                 <Searchbar
-                    style={{ width: '80%' }}
+                    onIconPress={onStoryNameSearch}
+                    style={{ width: '80%', height: 40, borderRadius: 40 }}
                     autoComplete={true}
-                    placeholder="Search by name"
+                    placeholder="Search by title"
                     onChangeText={handleStoryNameSearch}
                     value={searchCriteria.storyName} />
                 <View style={styles.criteriaContainer}>
+                    <SortBy 
 
-                    <SortBy direction={searchCriteria.sortDirection}
+                    direction={searchCriteria.sortDirection}
                         currentCriteria={searchCriteria.sortBy}
                         criteriaChanged={(value) => handleSort(value)} />
-                    <Pressable style={{ padding: 5 }} onPress={() => setShowModal('Filter')} >
+                    <Pressable style={{ padding: 5}} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color="black" />
                     </Pressable>
                 </View>
@@ -157,14 +166,14 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 30,
         flex: 1,
-        backgroundColor: Color.main,
         alignItems: 'center',
     },
 
     criteriaContainer: {
         width: '80%',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-around',
+        backgroundColor: Color.main, borderRadius: 40,
     }
 
 })

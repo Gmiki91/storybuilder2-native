@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         paddingLeft: 5,
         paddingRight: 5,
-        backgroundColor: Color.secondary,
     },
     buttonContainer: {
         flexDirection: 'row',

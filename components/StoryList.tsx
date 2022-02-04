@@ -4,6 +4,7 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Story } from "../models/Story";
 import { Entypo } from '@expo/vector-icons';
 import { StoryCard } from './StoryCard';
+import { Color } from '../Global';
 
 type Props = {
     stories: Story[];
@@ -31,7 +32,7 @@ const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, remo
             favoriteIds={favoriteIds}
         />}
         ListEmptyComponent={
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{  width:'50%', alignSelf:'center',alignItems: 'center',backgroundColor: Color.main, borderRadius:50, }}>
                 <Text>No story to show </Text>
                 <Entypo name="emoji-sad" size={24} color="black" />
             </View>} />

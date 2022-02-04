@@ -1,11 +1,12 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 type Props = {
     name:string;
+    style?: StyleProp<ViewStyle>
 }
 
-export const Author:React.FC<Props> = ({name}) => (
-        <Pressable style={styles.authorContainer} onPress={() => console.log(name)}>
+export const Author:React.FC<Props> = ({name,style}) => (
+        <Pressable style={[styles.authorContainer,style]} onPress={() => console.log(name)}>
             <Text style={styles.authorText}>{name}</Text>
         </Pressable>
 )

@@ -23,7 +23,6 @@ export const MultilineTextInput: React.FC<Props> = ({ value,placeholder, onBlur,
     return <Pressable onPress={onPressDescription}>
         <TextInput
             style={{ height: 200, borderWidth: 1, textAlign: 'left', textAlignVertical:'top', padding:5, marginBottom:5}}
-            onPressIn={() => console.log('hi')}
             ref={descriptionRef}
             multiline
             placeholder={placeholder}

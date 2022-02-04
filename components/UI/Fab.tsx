@@ -8,13 +8,14 @@ export const Fab: React.FC<Props> = ({ onPress }) => <FAB
     style={styles.fab}
     
     icon="plus"
-    theme={{ colors: { accent: Color.lightGreen } }}
+    theme={{ colors: { accent: Color.secondaryButton } }}
     onPress={onPress} />
 
 const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
-        margin: 4,
+        marginRight: 4,
+        marginBottom:40,
         right: 0,
         bottom: 0,
 

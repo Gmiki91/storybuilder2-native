@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
 
     form: {
-        backgroundColor: Color.secondary,
+        backgroundColor: Color.main,
         width: '80%',
         padding: 15,
         borderWidth: 5,

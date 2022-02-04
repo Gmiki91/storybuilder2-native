@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
   controllerContainer: {
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: Color.secondary,
   },
   buttonContainer: {
     borderTopWidth:1,

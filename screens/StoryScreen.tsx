@@ -148,20 +148,21 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentPageIndex === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button color={Color.button} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
-        : <Button color={Color.button} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
+        ? story.pendingPageIds?.length > 0 && <Button mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        : <Button mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
 
     const form = getForm();
 
     const pageContent = page._id ? <PageCard
         key={page._id}
         page={page}
+        pageNumber={`${currentPageIndex + 1 + ''} / ${story[pageType]?.length}`}
         userId={userId}
         ownContent={userId === (page.authorId || story.authorId)}
         toConfirm={pageStatus === 'pending' && story.authorId === userId}
         onRateLevel={() => setFormType('rateLevel')}
         onRateText={handleRateText}
-    /> : <Text>No pages yet </Text>
+    /> : <Text style={{backgroundColor:Color.main, padding:10,borderRadius:5}}>No pages yet </Text>
 
     return <Provider>
         <View style={styles.container}>
@@ -175,10 +176,10 @@ const StoryScreen = () => {
                     {form}
                 </Modal>
             </Portal>
-            {page._id && <View style={{ justifyContent: 'center' }}><Text> {currentPageIndex + 1 + ''} / {story[pageType]?.length}</Text></View>}
+
             <View style={styles.footer}>
-                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }}  color={Color.button}  onPress={() => setCurrentPageIndex(prevState => prevState - 1)} >prev</Button>}
-                {!onLastPage && <Button  color={Color.button}  onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
+                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} mode='contained' color={Color.containedButton} onPress={() => setCurrentPageIndex(prevState => prevState - 1)} >prev</Button>}
+                {!onLastPage && <Button mode='contained' color={Color.containedButton}  onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
             </View>
             {toggleStatus}
         </View>
@@ -186,7 +187,6 @@ const StoryScreen = () => {
 }
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Color.main,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

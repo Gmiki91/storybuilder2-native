@@ -1,11 +1,12 @@
 import { Ionicons, Foundation } from "@expo/vector-icons";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,   DefaultTheme} from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Home from './screens/Home';
 import Login from "./authentication/Login";
-import { useState, useEffect } from "react";
+import {ImageBackground} from 'react-native';
+import { useState, useEffect, } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Logout from "./authentication/Logout";
 import Signup from "./authentication/Signup";
@@ -23,7 +24,13 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
-
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'transparent',
+  },
+};
 export default function App() {
   const [token, setAuthToken] = useState<string>();
 
@@ -72,9 +79,11 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>
-      <NavigationContainer>
+      <ImageBackground resizeMode="repeat" style={{ flex:1}}source={require('./assets/background.jpg')}>
+      <NavigationContainer theme={navTheme}>
         {token ? HiddenTabs : LogIn}
       </NavigationContainer>
+    </ImageBackground>
     </AuthContext.Provider>
   );
 }
