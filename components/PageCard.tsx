@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';
-import { Author } from "./UI/Author";
+import { Author } from "./Author";
 import React from 'react';
 
 type Props = {
@@ -50,9 +50,9 @@ export const PageCard: React.FC<Props> = ({ page,pageNumber, userId, ownContent,
             <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
             {dislikeButton}
           </View>
-        {!toConfirm && <Author name={page.authorName} />}
+        {!toConfirm && <Author name={page.authorName} userId={page.authorId} />}
         </View>
-        {toConfirm && <Author name={page.authorName} />}
+        {toConfirm && <Author name={page.authorName} userId={page.authorId} />}
           <Text style={{ alignSelf: 'center',}}> {pageNumber}</Text>
       </ImageBackground>
     </View>)

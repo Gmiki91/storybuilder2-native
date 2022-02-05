@@ -1,9 +1,10 @@
 import { Story } from "../models/Story"
 import { Pressable, Text, View, StyleSheet, ImageBackground } from 'react-native'
 import { Color } from '../Global';
-import { Author } from "./UI/Author";
+import { Author } from "./Author";
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import moment from "moment";
+import { memo } from "react";
 
 type Props = {
     story: Story,
@@ -13,7 +14,7 @@ type Props = {
     addToFavorites: (storyId: string) => void,
 }
 
-export const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites }) => {
+ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites }) => {
     const getColor = (rating: string) => {
         switch (rating) {
             case 'Excellent': return '#058700';
@@ -35,7 +36,7 @@ export const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToF
             </View>
         </View>
         <Text>{story.description}</Text>
-        <Author name={story.authorName} />
+        <Author name={story.authorName} userId={story.authorId}/>
         <View style={styles.row}>
             <Text>{story.language}: {story.level}</Text>
             <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
@@ -80,5 +81,7 @@ const styles = StyleSheet.create({
         flex: 5,
         fontSize: 32,
         paddingBottom: 15,
+        
     }
-})
+});
+export default memo(StoryCard)

@@ -167,7 +167,7 @@ const StoryScreen = () => {
     return <Provider>
         <View style={styles.container}>
         {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
-            <Text style={styles.title}>{story.title}</Text>
+            <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {pageContent}
             <Portal>
                 <Modal
@@ -190,11 +190,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1,
     },
     title: {
-        fontSize: 32,
+        backgroundColor:Color.secondaryButton,
+        textAlign: 'center',
+        borderRadius:15,
+        fontSize: 20,
         marginBottom: 15,
+      
     },
     footer: {
         flexDirection: 'row',
