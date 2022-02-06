@@ -59,10 +59,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        marginBottom: 30,
+      //  marginBottom: 20,
+      borderBottomWidth:5,
         borderWidth: 1,
         elevation: 3,
-        borderRadius: 4,
         shadowOffset: {
             width: 0,
             height: 5,

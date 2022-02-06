@@ -43,8 +43,8 @@ const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, remo
 }
 const styles = StyleSheet.create({
     list: {
-        marginTop: '10%',
-        width: '99%',
+      
+        width: '100%',
     }
 
 

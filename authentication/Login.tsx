@@ -65,7 +65,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
               onChangeText={value => onChange(value)} />
           )} />
       </View>
-      <Pressable style={AuthStyle.forgotBtnContainer}>
+      <Pressable style={AuthStyle.forgotBtnContainer} onPress={() => navigation.navigate('ForgotPassword')}>
         <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
       </Pressable>
       <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>

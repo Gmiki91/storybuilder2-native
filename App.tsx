@@ -13,6 +13,8 @@ import Signup from "./authentication/Signup";
 import StoryScreen from "./screens/StoryScreen";
 import Profile from "./screens/Profile";
 import Stats from "./components/Stats";
+import ResetPassword from "./authentication/ResetPassword";
+import ForgotPassword from "./authentication/ForgotPassword";
 
 export type RootStackParamList = {
   Login: undefined,
@@ -23,7 +25,9 @@ export type RootStackParamList = {
   Profile: undefined,
   Stats:undefined,
   Logout: undefined,
-  Home: undefined
+  ResetPassword: undefined,
+  ForgotPassword: undefined,
+  Home: undefined,
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -79,6 +83,8 @@ export default function App() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen component={Login} name="Login" />
       <Stack.Screen component={Signup} name="Signup" />
+      <Stack.Screen component={ResetPassword} name="ResetPassword" />
+      <Stack.Screen component={ForgotPassword} name="ForgotPassword" />
     </Stack.Navigator>
   )
 
@@ -89,7 +95,7 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>
-      <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.jpg')}>
+      <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background2.jpg')}>
         <NavigationContainer theme={navTheme}>
           {token ? HiddenTabs : LogIn}
         </NavigationContainer>

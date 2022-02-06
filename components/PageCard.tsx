@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native';
 import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';
@@ -7,14 +7,15 @@ import React from 'react';
 
 type Props = {
   page: Page;
-  pageNumber:string;
+  batch: number;
+  pageNumber: string;
   userId: String;
   ownContent: boolean;
   toConfirm: boolean;
   onRateLevel: () => void;
   onRateText: (rate: number, confirming: boolean) => void;
 }
-export const PageCard: React.FC<Props> = ({ page,pageNumber, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
+export const PageCard: React.FC<Props> = ({ page, pageNumber, batch, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
 
@@ -37,39 +38,32 @@ export const PageCard: React.FC<Props> = ({ page,pageNumber, userId, ownContent,
     <Button color={dislikeButtonColor} icon='close-circle-outline' onPress={() => getVote(-1)} > Decline </Button>
     : <IconButton icon='arrow-down-bold-circle-outline' disabled={ownContent && !toConfirm} color={dislikeButtonColor} size={20} onPress={() => getVote(-1)} />
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
-
+  const author = <Author  style={{ padding:15}} name={page.authorName} userId={page.authorId} />
   return (
-    <View style={styles.container}>
-      <ImageBackground style={{ width: '100%', height: '100%' }} imageStyle={{ borderRadius: 10 }} source={require('../assets/papyrus.jpg')}>
-        <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={onRateLevel}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
-        <Text style={{ paddingLeft: 10, paddingRight: 10 }} >{page.text}</Text>
+    <View style={{ width: `${100 / batch}%` }}>
+      <ImageBackground style={{ height: '100%' }} source={require('../assets/papyrus.jpg')}>
+        <ScrollView contentContainerStyle={{flexGrow:1}}>
+            <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={onRateLevel}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
+            <Text style={{ paddingLeft: 10, paddingRight: 10, flex:1}} >{page.text}</Text>
 
-        <View style={styles.footer}>
-          <View style={{ flexDirection: 'row' }}>
-            {likeButton}
-            <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
-            {dislikeButton}
-          </View>
-        {!toConfirm && <Author name={page.authorName} userId={page.authorId} />}
-        </View>
-        {toConfirm && <Author name={page.authorName} userId={page.authorId} />}
-          <Text style={{ alignSelf: 'center',}}> {pageNumber}</Text>
+            <View style={styles.footer}>
+              <View style={{ flexDirection: 'row' }}>
+                {likeButton}
+                <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
+                {dislikeButton}
+              </View>
+              {!toConfirm && author}
+            </View>
+            {toConfirm && author}
+            <Text style={{ alignSelf: 'center', }}> {pageNumber}</Text>
+        </ScrollView>
       </ImageBackground>
-    </View>)
-
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    height: '70%',
-    width: '80%',
-    borderWidth: 1,
-    borderRadius: 10,
-  },
-  
   footer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
@@ -77,7 +71,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     marginBottom: 15,
-},
+  },
   level: {
     alignSelf: 'flex-end',
     textAlign: 'center',
@@ -85,6 +79,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     width: 32,
     borderRadius: 50,
-    margin:5
+    margin: 5
   }
 })

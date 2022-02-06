@@ -23,7 +23,6 @@ export const Author: React.FC<Props> = ({ name, userId, style }) => {
 const styles = StyleSheet.create({
     authorContainer: {
         alignSelf: 'flex-end',
-        padding: 5,
     },
     authorText: {
         textDecorationLine: 'underline',

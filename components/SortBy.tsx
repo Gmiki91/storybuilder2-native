@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
-import { SortElement } from "./UI/SortElement";
+import SortElement from "./UI/SortElement";
 import { FontAwesome } from '@expo/vector-icons';
 import { Color } from "../Global";
+
 type Props = {
     direction: number,
     currentCriteria: string,
@@ -15,8 +16,12 @@ const sorts = [
 
 export const SortBy: React.FC<Props> = ({ direction, currentCriteria, criteriaChanged }) => {
     const arrow = direction === 1 ? <FontAwesome name="arrow-up" size={12} color={Color.button} /> : <FontAwesome name="arrow-down" size={12} color={Color.button} />
-    return <View style={{ flexDirection: 'row', padding: 5, alignItems: 'center' }}>
+
+    const list = sorts.map(sort =>
+        <SortElement key={sort.value} showIcon={currentCriteria === sort.value} icon={arrow} onPress={() => criteriaChanged(sort.value)} label={sort.label} />)
+
+    return <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text>Sort by: </Text>
-        {sorts.map(sort => <SortElement key={sort.value} showIcon={currentCriteria === sort.value} icon={arrow} onPress={() => criteriaChanged(sort.value)} label={sort.label} />)}
+        {list}
     </View>
 } 

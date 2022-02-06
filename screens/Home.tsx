@@ -1,8 +1,8 @@
 import axios from "axios";
-import { StyleSheet, View, Pressable } from 'react-native';
-import { Modal, Portal, Provider, Searchbar, Snackbar } from 'react-native-paper';
+import { StyleSheet, View, Pressable, ImageBackground } from 'react-native';
+import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { useIsFocused } from '@react-navigation/native';
 import StoryList from "../components/StoryList";
 import { SortBy } from "../components/SortBy";
@@ -38,7 +38,6 @@ const Home = () => {
         openEnded: 'both'
     });
     const [stories, setStories] = useState<Story[]>([]);
-    const [filters, applyFilters] = useState(false);
     const [showModal, setShowModal] = useState<ModalType>('');
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const [loading, isLoading] = useState(false);
@@ -48,32 +47,38 @@ const Home = () => {
             axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => setFavoriteIds(result.data.data))
     }, [token]);
 
+    const getList = useCallback(() => {
+        console.log(Date.now().toString().slice(8, 10), Date.now().toString().slice(10));
+        isLoading(true);
+        axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria, { headers }).then(result => {
+            setStories(result.data.stories);
+            if (showModal) setShowModal('');
+            isLoading(false);
+        })
+    }, [searchCriteria]);
+
     useEffect(() => {
         if (isFocused) {
-            isLoading(true);
-            axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria, { headers }).then(result => {
-                setStories(result.data.stories);
-                if (showModal) setShowModal('');
-                isLoading(false);
-            })
+            getList();
         }
-    }, [filters, isFocused]);
+    }, [isFocused]);
 
     useEffect(() => {
         let timeOut: NodeJS.Timeout;
         if (searchCriteria.storyName.length > 2) {
-            timeOut = setTimeout(() => applyFilters(prevState => !prevState), 1000);
+            timeOut = setTimeout(() => getList(), 1000);
         }
         return () => clearTimeout(timeOut);
-    }, [searchCriteria.storyName])
+    }, [searchCriteria.storyName]);
 
     const handleSort = (sortValue: string) => {
+        console.log(Date.now().toString().slice(8, 10), Date.now().toString().slice(10));
         if (searchCriteria.sortBy === sortValue) {
             setSearchCriteria(prevState => ({ ...prevState, sortDirection: -searchCriteria.sortDirection }));
         } else {
             setSearchCriteria(prevState => ({ ...prevState, sortBy: sortValue }));
         }
-        applyFilters(prevState => !prevState);
+        getList();
     }
 
     const filtersOn = () => {
@@ -83,7 +88,7 @@ const Home = () => {
 
     const onStoryNameSearch = () => {
         if (searchCriteria.storyName.length >= 3) {
-            applyFilters(prevState => !prevState);
+            getList();
         } else {
             console.log('length min is 3')
         }
@@ -91,7 +96,7 @@ const Home = () => {
 
     const handleStoryNameSearch = (name: string) => {
         if (name.length < 3 && searchCriteria.storyName.length >= 3) {
-            applyFilters(prevState => !prevState);
+            getList();
         }
         setSearchCriteria(prevState => ({ ...prevState, storyName: name }));
     }
@@ -112,7 +117,7 @@ const Home = () => {
         if (showModal === 'Filter') {
             return <Filter
                 onCloseForm={() => setShowModal('')}
-                onApply={() => applyFilters(prevState => !prevState)}
+                onApply={() => getList()}
                 filters={searchCriteria}
                 changeFilter={(changes) => setSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
         } else if (showModal === 'NewStory') {
@@ -125,13 +130,14 @@ const Home = () => {
     const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
     return (
         <Provider>
+
             <View style={styles.container}>
                 <Fab onPress={() => setShowModal('NewStory')} />
                 <Portal>
                     <Modal
-                        visible={showModal !== ''}
+                        visible={showModal !== '' || loading}
                         onDismiss={() => setShowModal('')}>
-                        {form}
+                        {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} /> : form}
                     </Modal>
                 </Portal>
                 <Searchbar
@@ -141,16 +147,16 @@ const Home = () => {
                     placeholder="Search by title"
                     onChangeText={handleStoryNameSearch}
                     value={searchCriteria.storyName} />
-                <View style={styles.criteriaContainer}>
-                    <SortBy 
-
-                    direction={searchCriteria.sortDirection}
+             
+                <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolltop2.png')}>
+                    <SortBy
+                        direction={searchCriteria.sortDirection}
                         currentCriteria={searchCriteria.sortBy}
-                        criteriaChanged={(value) => handleSort(value)} />
-                    <Pressable style={{ padding: 5}} onPress={() => setShowModal('Filter')} >
+                        criteriaChanged={handleSort} />
+                    <Pressable style={{ padding: 5 }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color="black" />
                     </Pressable>
-                </View>
+                    </ImageBackground>
                 <StoryList
                     stories={stories}
                     favoriteIds={favoriteIds}
@@ -164,16 +170,23 @@ const Home = () => {
 
 const styles = StyleSheet.create({
     container: {
+        
         paddingTop: 30,
         flex: 1,
         alignItems: 'center',
     },
 
     criteriaContainer: {
-        width: '80%',
+        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        backgroundColor: Color.main, borderRadius: 40,
+        backgroundColor: Color.main,
+        marginTop: '5%'
+       
+    },
+    criteriaBackgroundImage:{
+      
+        
     }
 
 })

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native"
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native"
 import { Modal, Portal, Provider, Button } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
@@ -12,6 +12,7 @@ import { PageCard } from "../components/PageCard";
 import { Story } from "../models/Story";
 import { Page } from "../models/Page";
 import { Fab } from "../components/UI/Fab";
+import Carousel from "../components/Carousel";
 
 type ParamList = {
     Params: { storyId: string };
@@ -27,10 +28,11 @@ const StoryScreen = () => {
     const [userId, setUserId] = useState('');
     const [story, setStory] = useState({} as Story);
     const [page, setPage] = useState({} as Page);
+    const [pages, setPages] = useState<Page[]>([]);
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [formType, setFormType] = useState<FormTypes>('');
     const [pageStatus, setPageStatus] = useState<status>('confirmed');
-    const [loading, isLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
     useEffect(() => {
@@ -39,35 +41,40 @@ const StoryScreen = () => {
     }, []);
 
     useEffect(() => {
-        isLoading(true);
+        setLoading(true);
         axios.get(`${LOCAL_HOST}/stories/${params.storyId}`)
             .then(result => setStory(result.data.story))
             .catch(() => setError('No story to display'));
     }, [params.storyId])
 
     useEffect(() => {
-        !loading && isLoading(true);
-        const storyLength = story[pageType]?.length - 1;
-        if (storyLength >= 0) {
-            let id;
-            if (storyLength < currentPageIndex) { //currentIndex is out of bound
-                id = story[pageType][storyLength];
-                setCurrentPageIndex(storyLength);
-            } else {
-                id = story[pageType][currentPageIndex];
-            }
-            axios.get(`${LOCAL_HOST}/pages/${id}`)
-                .then(result => {
-                    setPage(result.data.page);
-                    isLoading(false);
-                })
-        } else if (pageStatus === 'pending') { // length of pending pages is 0, switch to confirmed
-            setPageStatus('confirmed');
-            if (story.pageIds?.length === 0) setPage({} as Page); //if confirmed is also 0, empty page state
-        } else {
-            isLoading(false);
-            setPage({} as Page);
-        }
+        if (!loading) setLoading(true);
+        axios.get(`${LOCAL_HOST}/pages/many/${story[pageType]}`)
+            .then(result => {
+                setPages(result.data.pages);
+                setLoading(false);
+            })
+        // const storyLength = story[pageType]?.length - 1;
+        // if (storyLength >= 0) {
+        // let id;
+        // if (storyLength < currentPageIndex) { //currentIndex is out of bound
+        //     id = story[pageType][storyLength];
+        //     setCurrentPageIndex(storyLength);
+        // } else {
+        //     id = story[pageType][currentPageIndex];
+        // }
+        // axios.get(`${LOCAL_HOST}/pages/${id}`)
+        //     .then(result => {
+        //         setPage(result.data.page);
+        //         isLoading(false);
+        //     })
+        // } else if (pageStatus === 'pending') { // length of pending pages is 0, switch to confirmed
+        //     setPageStatus('confirmed');
+        //     if (story.pageIds?.length === 0) setPage({} as Page); //if confirmed is also 0, empty page state
+        // } else {
+        //     isLoading(false);
+        //     setPage({} as Page);
+        // }
     }, [currentPageIndex, story, pageStatus, pageType]);
 
     const addPage = async (form: FieldValues) => {
@@ -90,7 +97,7 @@ const StoryScreen = () => {
         const index = story.pendingPageIds.indexOf(page._id)
         const idsToDelete = [...story.pendingPageIds];
         idsToDelete.splice(index, 1);
-        axios.delete(`${LOCAL_HOST}/pages/pending/${idsToDelete.join(',')}`, { headers })
+        axios.delete(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`, { headers })
     }
 
     const confirmPage = (vote: number) => {
@@ -153,22 +160,28 @@ const StoryScreen = () => {
 
     const form = getForm();
 
-    const pageContent = page._id ? <PageCard
-        key={page._id}
-        page={page}
-        pageNumber={`${currentPageIndex + 1 + ''} / ${story[pageType]?.length}`}
-        userId={userId}
-        ownContent={userId === (page.authorId || story.authorId)}
-        toConfirm={pageStatus === 'pending' && story.authorId === userId}
-        onRateLevel={() => setFormType('rateLevel')}
-        onRateText={handleRateText}
-    /> : <Text style={{backgroundColor:Color.main, padding:10,borderRadius:5}}>No pages yet </Text>
+    const mappedPages = pages.map(page =>
+        <PageCard
+            batch={story[pageType]?.length}
+            key={page._id}
+            page={page}
+            pageNumber={`${currentPageIndex + 1 + ''} / ${story[pageType]?.length}`}
+            userId={userId}
+            ownContent={userId === (page.authorId || story.authorId)}
+            toConfirm={pageStatus === 'pending' && story.authorId === userId}
+            onRateLevel={() => setFormType('rateLevel')}
+            onRateText={handleRateText}
+        />
+    )
 
     return <Provider>
         <View style={styles.container}>
-        {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
+            {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
-            {pageContent}
+            <Carousel
+                length={story[pageType]?.length}>
+                {mappedPages}
+            </Carousel>
             <Portal>
                 <Modal
                     visible={formType !== ''}
@@ -179,7 +192,7 @@ const StoryScreen = () => {
 
             <View style={styles.footer}>
                 {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} mode='contained' color={Color.containedButton} onPress={() => setCurrentPageIndex(prevState => prevState - 1)} >prev</Button>}
-                {!onLastPage && <Button mode='contained' color={Color.containedButton}  onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
+                {!onLastPage && <Button mode='contained' color={Color.containedButton} onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
             </View>
             {toggleStatus}
         </View>
@@ -192,12 +205,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        backgroundColor:Color.secondaryButton,
+        backgroundColor: Color.secondaryButton,
         textAlign: 'center',
-        borderRadius:15,
+        borderRadius: 15,
         fontSize: 20,
         marginBottom: 15,
-      
+        padding: 5
+
     },
     footer: {
         flexDirection: 'row',
