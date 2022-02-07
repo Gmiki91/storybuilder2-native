@@ -1,24 +1,50 @@
-import { memo } from 'react';
+import axios from 'axios';
+import { memo,useState,useEffect } from 'react';
 import { FlatList, StyleSheet, View, Text, ListRenderItem } from "react-native";
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Story } from "../models/Story";
-import { Entypo } from '@expo/vector-icons';
+
 import  StoryCard  from './StoryCard';
-import { Color } from '../Global';
+import { useAuth } from '../context/AuthContext';
 
 type Props = {
     stories: Story[];
-    favoriteIds: string[];
-    removeFromFavorites: (storyId: string) => void;
-    addToFavorites: (storyId: string) => void;
 }
+const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const StoryList: React.FC<Props> = ({ stories }) => {
+    const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+    const { token } = useAuth();
+    const headers = { Authorization: `Bearer ${token}` };
+    
+    console.log('storylist');
+    useEffect(() => {
+        console.log('49');
+        let mounted = true;
+        axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => {
+            if (mounted) {
+                setFavoriteIds(result.data.data);
+            }
+        });
+        return () => { mounted = false }
+    }, []);
 
-const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, removeFromFavorites }) => {
-    console.log('list renders');
+    const addToFavorites = (storyId: string) => {
+        setFavoriteIds(prevState => ([...prevState, storyId]))
+        axios.post(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+    }
+
+    const removeFromFavorites = (storyId: string) => {
+        const newList = [...favoriteIds];
+        const index = newList.indexOf(storyId);
+        newList.splice(index, 1);
+        setFavoriteIds(newList);
+        axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+    }
     const navigation = useNavigation();
     const goToStory = (storyId: string) => {
         navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))
     }
+
     const renderItem: ListRenderItem<Story> = ({ item }) => <StoryCard
     key={item._id}
         onPress={goToStory}
@@ -34,20 +60,15 @@ const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, remo
         data={stories}
         renderItem={renderItem}
         windowSize={10}
-        ListEmptyComponent={
-            <View style={{ width: '50%', alignSelf: 'center', alignItems: 'center', backgroundColor: Color.main, borderRadius: 50, }}>
-                <Text>No story to show </Text>
-                <Entypo name="emoji-sad" size={24} color="black" />
-            </View>} />
-
-
+        />
 }
+           
+
+
 const styles = StyleSheet.create({
     list: {
-      
         width: '100%',
     }
-
 
 })
 export default memo(StoryList);

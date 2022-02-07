@@ -3,7 +3,6 @@ import { StyleSheet, View, Pressable, ImageBackground } from 'react-native';
 import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import StoryList from '../components/StoryList';
 import { SortBy } from '../components/SortBy';
 import { Story } from '../models/Story';
@@ -12,7 +11,11 @@ import { Color } from '../Global';
 import { Filter } from '../components/forms/Filter';
 import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
+import { SadMessageBox } from '../components/UI/SadMessageBox';
+import { useIsFocused } from '@react-navigation/native';
+
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+
 type SearchCriteria = {
     storyName: string,
     sortBy: string,
@@ -22,8 +25,9 @@ type SearchCriteria = {
     levels: string[],
     openEnded: string;
 }
+
 const defaultSearchCriteria = {
-    storyName: '',
+    storyName:'',
     sortBy: 'ratingAvg',
     sortDirection: 1,
     from: 'all',
@@ -34,57 +38,36 @@ const defaultSearchCriteria = {
 
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
+    const isFocused = useIsFocused();
+    console.log('home')
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-    const isFocused = useIsFocused();
+    const [searchTitle, setSearchTitle] = useState('');
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
     const [showModal, setShowModal] = useState<ModalType>('');
-    const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+    const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(false);
 
-
-    //init favorite Ids
-    useEffect(() => {
-        console.log('49');
-        let mounted = true;
-        axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => {
-            if (mounted) {
-                setFavoriteIds(result.data.data);
-            }
-        });
-        return () => { mounted = false }
-    }, []);
-
-
-    const getList = useCallback(() => {
+    const getList = useCallback(async () => {
         isLoading(true);
         if (showModal) setShowModal('');
         let mounted = true;
-        axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria, { headers }).then(result => {
-            if (mounted) {
-                setStories(result.data.stories);
-                isLoading(false);
-            }
-        });
+        const stories = await axios.post(`${LOCAL_HOST}/stories/all`,searchCriteria, { headers }).then(result => result.data.stories)
+        if (mounted) {
+            setStories(stories);
+            isLoading(false);
+        }
         return () => { mounted = false }
     }, [searchCriteria]);
 
+    
+    //  if Filter is shown, searchCrteria might change without applying it. 
+    //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
-        if (isFocused) {
+        if (showModal !== 'Filter') 
             getList();
-        }
-    }, [isFocused, getList]);
-
-    // storyname timer function
-    useEffect(() => {
-        let timeOut: NodeJS.Timeout;
-        if (searchCriteria.storyName.length > 2) {
-            timeOut = setTimeout(() => getList(), 1000);
-        }
-        return () => clearTimeout(timeOut);
-    }, [searchCriteria.storyName]);
-
+    }, [getList,isFocused]);
 
     const handleSort = (sortValue: string) => {
         if (searchCriteria.sortBy === sortValue) {
@@ -100,30 +83,23 @@ const Home = () => {
     }
 
     const onStoryNameSearch = () => {
-        if (searchCriteria.storyName.length >= 3) {
-            getList();
+        if (searchTitle.length >= 3) {
+            setSearchCriteria(prevState => ({ ...prevState,storyName: searchTitle}))
         } else {
-            console.log('length min is 3')
+            setErrorMessage('Write at least 3 characters in the searchbar');
         }
     }
 
-    const handleStoryNameSearch = (name: string) => {
-        if (name.length < 3 && searchCriteria.storyName.length >= 3) {
-            getList();
+    const handleSearchBar = (value:string) =>{
+        if(value.length<3 && searchCriteria.storyName.length>=3){
+            setSearchCriteria(prevState => ({ ...prevState,storyName: ''}))
         }
-        setSearchCriteria(prevState => ({ ...prevState, storyName: name }));
+        setSearchTitle(value)
     }
 
-    const addToFavorites = (storyId: string) => {
-        setFavoriteIds(prevState => ([...prevState, storyId]))
-        axios.post(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
-    }
-    const removeFromFavorites = (storyId: string) => {
-        const newList = [...favoriteIds];
-        const index = newList.indexOf(storyId);
-        newList.splice(index, 1);
-        setFavoriteIds(newList);
-        axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+    const dismissModal=()=>{
+        if(showModal==='Filter') getList() //filter might already been set, returning to original is cumbersome, so we'll apply
+        else setShowModal('');
     }
 
     const getForm = () => {
@@ -141,12 +117,11 @@ const Home = () => {
     const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
     return (
         <Provider>
-
             <View style={styles.container}>
                 <Portal>
                     <Modal
                         visible={showModal !== '' || loading}
-                        onDismiss={() => setShowModal('')}>
+                        onDismiss={dismissModal}>
                         {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} /> : form}
                     </Modal>
                 </Portal>
@@ -155,8 +130,10 @@ const Home = () => {
                     style={{ width: '80%', height: 40, borderRadius: 40 }}
                     autoComplete={true}
                     placeholder='Search by title'
-                    onChangeText={handleStoryNameSearch}
-                    value={searchCriteria.storyName} />
+                    onChangeText={handleSearchBar}
+                    onSubmitEditing={onStoryNameSearch}
+                    onKeyPress={(e)=>console.log(e.nativeEvent)}
+                    value={searchTitle} />
 
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolltop2.png')}>
                     <SortBy
@@ -167,13 +144,12 @@ const Home = () => {
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </ImageBackground>
-                <StoryList
-                    stories={stories}
-                    favoriteIds={favoriteIds}
-                    removeFromFavorites={removeFromFavorites}
-                    addToFavorites={addToFavorites} />
+                {stories.length === 0
+                    ? <SadMessageBox message='No stories to show'/>
+                    : <StoryList stories={stories} />}
             </View>
             <Fab onPress={() => setShowModal('NewStory')} />
+            <Snackbar onDismiss={()=>setErrorMessage('')} visible={errorMessage!==''} duration={4000}>{errorMessage}</Snackbar>
         </Provider>
     )
 }
@@ -181,7 +157,6 @@ const Home = () => {
 
 const styles = StyleSheet.create({
     container: {
-
         paddingTop: 30,
         flex: 1,
         alignItems: 'center',
@@ -194,11 +169,6 @@ const styles = StyleSheet.create({
         backgroundColor: Color.main,
         marginTop: '5%'
 
-    },
-    criteriaBackgroundImage: {
-
-
     }
-
 })
 export default memo(Home);

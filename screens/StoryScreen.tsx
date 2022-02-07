@@ -13,6 +13,7 @@ import { Story } from '../models/Story';
 import { Page, Rate } from '../models/Page';
 import { Fab } from '../components/UI/Fab';
 import Carousel from '../components/UI/Carousel';
+import { SadMessageBox } from '../components/UI/SadMessageBox';
 
 type ParamList = {
     Params: { storyId: string };
@@ -27,7 +28,6 @@ const StoryScreen = () => {
     const headers = { Authorization: `Bearer ${token}` };
     const [userId, setUserId] = useState('');
     const [story, setStory] = useState({} as Story);
-    // const [page, setPage] = useState({} as Page);
     const [pages, setPages] = useState<Page[]>([]);
     const [currentInterval, setCurrentInterval] = useState(0);
     const [formType, setFormType] = useState<FormTypes>('');
@@ -63,29 +63,13 @@ const StoryScreen = () => {
                     setLoading(false);
                 })
                 .catch(() => console.log('No pages to display'));
+        } else {
+            setLoading(false);
         }
-        // let id;
-        // if (storyLength < currentPageIndex) { //currentIndex is out of bound
-        //     id = story[pageType][storyLength];
-        //     setCurrentPageIndex(storyLength);
-        // } else {
-        //     id = story[pageType][currentPageIndex];
-        // }
-        // axios.get(`${LOCAL_HOST}/pages/${id}`)
-        //     .then(result => {
-        //         setPage(result.data.page);
-        //         isLoading(false);
-        //     })
-        // } else if (pageStatus === 'pending') { // length of pending pages is 0, switch to confirmed
-        //     setPageStatus('confirmed');
-        //     if (story.pageIds?.length === 0) setPage({} as Page); //if confirmed is also 0, empty page state
-        // } else {
-        //     isLoading(false);
-        //     setPage({} as Page);
-        // }
+
     }, [story, pageType]);
 
-    const addPage = useCallback(async (form: FieldValues) => {
+    const addPage = async (form: FieldValues) => {
         const page = {
             text: form.text,
             level: form.level,
@@ -98,7 +82,7 @@ const StoryScreen = () => {
             setStory(result.data.story);
             setFormType('');
         });
-    }, [params.storyId])
+    }
 
     // remove all pages except the current one
     const removePendingPages = (pageId: string) => {
@@ -174,16 +158,16 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
-        : <Button mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
+        ? story.pendingPageIds?.length > 0 && <Button style={{marginTop:'5%'}} mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        : <Button style={{marginTop:'5%'}} mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
 
     const form = getForm();
-    const mappedPages = pages.map((page,i) =>
+    const mappedPages = pages.map((page, i) =>
         <PageCard
-        key={page._id}
-        page={page}
-        pageNumber={i + 1}
-        totalPageNumber={story[pageType]?.length}
+            key={page._id}
+            page={page}
+            pageNumber={i + 1}
+            totalPageNumber={story[pageType]?.length}
             userId={userId}
             ownContent={userId === (page.authorId || story.authorId)}
             toConfirm={pageStatus === 'pending' && story.authorId === userId}
@@ -193,22 +177,22 @@ const StoryScreen = () => {
     )
 
     return <Provider>
+          
         <View style={styles.container}>
-            {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
-            {loading
-                ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} />
-                : <Carousel
+            {story[pageType]?.length > 0 ?
+                <Carousel
                     length={story[pageType]?.length}
                     changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
                     currentInterval={currentInterval}>
                     {mappedPages}
-                </Carousel>}
+                </Carousel>
+                : <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />}
             <Portal>
                 <Modal
                     visible={formType !== ''}
                     onDismiss={() => setFormType('')}>
-                    {form}
+                    {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} /> : form}
                 </Modal>
             </Portal>
 
@@ -218,6 +202,7 @@ const StoryScreen = () => {
             </View> */}
             {toggleStatus}
         </View>
+        {addPageVisible && <Fab  onPress={() => setFormType('newPage')} />}
     </Provider>
 }
 const styles = StyleSheet.create({
@@ -232,8 +217,16 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         fontSize: 20,
         marginBottom: 15,
-        padding: 5
-
+        padding: 5,
+        borderBottomWidth: 5,
+        borderWidth: 1,
+        elevation: 3,
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
     },
     footer: {
         flexDirection: 'row',
