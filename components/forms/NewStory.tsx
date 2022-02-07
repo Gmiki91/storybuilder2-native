@@ -27,7 +27,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             level: form.level || levels[0].code,
         }
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-            .then(() => onCloseForm())
+            .then(onCloseForm)
             .catch(error => console.log('hiba!!', error))
     }
 

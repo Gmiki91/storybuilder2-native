@@ -14,6 +14,7 @@ type Props = {
 }
 
 const StoryList: React.FC<Props> = ({ stories, favoriteIds, addToFavorites, removeFromFavorites }) => {
+    console.log('list renders');
     const navigation = useNavigation();
     const goToStory = (storyId: string) => {
         navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))

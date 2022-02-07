@@ -16,12 +16,12 @@ export type FilterTypes = {
 
 type Props = {
     onApply: () => void;
-    onCloseForm: () => void;
+    onClearForm: () => void;
     filters: FilterTypes;
     changeFilter: (change: FilterTypes) => void;
 }
 
-export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onCloseForm }) => {
+export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClearForm }) => {
 
     const handleChange = (filter: 'levels' | 'languages', value: string) => {
         const originalValues = [...filters[filter]];
@@ -117,7 +117,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClos
 
         <Divider/>
         <View style={styles.buttonContainer}>
-            <Button color={Color.lightRed}  onPress={onCloseForm} >Cancel</Button>
+            <Button color={Color.lightRed}  onPress={onClearForm} >Clear</Button>
             <Button color={Color.button} onPress={onApply} >Apply</Button>
         </View>
     </Form>

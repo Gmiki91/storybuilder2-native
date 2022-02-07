@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native';
-import { Page } from "../models/Page";
+import { Page, Rate } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';
 import { Author } from "./Author";
@@ -7,18 +7,17 @@ import React from 'react';
 
 type Props = {
   page: Page;
-  batch: number;
-  pageNumber: string;
+  pageNumber: number;
+  totalPageNumber: number;
   userId: String;
   ownContent: boolean;
   toConfirm: boolean;
-  onRateLevel: () => void;
+  onRateLevel: (page:Page) => void;
   onRateText: (rate: number, confirming: boolean) => void;
 }
-export const PageCard: React.FC<Props> = ({ page, pageNumber, batch, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
+export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
-
   const getVote = (n: number) => {
     let vote = n;
     switch (rateByUser?.rate) {
@@ -38,24 +37,25 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, batch, userId, own
     <Button color={dislikeButtonColor} icon='close-circle-outline' onPress={() => getVote(-1)} > Decline </Button>
     : <IconButton icon='arrow-down-bold-circle-outline' disabled={ownContent && !toConfirm} color={dislikeButtonColor} size={20} onPress={() => getVote(-1)} />
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
-  const author = <Author  style={{ padding:15}} name={page.authorName} userId={page.authorId} />
-  return (
-    <View style={{ width: `${100 / batch}%` }}>
-      <ImageBackground style={{ height: '100%' }} source={require('../assets/papyrus.jpg')}>
-        <ScrollView contentContainerStyle={{flexGrow:1}}>
-            <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={onRateLevel}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
-            <Text style={{ paddingLeft: 10, paddingRight: 10, flex:1}} >{page.text}</Text>
+  const author = <Author style={{ padding: 15 }} name={page.authorName} userId={page.authorId} />
 
-            <View style={styles.footer}>
-              <View style={{ flexDirection: 'row' }}>
-                {likeButton}
-                <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
-                {dislikeButton}
-              </View>
-              {!toConfirm && author}
+  return (
+    <View style={{ width: `${100 / totalPageNumber}%` }}>
+      <ImageBackground style={{ height: '100%' }} source={require('../assets/papyrus.jpg')}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={()=>onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
+          <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
+
+          <View style={styles.footer}>
+            <View style={{ flexDirection: 'row' }}>
+              {likeButton}
+              <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
+              {dislikeButton}
             </View>
-            {toConfirm && author}
-            <Text style={{ alignSelf: 'center', }}> {pageNumber}</Text>
+            {!toConfirm && author}
+          </View>
+          {toConfirm && author}
+          <Text style={{ alignSelf: 'center', }}> {pageNumber} / {totalPageNumber}</Text>
         </ScrollView>
       </ImageBackground>
     </View>

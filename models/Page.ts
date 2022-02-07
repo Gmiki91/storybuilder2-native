@@ -1,5 +1,7 @@
 import { Level } from "./LanguageLevels";
-
+export type Rate = {
+    userId: string, rate: number 
+}
 export type Page = {
     _id:string
     text: string,
@@ -7,5 +9,5 @@ export type Page = {
     level:Level,
     authorId: string,
     authorName: string,
-    ratings: [{ userId: string, rate: number }]
+    ratings: [Rate]
 }

@@ -1,7 +1,8 @@
-import { View, Text } from "react-native";
-import SortElement from "./UI/SortElement";
+import React from 'react';
+import { View, Text } from 'react-native';
+import SortElement from './UI/SortElement';
 import { FontAwesome } from '@expo/vector-icons';
-import { Color } from "../Global";
+import { Color } from '../Global';
 
 type Props = {
     direction: number,
@@ -14,8 +15,8 @@ const sorts = [
     { value: 'updatedAt', label: 'Recent' },
 ]
 
-export const SortBy: React.FC<Props> = ({ direction, currentCriteria, criteriaChanged }) => {
-    const arrow = direction === 1 ? <FontAwesome name="arrow-up" size={12} color={Color.button} /> : <FontAwesome name="arrow-down" size={12} color={Color.button} />
+export const SortBy: React.FC<Props> = ({ direction, currentCriteria, criteriaChanged }:Props) => {
+    const arrow = direction === 1 ? <FontAwesome name='arrow-up' size={12} color={Color.button} /> : <FontAwesome name='arrow-down' size={12} color={Color.button} />
 
     const list = sorts.map(sort =>
         <SortElement key={sort.value} showIcon={currentCriteria === sort.value} icon={arrow} onPress={() => criteriaChanged(sort.value)} label={sort.label} />)
