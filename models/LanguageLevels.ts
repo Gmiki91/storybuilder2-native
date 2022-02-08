@@ -11,3 +11,9 @@ export const levels:{text:LevelText,code:LevelCode}[]=[
     { text:'Advanced', code:'C'},
     { text:'Native', code:'N'},
 ]
+
+export const getLevelText = (code:LevelCode)=>{
+   const level= levels
+    .find(level=>level.code===code)
+    return level?.text;
+}

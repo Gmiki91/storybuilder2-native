@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import Stats from "../components/Stats";
+import { Form } from "../components/UI/Form";
 
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 const Profile = () => {
@@ -16,13 +17,16 @@ const Profile = () => {
             .then(result => {
                 setUser(result.data.user);
             })
-    }, [headers]);
+    }, []);
 
     return user ?
-        <View>
-            <Text style={{ fontSize: 36, marginTop: '50%' }}>Szia {user.name}  </Text>
+    <View>
             <Stats userProp={user}/>
-        </View>
+            <Form>
+            <Text>Update password</Text>
+            <Text>Delete user</Text>
+            </Form>
+            </View>
         : <Text>Loading</Text>
 
 }

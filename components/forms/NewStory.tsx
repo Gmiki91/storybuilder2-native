@@ -12,9 +12,10 @@ import { CustomInput } from '../UI/CustomInput';
 
 type Props = {
     onCloseForm: () => void;
+    onNewStoryAdded:()=>void;
 }
 
-export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
+export const NewStory: React.FC<Props> = ({ onCloseForm,onNewStoryAdded }) => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
@@ -27,7 +28,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             level: form.level || levels[0].code,
         }
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-            .then(onCloseForm)
+            .then(onNewStoryAdded)
             .catch(error => console.log('hiba!!', error))
     }
 

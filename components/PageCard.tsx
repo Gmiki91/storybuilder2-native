@@ -48,13 +48,15 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
 
           <View style={styles.footer}>
+            
             <View style={{ flexDirection: 'row' }}>
               {likeButton}
               <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
               {dislikeButton}
             </View>
-            {author}
+            {!toConfirm&&author}
           </View>
+          {toConfirm&&author}
           <Text style={{ alignSelf: 'center', }}> {pageNumber} / {totalPageNumber}</Text>
         </ScrollView>
         {pageNumber===totalPageNumber && <Image style={styles.scroll} source={require('../assets/scrolls/right.png')} />}

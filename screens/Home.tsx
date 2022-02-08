@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, View, Pressable, ImageBackground } from 'react-native';
+import { StyleSheet, View, Pressable, ImageBackground, Keyboard } from 'react-native';
 import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
@@ -50,6 +50,7 @@ const Home = () => {
 
     const getList = useCallback(async () => {
         isLoading(true);
+        Keyboard.dismiss()
         if (showModal) setShowModal('');
         let mounted = true;
         const stories = await axios.post(`${LOCAL_HOST}/stories/all`, {...searchCriteria,sortBy,sortDirection,searchTitle}, { headers }).then(result => result.data.stories)
@@ -112,7 +113,7 @@ const Home = () => {
                 filters={tempSearchCriteria}
                 changeFilter={(changes) => setTempSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
         } else if (showModal === 'NewStory') {
-            return <NewStory onCloseForm={() => setShowModal('')} />
+            return <NewStory onNewStoryAdded={()=>getList()} onCloseForm={() => setShowModal('')} />
         }
     }
     const form = getForm();
