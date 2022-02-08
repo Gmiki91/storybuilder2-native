@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { memo,useState,useEffect } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { FlatList, StyleSheet, View, Text, ListRenderItem } from "react-native";
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Story } from "../models/Story";
 
-import  StoryCard  from './StoryCard';
+import StoryCard from './StoryCard';
 import { useAuth } from '../context/AuthContext';
 
 type Props = {
@@ -15,7 +15,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-    
+
     console.log('storylist');
     useEffect(() => {
         console.log('49');
@@ -46,29 +46,30 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     }
 
     const renderItem: ListRenderItem<Story> = ({ item }) => <StoryCard
-    key={item._id}
+        key={item._id}
         onPress={goToStory}
         removeFromFavorites={removeFromFavorites}
         addToFavorites={addToFavorites}
         story={item}
         favoriteIds={favoriteIds}
-        lastOne = {stories.indexOf(item)===stories.length-1}
     />
     return <FlatList
+        alwaysBounceVertical={false}
+        bounces={false}
         initialNumToRender={5}
         showsVerticalScrollIndicator={false}
         style={styles.list}
         data={stories}
         renderItem={renderItem}
         windowSize={10}
-        />
+    />
 }
-           
+
 
 
 const styles = StyleSheet.create({
     list: {
-        width: '80%',
+        width: '100%',
     }
 
 })

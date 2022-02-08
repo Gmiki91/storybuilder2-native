@@ -9,13 +9,12 @@ import { memo } from "react";
 type Props = {
     story: Story,
     favoriteIds: string[],
-    lastOne:boolean,
     onPress: (storyId: string) => void,
     removeFromFavorites: (storyId: string) => void,
     addToFavorites: (storyId: string) => void,
 }
 
-const StoryCard: React.FC<Props> = ({ story, onPress,lastOne, favoriteIds, addToFavorites, removeFromFavorites }) => {
+const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites }) => {
     const getColor = (rating: string) => {
         switch (rating) {
             case 'Excellent': return '#058700';
@@ -52,7 +51,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress,lastOne, favoriteIds, addTo
                         </View>
                     </View>
                 </View>
-               {!lastOne && <Image style={styles.scrollBottom} source={require('../assets/scrolls/border.png')} />}
+               <Image style={styles.scrollBottom} source={require('../assets/scrolls/between.png')} />
             </ImageBackground>
         </Pressable>
     )

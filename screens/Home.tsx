@@ -82,6 +82,11 @@ const Home = () => {
         return from !== 'all' || languages.length > 0 || levels.length > 0 || openEnded !== 'both'
     }
 
+    const onClearFilter = ()=>{
+        setSearchCriteria(defaultSearchCriteria);
+        getList();
+    }
+
     const onStoryNameSearch = () => {
         if (searchTitle.length >= 3) {
             setSearchCriteria(prevState => ({ ...prevState,storyName: searchTitle}))
@@ -105,7 +110,7 @@ const Home = () => {
     const getForm = () => {
         if (showModal === 'Filter') {
             return <Filter
-                onClearForm={() => setSearchCriteria(defaultSearchCriteria)}
+                onClearForm={onClearFilter}
                 onApply={getList}
                 filters={searchCriteria}
                 changeFilter={(changes) => setSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
@@ -147,7 +152,6 @@ const Home = () => {
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show'/>
                     : <StoryList stories={stories} />}
-                      <Image style={styles.scrollBottom} source={require('../assets/scrolls/bottom.png')} />
             </View>
             <Fab onPress={() => setShowModal('NewStory')} />
             <Snackbar onDismiss={()=>setErrorMessage('')} visible={errorMessage!==''} duration={4000}>{errorMessage}</Snackbar>
