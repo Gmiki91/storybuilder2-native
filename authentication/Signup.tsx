@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { TextInput, View, Pressable,Text } from 'react-native';
+import { View, Pressable,Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
+import { CustomInput } from '../components/UI/CustomInput';
 
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Signup'>;
@@ -47,8 +48,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
             control={control}
             name="name"
             render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                style={AuthStyle.TextInput}
+              <CustomInput
                 placeholder="Name"
                 value={value}
                 onBlur={onBlur}
@@ -60,8 +60,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
             control={control}
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
-              <TextInput
-                style={AuthStyle.TextInput}
+              <CustomInput
                 secureTextEntry
                 placeholder="Password"
                 value={value}
@@ -69,7 +68,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
                 onChangeText={value => onChange(value)} />
             )} />
         </View>
-        <Button color={Color.main} onPress={handleSubmit(postSignup)}>Sign up</Button>
+        <Button color={Color.button} onPress={handleSubmit(postSignup)}>Sign up</Button>
         <Pressable  onPress={() => navigation.navigate('Login')} style={{marginTop:10, alignItems: 'center'}}><Text>Already have an account?</Text></Pressable>
         </Form>
         </View>

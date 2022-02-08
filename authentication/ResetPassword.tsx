@@ -2,10 +2,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
-import { Text, TextInput } from 'react-native';
+import { Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { RootStackParamList } from '../App';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import { CustomInput } from '../components/UI/CustomInput';
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 type NavigationProp = {
     navigation: StackNavigationProp<RootStackParamList, 'ResetPassword'>;
@@ -35,7 +36,7 @@ const ResetPassword:React.FC<NavigationProp> = ({ navigation }) => {
     }
 
     return <>
-        <TextInput placeholder="Enter your new password" value={password} onChangeText={setPassword} />
+        <CustomInput placeholder="Enter your new password" value={password} onChangeText={setPassword} />
         <Button disabled={password.trim() === ''} onPress={resetPassword}>Reset password</Button>
         {error && <Text>{error}</Text>}
     </>

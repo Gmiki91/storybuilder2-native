@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, Pressable, View, TextInput } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
@@ -8,7 +8,7 @@ import { levels } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
 import { Form } from '../UI/Form';
 import { Divider,Button } from 'react-native-paper';
-import { MultilineTextInput } from '../UI/MutlilneTextInput';
+import { CustomInput } from '../UI/CustomInput';
 
 type Props = {
     onCloseForm: () => void;
@@ -40,7 +40,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     control={control}
                     name="title"
                     render={({ field: { onChange, value, onBlur } }) => (
-                        <TextInput
+                        <CustomInput
                             style={{ fontSize: 22 }}
                             placeholder="Story title"
                             value={value}
@@ -54,7 +54,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     control={control}
                     name="description"
                     render={({ field: { onChange, value, onBlur } }) => (
-                        <MultilineTextInput
+                        <CustomInput
+                        multiline
                             placeholder="Write a short description"
                             value={value}
                             onBlur={onBlur}

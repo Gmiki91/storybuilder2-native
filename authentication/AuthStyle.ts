@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import {Color} from '../Global';
 
 export default StyleSheet.create({
  
@@ -11,11 +10,6 @@ export default StyleSheet.create({
     borderBottomColor:'black'
   },
 
-  TextInput: {
-    flex: 1,
-    width: "100%",
-    marginLeft:10,
-  },
 
   forgotBtnContainer:{
     width: "100%",

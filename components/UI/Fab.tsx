@@ -6,7 +6,6 @@ type Props = {
 }
 export const Fab: React.FC<Props> = ({ onPress }) => <FAB
     style={styles.fab}
-    
     icon="plus"
     theme={{ colors: { accent: Color.secondary } }}
     onPress={onPress} />

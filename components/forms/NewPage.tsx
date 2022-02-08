@@ -5,7 +5,7 @@ import { Form } from '../UI/Form';
 import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
-import {MultilineTextInput} from '../UI/MutlilneTextInput';
+import {CustomInput} from '../UI/CustomInput';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;
@@ -27,7 +27,8 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           control={control}
           name="text"
           render={({ field: { onChange, value, onBlur } }) => (
-            <MultilineTextInput
+            <CustomInput
+            multiline
             placeholder={'Write here...'}
               value={value}
               onBlur={onBlur}
