@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, View, Pressable, ImageBackground, Image } from 'react-native';
+import { StyleSheet, View, Pressable, ImageBackground } from 'react-native';
 import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
@@ -18,8 +18,6 @@ const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 
 type SearchCriteria = {
     storyName: string,
-    sortBy: string,
-    sortDirection: number,
     from: string,
     languages: string[],
     levels: string[],
@@ -28,8 +26,6 @@ type SearchCriteria = {
 
 const defaultSearchCriteria = {
     storyName: '',
-    sortBy: 'ratingAvg',
-    sortDirection: 1,
     from: 'all',
     languages: [],
     levels: [],
@@ -43,6 +39,8 @@ const Home = () => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const [searchTitle, setSearchTitle] = useState('');
+    const [sortBy, setSortBy] = useState('ratingAvg');
+    const [sortDirection, setSortDirection] = useState(1);
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
@@ -54,13 +52,13 @@ const Home = () => {
         isLoading(true);
         if (showModal) setShowModal('');
         let mounted = true;
-        const stories = await axios.post(`${LOCAL_HOST}/stories/all`, searchCriteria, { headers }).then(result => result.data.stories)
+        const stories = await axios.post(`${LOCAL_HOST}/stories/all`, {...searchCriteria,sortBy,sortDirection,searchTitle}, { headers }).then(result => result.data.stories)
         if (mounted) {
             setStories(stories);
             isLoading(false);
         }
         return () => { mounted = false }
-    }, [searchCriteria]);
+    }, [searchCriteria, sortBy, sortDirection]);
 
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
@@ -68,10 +66,10 @@ const Home = () => {
     }, [getList, isFocused]);
 
     const handleSort = (sortValue: string) => {
-        if (searchCriteria.sortBy === sortValue) {
-            setSearchCriteria(prevState => ({ ...prevState, sortDirection: -searchCriteria.sortDirection }));
+        if (sortBy === sortValue) {
+            setSortDirection(prevState=>-prevState);
         } else {
-            setSearchCriteria(prevState => ({ ...prevState, sortBy: sortValue }));
+            setSortBy(sortValue)
         }
     }
 
@@ -141,8 +139,8 @@ const Home = () => {
 
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolls/top.png')}>
                     <SortBy
-                        direction={searchCriteria.sortDirection}
-                        currentCriteria={searchCriteria.sortBy}
+                        direction={sortDirection}
+                        currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
                     <Pressable style={{ paddingRight: '12%', paddingTop: '2%' }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
