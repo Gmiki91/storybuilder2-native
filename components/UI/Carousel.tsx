@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-
 type Props = {
   length: number;
   currentInterval: number;
-  changeInterval: (direction:1 | -1) => void;
+  pageType: string;
+  changeInterval: (direction: 1 | -1) => void;
 }
 
 const width = 100;
 
-export const Carousel: React.FC<Props> = ({ length, currentInterval, changeInterval, children }) => {
+export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, changeInterval, children }) => {
+  const scrollRef = useRef<ScrollView>(null);
 
   const getInterval = (offset: any) => {
     if (offset % 360 === 0) {
@@ -20,13 +21,18 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, changeInter
       }
     }
   }
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ x: currentInterval * 360 })
+  }, [pageType])
 
   return (
     <View style={{ height: '70%' }}>
       <ScrollView
+        ref={scrollRef}
         horizontal={true}
         contentContainerStyle={{ ...styles.scrollView, width: `${width * length}%` }}
         showsHorizontalScrollIndicator={false}
+
         onScroll={data => getInterval(data.nativeEvent.contentOffset.x)}
         pagingEnabled
         decelerationRate="fast">

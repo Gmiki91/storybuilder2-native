@@ -13,13 +13,13 @@ type Props = {
 }
 export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style,secureTextEntry, onBlur, onChangeText }) => {
     const isKeyBoardOpen = useKeyboard();
-    const descriptionRef = useRef<TextInput>(null);
+    const ref = useRef<TextInput>(null);
     const onPressDescription = () => {
-        descriptionRef.current?.focus()
+        ref.current?.focus()
       }
     useEffect(() => {
         if (!isKeyBoardOpen) {
-            descriptionRef.current?.blur()
+            ref.current?.blur()
         }
     }, [isKeyBoardOpen]);
 
@@ -27,7 +27,7 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
     return <Pressable onPress={onPressDescription}>
         <TextInput
             style={[linestyle, style]}
-            ref={descriptionRef}
+            ref={ref}
             multiline={multiline}
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}

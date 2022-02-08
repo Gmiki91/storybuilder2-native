@@ -36,7 +36,7 @@ const StoryScreen = () => {
     const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
-    console.log('storyScreen');
+    // console.log('storyScreen');
     // init userId
     useEffect(() => {
         axios.get(`${LOCAL_HOST}/users/`, { headers })
@@ -175,7 +175,6 @@ const StoryScreen = () => {
             onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings)}
         />
     )
-
     return <Provider>
 
         <View style={styles.container}>
@@ -184,6 +183,7 @@ const StoryScreen = () => {
                     <Carousel
                         length={story[pageType]?.length}
                         changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
+                            pageType={pageType}
                         currentInterval={currentInterval}>
                         {mappedPages}
                     </Carousel>
