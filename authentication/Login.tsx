@@ -70,7 +70,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       </Pressable>
       <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
       <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
-      <Button color={Color.secondaryButton} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
+      <Button color={Color.main} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
       {isError && <View><Text>Wrong email/password</Text></View>}
     </Form>
     </View>

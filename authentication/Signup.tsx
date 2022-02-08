@@ -69,7 +69,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
                 onChangeText={value => onChange(value)} />
             )} />
         </View>
-        <Button color={Color.secondaryButton} onPress={handleSubmit(postSignup)}>Sign up</Button>
+        <Button color={Color.main} onPress={handleSubmit(postSignup)}>Sign up</Button>
         <Pressable  onPress={() => navigation.navigate('Login')} style={{marginTop:10, alignItems: 'center'}}><Text>Already have an account?</Text></Pressable>
         </Form>
         </View>

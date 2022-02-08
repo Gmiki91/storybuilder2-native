@@ -15,6 +15,7 @@ import Profile from "./screens/Profile";
 import Stats from "./components/Stats";
 import ResetPassword from "./authentication/ResetPassword";
 import ForgotPassword from "./authentication/ForgotPassword";
+import { Color } from "./Global";
 
 export type RootStackParamList = {
   Login: undefined,
@@ -53,8 +54,8 @@ export default function App() {
 
 
   const VisibleTabs = () => (
-    <Tab.Navigator>
-      <Tab.Screen component={Home} name="Stories" options={{
+    <Tab.Navigator screenOptions={() => ({tabBarStyle: {backgroundColor:Color.main}})}>
+            <Tab.Screen component={Home} name="Stories" options={{
         header: () => null,
         tabBarIcon: ({ color, size }) => (<Foundation name="list" size={size} color={color} />)
       }} />

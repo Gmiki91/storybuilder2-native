@@ -158,8 +158,8 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
-        : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
+        ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
 
     const form = getForm();
     const mappedPages = pages.map((page, i) =>
@@ -181,22 +181,18 @@ const StoryScreen = () => {
         <View style={styles.container}>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
-             
-                 
                     <Carousel
                         length={story[pageType]?.length}
                         changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
                         currentInterval={currentInterval}>
                         {mappedPages}
                     </Carousel>
-      
-        
                 : <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />}
             <Portal>
                 <Modal
-                    visible={formType !== ''}
+                    visible={formType !== '' || loading}
                     onDismiss={() => setFormType('')}>
-                    {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} /> : form}
+                    {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
                 </Modal>
             </Portal>
 
@@ -216,7 +212,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        backgroundColor: Color.secondaryButton,
+        backgroundColor: Color.main,
         textAlign: 'center',
         borderRadius: 15,
         fontSize: 20,

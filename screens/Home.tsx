@@ -127,7 +127,7 @@ const Home = () => {
                     <Modal
                         visible={showModal !== '' || loading}
                         onDismiss={dismissModal}>
-                        {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.containedButton} /> : form}
+                        {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
                     </Modal>
                 </Portal>
                 <Searchbar
