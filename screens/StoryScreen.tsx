@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet,Image } from 'react-native'
 import { Modal, Portal, Provider, Button, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
@@ -158,8 +158,8 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button style={{marginTop:'5%'}} mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
-        : <Button style={{marginTop:'5%'}} mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
+        ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.containedButton} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.containedButton} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
 
     const form = getForm();
     const mappedPages = pages.map((page, i) =>
@@ -177,16 +177,20 @@ const StoryScreen = () => {
     )
 
     return <Provider>
-          
+
         <View style={styles.container}>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
-                <Carousel
-                    length={story[pageType]?.length}
-                    changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
-                    currentInterval={currentInterval}>
-                    {mappedPages}
-                </Carousel>
+             
+                 
+                    <Carousel
+                        length={story[pageType]?.length}
+                        changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
+                        currentInterval={currentInterval}>
+                        {mappedPages}
+                    </Carousel>
+      
+        
                 : <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />}
             <Portal>
                 <Modal
@@ -202,7 +206,7 @@ const StoryScreen = () => {
             </View> */}
             {toggleStatus}
         </View>
-        {addPageVisible && <Fab  onPress={() => setFormType('newPage')} />}
+        {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
     </Provider>
 }
 const styles = StyleSheet.create({
@@ -234,6 +238,10 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5
     },
+    scrollBottom: {
+       height:'100%',
+       width:'12%'
+    }
 
 })
 export default StoryScreen;

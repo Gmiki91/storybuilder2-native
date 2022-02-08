@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground,Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Image } from 'react-native';
 import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';
@@ -42,7 +42,6 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
   return (
     <View style={{...styles.container,width: `${100 / totalPageNumber}%` }}>
       <ImageBackground style={{ height: '100%', flexDirection:'row'}} source={require('../assets/papyrus.jpg')}>
-        {pageNumber===1 &&  <Image style={styles.scroll} source={require('../assets/scrolltopvertical.png')} />}
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={()=>onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
@@ -57,7 +56,6 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
           </View>
           <Text style={{ alignSelf: 'center', }}> {pageNumber} / {totalPageNumber}</Text>
         </ScrollView>
-         {pageNumber===totalPageNumber &&  <Image style={styles.scroll} source={require('../assets/scrolltopvertical.png')} />} 
       </ImageBackground>
     </View>
   )

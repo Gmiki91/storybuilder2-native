@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, View, Pressable, ImageBackground } from 'react-native';
+import { StyleSheet, View, Pressable, ImageBackground, Image } from 'react-native';
 import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
@@ -135,18 +135,19 @@ const Home = () => {
                     onKeyPress={(e)=>console.log(e.nativeEvent)}
                     value={searchTitle} />
 
-                <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolltop2.png')}>
+                <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolls/top.png')}>
                     <SortBy
                         direction={searchCriteria.sortDirection}
                         currentCriteria={searchCriteria.sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable style={{ padding: 5 }} onPress={() => setShowModal('Filter')} >
+                    <Pressable style={{ paddingRight:'12%', paddingTop:'2%' }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </ImageBackground>
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show'/>
                     : <StoryList stories={stories} />}
+                      <Image style={styles.scrollBottom} source={require('../assets/scrolls/bottom.png')} />
             </View>
             <Fab onPress={() => setShowModal('NewStory')} />
             <Snackbar onDismiss={()=>setErrorMessage('')} visible={errorMessage!==''} duration={4000}>{errorMessage}</Snackbar>
@@ -166,9 +167,11 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        backgroundColor: Color.main,
         marginTop: '5%'
-
+    },
+    scrollBottom: {
+        width:'100%',
+        height:'8%'
     }
 })
 export default memo(Home);

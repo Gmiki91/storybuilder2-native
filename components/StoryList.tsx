@@ -52,6 +52,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
         addToFavorites={addToFavorites}
         story={item}
         favoriteIds={favoriteIds}
+        lastOne = {stories.indexOf(item)===stories.length-1}
     />
     return <FlatList
         initialNumToRender={5}
@@ -67,7 +68,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
 
 const styles = StyleSheet.create({
     list: {
-        width: '100%',
+        width: '80%',
     }
 
 })
