@@ -46,7 +46,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           render={({ field: { onChange, value, onBlur } }) => (
             <CustomInput
             style={{borderBottomWidth:0}}
-              placeholder="Name"
+              placeholder="Name or email"
               value={value}
               onBlur={onBlur}
               onChangeText={value => onChange(value)} />

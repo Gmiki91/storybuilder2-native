@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, Pressable, View } from 'react-native';
+import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
@@ -7,15 +7,15 @@ import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
 import { Form } from '../UI/Form';
-import { Divider,Button } from 'react-native-paper';
+import { Divider, Button, Switch } from 'react-native-paper';
 import { CustomInput } from '../UI/CustomInput';
 
 type Props = {
     onCloseForm: () => void;
-    onNewStoryAdded:()=>void;
+    onNewStoryAdded: () => void;
 }
 
-export const NewStory: React.FC<Props> = ({ onCloseForm,onNewStoryAdded }) => {
+export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
@@ -26,6 +26,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm,onNewStoryAdded }) => {
             description: form.description,
             language: form.language || languages[0].name,
             level: form.level || levels[0].code,
+            openEnded:form.openEnded
         }
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(onNewStoryAdded)
@@ -50,20 +51,19 @@ export const NewStory: React.FC<Props> = ({ onCloseForm,onNewStoryAdded }) => {
                     )} />
             </View>
             <Divider />
-            <Pressable  style={styles.controllerContainer}>
+            <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}
                     name="description"
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
-                        multiline
+                            multiline
                             placeholder="Write a short description"
                             value={value}
                             onBlur={onBlur}
                             onChangeText={value => onChange(value)} />
                     )} />
             </Pressable>
-            <Divider />
             <View style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -96,8 +96,19 @@ export const NewStory: React.FC<Props> = ({ onCloseForm,onNewStoryAdded }) => {
                     )} />
             </View>
             <Divider />
+            <View style={[styles.controllerContainer,{flexDirection:'row', justifyContent:'space-around', alignItems:'center'}]}>
+            <Text>May others contribute?</Text>
+                <Controller
+                    control={control}
+                    name="openEnded"
+                    render={({ field: { onChange, value, onBlur } }) => (
+
+                        <Switch value={value} onValueChange={value => onChange(value)} />
+                    )} />
+
+            </View>
             <View style={styles.buttonContainer}>
-                <Button color= {Color.lightRed }  onPress={onCloseForm} >Cancel</Button>
+                <Button color={Color.lightRed} onPress={onCloseForm} >Cancel</Button>
                 <Button color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>

@@ -203,7 +203,7 @@ const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
                     icon="keyboard-return"
                     color={Color.button}
                     size={20}
-                    onPress={() => () => navigation.navigate('Home')}
+                    onPress={() =>navigation.navigate('Home')}
                 />
             </View>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
