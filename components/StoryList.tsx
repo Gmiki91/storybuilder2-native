@@ -16,9 +16,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
 
-    console.log('storylist');
     useEffect(() => {
-        console.log('49');
         let mounted = true;
         axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => {
             if (mounted) {

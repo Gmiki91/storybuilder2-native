@@ -49,6 +49,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
             name="name"
             render={({ field: { onChange, value, onBlur } }) => (
               <CustomInput
+              style={{borderBottomWidth:0}}
                 placeholder="Name"
                 value={value}
                 onBlur={onBlur}
@@ -61,6 +62,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
               <CustomInput
+              style={{borderBottomWidth:0}}
                 secureTextEntry
                 placeholder="Password"
                 value={value}

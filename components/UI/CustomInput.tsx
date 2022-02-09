@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     },
     oneline:{
         padding:5,
-        textAlignVertical:'bottom'
+        textAlignVertical:'bottom',
+        borderBottomWidth:1
+
     }
 })

@@ -35,7 +35,6 @@ const defaultSearchCriteria = {
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
     const isFocused = useIsFocused();
-    console.log('home')
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const [searchTitle, setSearchTitle] = useState('');

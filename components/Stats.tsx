@@ -5,6 +5,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import { Form } from './UI/Form';
+import { Divider } from "react-native-paper";
 
 type ParamList = {
     Params: {
@@ -33,7 +34,7 @@ type PageData = {
 }
 
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
-const Stats: React.FC<Props> = ({ userProp }) => {
+const Stats: React.FC<Props> = ({ userProp, children }) => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
@@ -72,25 +73,29 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                 });
         }
     }, [user])
-    const storyRating = `${(storyData.upVotes / storyData.totalVotes * 100).toFixed()}%`
-    const pageRating = `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%`
+    const storyRating = storyData.totalVotes !== 0 ? `${(storyData.upVotes / storyData.totalVotes * 100).toFixed()}%` : null
+    const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
     return user ?
         <View style={styles.container}>
             <Form>
-            <View style={styles.group}>
-                <Text style={{ fontSize: 36, }}>{user.name}</Text>
-                <Text style={{ fontSize: 12, }}>{user.email}</Text>
+                <View style={styles.group}>
+                    <Text style={{ fontSize: 36, }}>{user.name}</Text>
+                    <Text style={{ fontSize: 12, }}>{user.email}</Text>
                 </View>
                 <View style={styles.group}>
                     <Text >Stories: {storyData.size}</Text>
-                    <Text >Rating:{storyRating} ({storyData.upVotes} / {storyData.totalVotes})</Text>
+                    <Text >Rating: {storyRating} ({storyData.upVotes} / {storyData.totalVotes})</Text>
                 </View>
                 <View style={styles.group}>
-                    <Text>Pages:{pageData.size}</Text>
-                    <Text>Rating:{pageRating} ({pageData.upVotes} / {pageData.totalVotes})</Text>
+                    <Text>Pages: {pageData.size}</Text>
+                    <Text>Rating: {pageRating} ({pageData.upVotes} / {pageData.totalVotes})</Text>
                 </View>
-                <Text>Used languages:</Text>
-                {pageData.langInfo?.map(obj => <Text>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
+                {pageData.langInfo?.length !== 0 &&
+                    <View>
+                        <Text>Used languages:</Text>
+                        {pageData.langInfo.map(obj => <Text key={obj.language}>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
+                    </View>}
+                {children}
             </Form>
         </View>
         : <Text>Loading</Text>

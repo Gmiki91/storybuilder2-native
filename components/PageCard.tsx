@@ -57,11 +57,11 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
           </View>
           {toConfirm && author}
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 5 }}>
-            <Button mode='outlined' color={Color.button} onPress={() => jump(-10)}>{'<<'}</Button>
-            <Button mode='outlined' color={Color.button} onPress={() => jump(-1)}>{'<'}</Button>
+            <Button disabled={pageNumber===1} mode='outlined' color={Color.button} onPress={() => jump(-10)}>{'<<'}</Button>
+            <Button disabled={pageNumber===1} mode='outlined' color={Color.button} onPress={() => jump(-1)}>{'<'}</Button>
             <Text style={{textAlignVertical:'center'}}> {pageNumber} / {totalPageNumber}</Text>
-            <Button mode='outlined' color={Color.button} onPress={() => jump(1)}>{'>'}</Button>
-            <Button mode='outlined' color={Color.button} onPress={() => jump(10)}>{'>>'}</Button>
+            <Button disabled={pageNumber===totalPageNumber} mode='outlined' color={Color.button} onPress={() => jump(1)}>{'>'}</Button>
+            <Button  disabled={pageNumber===totalPageNumber} mode='outlined' color={Color.button} onPress={() => jump(10)}>{'>>'}</Button>
           </View>
         </ScrollView>
         {pageNumber === totalPageNumber && <Image style={styles.scroll} source={require('../assets/scrolls/right.png')} />}

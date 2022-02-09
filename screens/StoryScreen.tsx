@@ -36,7 +36,6 @@ const StoryScreen = () => {
     const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
-    // console.log('storyScreen');
     // init userId
     useEffect(() => {
         axios.get(`${LOCAL_HOST}/users/`, { headers })
@@ -184,7 +183,6 @@ const StoryScreen = () => {
         />
     )
     return <Provider>
-
         <View style={styles.container}>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
