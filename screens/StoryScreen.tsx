@@ -35,7 +35,6 @@ const StoryScreen = () => {
     const [pageStatus, setPageStatus] = useState<status>('confirmed');
     const [loading, setLoading] = useState(false);
     const [jump, toggleJump] = useState(false);
-    const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
     // init userId

@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    
+    "scheme": "mycoolredirect",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,7 +18,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.storybuilder",
+      "config":{
+        "googleSignIn":{
+          "reservedClientId":"com.googleusercontent.apps.584741243002-jmo14kldgqgcl146hvlqdudput99irpg"
+        }
+      }
     },
     "android": {
       "package": "com.storybuilder",

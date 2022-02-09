@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 const Logout = () => {
     const { setToken } = useAuth();
     AsyncStorage.removeItem('token');
-    
     useEffect(() => {
         let mounted=true;
         if(mounted)

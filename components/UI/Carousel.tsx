@@ -14,7 +14,6 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType,ju
   const scrollRef = useRef<ScrollView>(null);
 
   const getInterval = (offset: any) => {
-    console.log(currentInterval)
     if (offset % 360 === 0) {
       if (offset / 360 > currentInterval) {
         changeInterval(1);
