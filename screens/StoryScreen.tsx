@@ -46,7 +46,9 @@ const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
     useEffect(() => {
         let mounted = true
         axios.get(`${LOCAL_HOST}/users/`, { headers })
-            .then(result => setUserId(result.data.user._id))
+            .then(result => {
+                if(mounted)
+                setUserId(result.data.user._id)})
             .catch(() => console.log('No user to display'));
         return () => { mounted = false }
     }, []);
@@ -56,7 +58,9 @@ const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
         let mounted = true
         setLoading(true);
         axios.get(`${LOCAL_HOST}/stories/${params.storyId}`)
-            .then(result => setStory(result.data.story))
+            .then(result => {
+                if(mounted)
+                setStory(result.data.story)})
             .catch(() => console.log('No story to display'));
         return () => { mounted = false }
     }, [params.storyId])

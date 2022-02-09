@@ -9,7 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Form } from '../UI/Form';
 import { Divider, Button, Switch } from 'react-native-paper';
 import { CustomInput } from '../UI/CustomInput';
-
+import { ErrorMessage } from '../../components/UI/ErrorMessage';
 type Props = {
     onCloseForm: () => void;
     onNewStoryAdded: () => void;
@@ -33,14 +33,17 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
             .catch(error => console.log('hiba!!', error))
     }
 
-
-
     return (
         <Form>
             <View style={styles.controllerContainer}>
                 <Controller
                     control={control}
                     name="title"
+                    rules={{
+                        required: {value:true, message:'Required'},
+                        minLength:{value:3, message:'Minimum length is 3 characters'},
+                        maxLength: {value:100, message:'Maximum length is 100 characters'},
+                       }}
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
                             style={{ fontSize: 22 }}
@@ -50,11 +53,12 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
                             onChangeText={value => onChange(value)} />
                     )} />
             </View>
+            {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
             <Divider />
             <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}
-                    name="description"
+                    name="description (optional)"
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
                             multiline
@@ -109,7 +113,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
             </View>
             <View style={styles.buttonContainer}>
                 <Button color={Color.lightRed} onPress={onCloseForm} >Cancel</Button>
-                <Button color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
+                <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>
     );

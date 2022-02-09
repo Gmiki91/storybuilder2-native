@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { View, Pressable,Text } from 'react-native';
-import {Snackbar} from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
 import AuthStyle from './AuthStyle';
 import { useAuth } from '../context/AuthContext';
-import { Button } from 'react-native-paper';
+import { Button, Snackbar } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
@@ -51,17 +50,16 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
               required: {value:true, message:'Required'},
               minLength:{value:3, message:'Minimum length is 3 characters'},
               maxLength: {value:100, message:'Maximum length is 100 characters'},
-             }}
+            }}
             render={({ field: { onChange, value, onBlur } }) => (
               <CustomInput
-              style={{borderBottomWidth:0}}
-                placeholder="Name"
-                value={value}
-                onBlur={onBlur}
-                onChangeText={value => onChange(value)} />
-            )} />
+              placeholder="Name"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={value => onChange(value)} />
+              )} />
         </View>
-        {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+              {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
         <View style={AuthStyle.inputView}>
           <Controller
             control={control}
@@ -70,11 +68,10 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
               required: {value:true, message:'Required'},
               minLength:{value:3, message:'Minimum length is 3 characters'},
               maxLength: {value:100, message:'Maximum length is 100 characters'},
-              pattern:{value:/^\S.*@\S+$/, message:'Invalid email pattern'}
+              pattern:{value:/^[^\s@]+@[^\s@]+\.[^\s@]+$/, message:'Invalid email pattern'}
              }}
             render={({ field: { onChange, value, onBlur } }) => (
               <CustomInput
-              style={{borderBottomWidth:0}}
                 placeholder="Email"
                 value={value}
                 onBlur={onBlur}
@@ -93,7 +90,6 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
              }}
             render={({ field: { onChange, value, onBlur } }) => (
               <CustomInput
-              style={{borderBottomWidth:0}}
                 secureTextEntry
                 placeholder="Password"
                 value={value}
@@ -105,7 +101,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
         <Button color={Color.button} disabled={!isValid} onPress={handleSubmit(postSignup)}>Sign up</Button>
         <Pressable  onPress={() => navigation.navigate('Login')} style={{marginTop:10, alignItems: 'center'}}><Text>Already have an account?</Text></Pressable>
         </Form>
-        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={4000}>Username already taken</Snackbar>
+        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={3000}>Username already taken</Snackbar>
         </View>
   )
 }

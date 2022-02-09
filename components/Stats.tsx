@@ -46,9 +46,11 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
         if (params) {
             axios.get(`${LOCAL_HOST}/users/user/${params.userId}`, { headers })
                 .then(result => {
+                    if(mounted)
                     setUser(result.data.user);
                 })
         } else {
+            if(mounted)
             setUser(userProp)
         }
         return () => { mounted = false }
@@ -58,13 +60,16 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
         let mounted = true;
         if (user) {
             axios.get(`${LOCAL_HOST}/stories/all/${user._id}`, { headers })
-                .then(result => setStoryData({
+                .then(result =>{ 
+                   if(mounted) 
+                    setStoryData({
                     size: result.data.size,
                     totalVotes: result.data.totalVotes,
                     upVotes: result.data.upVotes
-                }));
+                })});
             axios.get(`${LOCAL_HOST}/pages/all/${user._id}`, { headers })
                 .then(result => {
+                    if(mounted) 
                     setPageData({
                         size: result.data.size,
                         totalVotes: result.data.totalVotes,

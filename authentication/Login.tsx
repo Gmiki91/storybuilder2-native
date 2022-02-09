@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import AuthStyle from './AuthStyle';
 import { useAuth } from '../context/AuthContext';
-import { Button } from 'react-native-paper';
+import { Button, Snackbar } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
@@ -45,7 +45,6 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           name="name"
           render={({ field: { onChange, value, onBlur } }) => (
             <CustomInput
-            style={{borderBottomWidth:0}}
               placeholder="Name or email"
               value={value}
               onBlur={onBlur}
@@ -58,7 +57,6 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           name="password"
           render={({ field: { onChange, value, onBlur } }) => (
             <CustomInput
-            style={{borderBottomWidth:0}}
               secureTextEntry
               placeholder="Password"
               value={value}
@@ -72,7 +70,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
       <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
       <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
-      {isError && <View><Text>Wrong email/password</Text></View>}
+      <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={3000}>Wrong email/password</Snackbar>
     </Form>
     </View>
   )

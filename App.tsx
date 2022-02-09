@@ -49,9 +49,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    let mounted = true;
     getToken();
-    return () => { mounted = false }
   }, []);
 
 

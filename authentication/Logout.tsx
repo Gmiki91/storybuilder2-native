@@ -8,6 +8,7 @@ const Logout = () => {
     
     useEffect(() => {
         let mounted=true;
+        if(mounted)
         setToken(undefined);
         return () => { mounted = false }
     })

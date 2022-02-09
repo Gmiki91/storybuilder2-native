@@ -6,6 +6,7 @@ import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
 import {CustomInput} from '../UI/CustomInput';
+import { ErrorMessage } from '../../components/UI/ErrorMessage';
 
 type Props = {
   onSubmit: (f: FieldValues) => void;
@@ -26,6 +27,11 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
         <Controller
           control={control}
           name="text"
+          rules={{
+            required: {value:true, message:'Required'},
+            minLength:{value:10, message:'Minimum length is 10 characters'},
+            maxLength: {value:5000, message:'Maximum length is 5000 characters'},
+           }}
           render={({ field: { onChange, value, onBlur } }) => (
             <CustomInput
             multiline
@@ -35,6 +41,7 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
               onChangeText={onChange} />
           )} />
       </View>
+      {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
       <View style={styles.controllerContainer}>
         <Controller
           control={control}
@@ -52,7 +59,7 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
       </View>
       <View style={styles.buttonContainer}>
         <Button color={Color.lightRed} onPress={onClose}>Cancel</Button>
-        <Button color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
+        <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
       </View>
     </Form>
   );

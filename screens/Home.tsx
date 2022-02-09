@@ -50,21 +50,19 @@ const Home = () => {
     const getList = useCallback(async () => {
         isLoading(true);
         Keyboard.dismiss()
-        if (showModal) setShowModal('');
         let mounted = true;
         const stories = await axios.post(`${LOCAL_HOST}/stories/all`, {...searchCriteria,sortBy,sortDirection,searchTitle}, { headers }).then(result => result.data.stories)
         if (mounted) {
             setStories(stories);
             isLoading(false);
+            setShowModal('');
         }
         return () => { mounted = false }
     }, [searchCriteria, sortBy, sortDirection]);
 
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
-        let mounted = true;
         getList();
-        return () => { mounted = false }
     }, [getList, isFocused]);
 
     const handleSort = (sortValue: string) => {

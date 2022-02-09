@@ -23,6 +23,7 @@ const Profile = () => {
         let mounted=true;
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
+                if(mounted)
                 setUser(result.data.user);
             })
             return () => { mounted = false }

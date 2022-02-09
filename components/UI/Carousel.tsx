@@ -22,9 +22,7 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, c
     }
   }
   useEffect(() => {
-    let mounted=true;
     scrollRef.current?.scrollTo({ x: currentInterval * 360 })
-    return () => { mounted = false }
   }, [pageType,currentInterval])
 
   return (
