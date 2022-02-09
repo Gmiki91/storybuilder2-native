@@ -4,15 +4,17 @@ type Props = {
   length: number;
   currentInterval: number;
   pageType: string;
+  jump:boolean;
   changeInterval: (direction: 1 | -1) => void;
 }
 
 const width = 100;
 
-export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, changeInterval, children }) => {
+export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType,jump, changeInterval, children }) => {
   const scrollRef = useRef<ScrollView>(null);
 
   const getInterval = (offset: any) => {
+    console.log(currentInterval)
     if (offset % 360 === 0) {
       if (offset / 360 > currentInterval) {
         changeInterval(1);
@@ -23,7 +25,7 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, c
   }
   useEffect(() => {
     scrollRef.current?.scrollTo({ x: currentInterval * 360 })
-  }, [pageType,currentInterval])
+  }, [pageType,jump])
 
   return (
     <View style={{ height: '70%' }}>
@@ -32,7 +34,7 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, c
         horizontal={true}
         contentContainerStyle={{ ...styles.scrollView, width: `${width * length}%` }}
         showsHorizontalScrollIndicator={false}
-
+        disableIntervalMomentum={ true } 
         onScroll={data => getInterval(data.nativeEvent.contentOffset.x)}
         pagingEnabled
         decelerationRate="fast">

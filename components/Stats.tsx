@@ -85,7 +85,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
     return user ?
         <View style={styles.container}>
-                 <BackButton/>
+                 {!userProp &&<BackButton/>}
             <Form>
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>

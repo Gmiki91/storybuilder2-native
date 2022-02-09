@@ -34,6 +34,7 @@ const StoryScreen = () => {
     const [formType, setFormType] = useState<FormTypes>('');
     const [pageStatus, setPageStatus] = useState<status>('confirmed');
     const [loading, setLoading] = useState(false);
+    const [jump, toggleJump] = useState(false);
     const [error, setError] = useState<string>();
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
@@ -161,6 +162,7 @@ const StoryScreen = () => {
                 setCurrentInterval(0)
             }
         }
+        toggleJump(prevState=>!prevState);
     }
 
     const toggleItems = (status: 'pending' | 'confirmed') => {
@@ -204,6 +206,7 @@ const StoryScreen = () => {
                     length={story[pageType]?.length}
                     changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
                     pageType={pageType}
+                    jump={jump}
                     currentInterval={currentInterval}>
                     {mappedPages}
                 </Carousel>
