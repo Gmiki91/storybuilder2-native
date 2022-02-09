@@ -14,12 +14,7 @@ import { Page, Rate } from '../models/Page';
 import { Fab } from '../components/UI/Fab';
 import Carousel from '../components/UI/Carousel';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../App';
-
-type NavigationProp = {
-    navigation: StackNavigationProp<RootStackParamList, 'StoryScreen'>;
-}
+import { BackButton } from '../components/UI/BackButton';
 
 type ParamList = {
     Params: { storyId: string };
@@ -28,7 +23,7 @@ type ParamList = {
 type status = 'pending' | 'confirmed';
 type FormTypes = 'filter' | 'newPage' | 'rateLevel' | '';
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
-const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
+const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
@@ -202,14 +197,7 @@ const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
     return <Provider>
         <View style={styles.container}>
 
-            <View style={{ backgroundColor: Color.secondary, borderRadius: 20, alignSelf: 'flex-start' }}>
-                <IconButton
-                    icon="keyboard-return"
-                    color={Color.button}
-                    size={20}
-                    onPress={() =>navigation.navigate('Home')}
-                />
-            </View>
+           <BackButton/>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
                 <Carousel

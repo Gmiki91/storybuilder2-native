@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import { Form } from './UI/Form';
 import moment from 'moment';
+import {BackButton} from './UI/BackButton';
 type ParamList = {
     Params: {
         userId: string
@@ -54,7 +55,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
             setUser(userProp)
         }
         return () => { mounted = false }
-    }, [params]);
+    }, [params,userProp]);
 
     useEffect(() => {
         let mounted = true;
@@ -84,6 +85,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
     return user ?
         <View style={styles.container}>
+                 <BackButton/>
             <Form>
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
