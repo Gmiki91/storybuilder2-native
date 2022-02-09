@@ -1,7 +1,7 @@
 import axios from 'axios';
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet,Image } from 'react-native'
-import { Modal, Portal, Provider, Button, ActivityIndicator } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native'
+import { Modal, Portal, Provider, Button, ActivityIndicator, IconButton } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from '../Global';
@@ -14,6 +14,12 @@ import { Page, Rate } from '../models/Page';
 import { Fab } from '../components/UI/Fab';
 import Carousel from '../components/UI/Carousel';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../App';
+
+type NavigationProp = {
+    navigation: StackNavigationProp<RootStackParamList, 'StoryScreen'>;
+}
 
 type ParamList = {
     Params: { storyId: string };
@@ -22,7 +28,7 @@ type ParamList = {
 type status = 'pending' | 'confirmed';
 type FormTypes = 'filter' | 'newPage' | 'rateLevel' | '';
 const LOCAL_HOST = 'http://192.168.31.203:3030/api';
-const StoryScreen = () => {
+const StoryScreen: React.FC<NavigationProp> = ({ navigation }) => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
@@ -38,21 +44,26 @@ const StoryScreen = () => {
 
     // init userId
     useEffect(() => {
+        let mounted = true
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => setUserId(result.data.user._id))
             .catch(() => console.log('No user to display'));
+        return () => { mounted = false }
     }, []);
 
     // init story
     useEffect(() => {
+        let mounted = true
         setLoading(true);
         axios.get(`${LOCAL_HOST}/stories/${params.storyId}`)
             .then(result => setStory(result.data.story))
             .catch(() => console.log('No story to display'));
+        return () => { mounted = false }
     }, [params.storyId])
 
     //init pages
     useEffect(() => {
+        let mounted = true
         if (!loading) setLoading(true);
         const storyLength = story[pageType]?.length - 1;
         if (storyLength >= 0) {
@@ -65,8 +76,10 @@ const StoryScreen = () => {
         } else {
             setLoading(false);
         }
-
+        return () => { mounted = false }
     }, [story, pageType]);
+
+
 
     const addPage = async (form: FieldValues) => {
         const page = {
@@ -136,16 +149,16 @@ const StoryScreen = () => {
     }
 
     const jumpTo = (amount: number) => {
-        if(amount>0){
-            if(amount+currentInterval<=story[pageType]?.length-1){
-                setCurrentInterval(prevState=>prevState+amount)
-            }else{
-                setCurrentInterval(story[pageType]?.length-1)
+        if (amount > 0) {
+            if (amount + currentInterval <= story[pageType]?.length - 1) {
+                setCurrentInterval(prevState => prevState + amount)
+            } else {
+                setCurrentInterval(story[pageType]?.length - 1)
             }
-        }else{
-            if(amount+currentInterval>=0){
-                setCurrentInterval(prevState=>prevState+amount)
-            }else{
+        } else {
+            if (amount + currentInterval >= 0) {
+                setCurrentInterval(prevState => prevState + amount)
+            } else {
                 setCurrentInterval(0)
             }
         }
@@ -184,15 +197,24 @@ const StoryScreen = () => {
     )
     return <Provider>
         <View style={styles.container}>
+
+            <View style={{ backgroundColor: Color.secondary, borderRadius: 20, alignSelf: 'flex-start' }}>
+                <IconButton
+                    icon="keyboard-return"
+                    color={Color.button}
+                    size={20}
+                    onPress={() => () => navigation.navigate('Home')}
+                />
+            </View>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
-                    <Carousel
-                        length={story[pageType]?.length}
-                        changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
-                            pageType={pageType}
-                        currentInterval={currentInterval}>
-                        {mappedPages}
-                    </Carousel>
+                <Carousel
+                    length={story[pageType]?.length}
+                    changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
+                    pageType={pageType}
+                    currentInterval={currentInterval}>
+                    {mappedPages}
+                </Carousel>
                 : <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />}
             <Portal>
                 <Modal
@@ -231,8 +253,8 @@ const styles = StyleSheet.create({
         shadowRadius: 6.27,
     },
     scrollBottom: {
-       height:'100%',
-       width:'12%'
+        height: '100%',
+        width: '12%'
     }
 
 })

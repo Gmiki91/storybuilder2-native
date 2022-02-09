@@ -7,7 +7,9 @@ const Logout = () => {
     AsyncStorage.removeItem('token');
     
     useEffect(() => {
+        let mounted=true;
         setToken(undefined);
+        return () => { mounted = false }
     })
     return (null)
 }

@@ -42,6 +42,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const [storyData, setStoryData] = useState<StoryData>({} as StoryData);
     const [pageData, setPageData] = useState<PageData>({} as PageData);
     useEffect(() => {
+        let mounted=true
         if (params) {
             axios.get(`${LOCAL_HOST}/users/user/${params.userId}`, { headers })
                 .then(result => {
@@ -50,9 +51,11 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
         } else {
             setUser(userProp)
         }
+        return () => { mounted = false }
     }, [params]);
 
     useEffect(() => {
+        let mounted = true;
         if (user) {
             axios.get(`${LOCAL_HOST}/stories/all/${user._id}`, { headers })
                 .then(result => setStoryData({
@@ -70,6 +73,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     })
                 });
         }
+        return () => { mounted = false }
     }, [user])
     const storyRating = storyData.totalVotes !== 0 ? `${(storyData.upVotes / storyData.totalVotes * 100).toFixed()}%` : null
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null

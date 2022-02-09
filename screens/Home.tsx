@@ -62,7 +62,9 @@ const Home = () => {
 
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
+        let mounted = true;
         getList();
+        return () => { mounted = false }
     }, [getList, isFocused]);
 
     const handleSort = (sortValue: string) => {

@@ -20,10 +20,12 @@ const Profile = () => {
     const [response, setResponse] = useState('');
 
     useEffect(() => {
+        let mounted=true;
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
                 setUser(result.data.user);
             })
+            return () => { mounted = false }
     }, []);
 
     const handlePasswordChange = () => {

@@ -18,9 +18,11 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
         ref.current?.focus()
       }
     useEffect(() => {
+        let mounted=true;
         if (!isKeyBoardOpen) {
             ref.current?.blur()
         }
+        return () => { mounted = false }
     }, [isKeyBoardOpen]);
 
     const linestyle = multiline ? styles.multiline : styles.oneline
