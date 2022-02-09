@@ -136,14 +136,21 @@ const StoryScreen = () => {
         setFormType('rateLevel');
     }
 
-    // const jumpTo = (page: string) => {
-    //     if (page === '') {
-    //         setCurrentPageIndex(0)
-    //     } else {
-    //         const number = parseInt(page) - 1;
-    //         if (!isNaN(number) && number >= 0 && story[pageType]?.length - 1 >= number && currentPageIndex !== number) setCurrentPageIndex(number);
-    //     }
-    // }
+    const jumpTo = (amount: number) => {
+        if(amount>0){
+            if(amount+currentInterval<=story[pageType]?.length-1){
+                setCurrentInterval(prevState=>prevState+amount)
+            }else{
+                setCurrentInterval(story[pageType]?.length-1)
+            }
+        }else{
+            if(amount+currentInterval>=0){
+                setCurrentInterval(prevState=>prevState+amount)
+            }else{
+                setCurrentInterval(0)
+            }
+        }
+    }
 
     const toggleItems = (status: 'pending' | 'confirmed') => {
         setCurrentInterval(0);
@@ -173,6 +180,7 @@ const StoryScreen = () => {
             toConfirm={pageStatus === 'pending' && story.authorId === userId}
             onRateLevel={openRateLevelModule}
             onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings)}
+            jump={jumpTo}
         />
     )
     return <Provider>
@@ -196,10 +204,6 @@ const StoryScreen = () => {
                 </Modal>
             </Portal>
 
-            {/* <View style={styles.footer}>
-                {currentPageIndex > 0 && <Button style={{ marginRight: 10 }} mode='contained' color={Color.containedButton} onPress={() => setCurrentPageIndex(prevState => prevState - 1)} >prev</Button>}
-                {!onLastPage && <Button mode='contained' color={Color.containedButton} onPress={() => setCurrentPageIndex(prevState => prevState + 1)} >next</Button>}
-            </View> */}
             {toggleStatus}
         </View>
         {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
@@ -227,12 +231,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
-    },
-    footer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 5,
-        marginBottom: 5
     },
     scrollBottom: {
        height:'100%',

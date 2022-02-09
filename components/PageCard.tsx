@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Image, Pressable } from 'react-native';
 import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';
@@ -12,10 +12,11 @@ type Props = {
   userId: String;
   ownContent: boolean;
   toConfirm: boolean;
-  onRateLevel: (page:Page) => void;
+  onRateLevel: (page: Page) => void;
   onRateText: (rate: number, confirming: boolean) => void;
+  jump: (amount: number) => void;
 }
-export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateLevel, onRateText }) => {
+export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateLevel, onRateText, jump }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
   const getVote = (n: number) => {
@@ -26,7 +27,6 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
     }
     onRateText(vote, toConfirm);
   }
-
 
   const likeButtonColor = rateByUser?.rate === 1 ? Color.lightGreen : Color.darkGreen;
   const likeButton = toConfirm ?
@@ -40,35 +40,40 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
   const author = <Author style={{ padding: 15 }} name={page.authorName} userId={page.authorId} />
 
   return (
-    <View style={{...styles.container,width: `${100 / totalPageNumber}%` }}>
-      <ImageBackground style={{ height: '100%', flexDirection:'row'}} source={require('../assets/papyrus.jpg')}>
-      {pageNumber===1 && <Image style={styles.scroll} source={require('../assets/scrolls/left.png')} />}
+    <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
+      <ImageBackground style={{ height: '100%', flexDirection: 'row', borderWidth: 1 }} source={require('../assets/papyrus.jpg')}>
+        {pageNumber === 1 && <Image style={styles.scroll} source={require('../assets/scrolls/left.png')} />}
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={()=>onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
+          <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={() => onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
 
           <View style={styles.footer}>
-            
             <View style={{ flexDirection: 'row' }}>
               {likeButton}
               <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
               {dislikeButton}
             </View>
-            {!toConfirm&&author}
+            {!toConfirm && author}
           </View>
-          {toConfirm&&author}
-          <Text style={{ alignSelf: 'center', }}> {pageNumber} / {totalPageNumber}</Text>
+          {toConfirm && author}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 5 }}>
+            <Button mode='outlined' color={Color.button} onPress={() => jump(-10)}>{'<<'}</Button>
+            <Button mode='outlined' color={Color.button} onPress={() => jump(-1)}>{'<'}</Button>
+            <Text style={{textAlignVertical:'center'}}> {pageNumber} / {totalPageNumber}</Text>
+            <Button mode='outlined' color={Color.button} onPress={() => jump(1)}>{'>'}</Button>
+            <Button mode='outlined' color={Color.button} onPress={() => jump(10)}>{'>>'}</Button>
+          </View>
         </ScrollView>
-        {pageNumber===totalPageNumber && <Image style={styles.scroll} source={require('../assets/scrolls/right.png')} />}
+        {pageNumber === totalPageNumber && <Image style={styles.scroll} source={require('../assets/scrolls/right.png')} />}
       </ImageBackground>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container:{
-    borderBottomWidth: 5,
-    borderWidth: 1,
+  container: {
+    flexDirection: 'column',
+    height: '100%'
   },
   footer: {
     flexDirection: 'row',
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
     margin: 5
   },
   scroll: {
-    height:'100%',
-    width:25
-}
+    height: '100%',
+    width: 25
+  }
 })

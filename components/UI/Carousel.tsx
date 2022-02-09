@@ -23,7 +23,7 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType, c
   }
   useEffect(() => {
     scrollRef.current?.scrollTo({ x: currentInterval * 360 })
-  }, [pageType])
+  }, [pageType,currentInterval])
 
   return (
     <View style={{ height: '70%' }}>
