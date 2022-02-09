@@ -5,8 +5,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import { Form } from './UI/Form';
-import { Divider } from "react-native-paper";
-
+import moment from 'moment';
 type ParamList = {
     Params: {
         userId: string
@@ -42,7 +41,6 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const [user, setUser] = useState<User>();
     const [storyData, setStoryData] = useState<StoryData>({} as StoryData);
     const [pageData, setPageData] = useState<PageData>({} as PageData);
-
     useEffect(() => {
         if (params) {
             axios.get(`${LOCAL_HOST}/users/user/${params.userId}`, { headers })
@@ -81,6 +79,8 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
+                    <Text style={{ fontSize: 12, }}>Logged in: {moment.utc(user.lastLoggedIn).local().startOf('seconds').fromNow()}</Text>
+                    {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
                 </View>
                 <View style={styles.group}>
                     <Text >Stories: {storyData.size}</Text>
@@ -93,7 +93,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                 {pageData.langInfo?.length !== 0 &&
                     <View>
                         <Text>Used languages:</Text>
-                        {pageData.langInfo.map(obj => <Text key={obj.language}>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
+                        {pageData.langInfo?.map(obj => <Text key={obj.language}>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
                     </View>}
                 {children}
             </Form>

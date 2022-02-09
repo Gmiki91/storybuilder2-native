@@ -13,7 +13,7 @@ const LOCAL_HOST = 'http://192.168.31.203:3030/api';
 const Profile = () => {
     const { token, setToken } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<User>({}as User);
     const [currentPassword, setCurrentPassword] = useState('');
     const [deletePassword, setDeletePassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -36,6 +36,7 @@ const Profile = () => {
     }
 
     const handleDeleteUser = () => {
+        axios.patch(`${LOCAL_HOST}/stories/all/${user._id}`, { headers }).catch(error => setResponse(error.response.data.message));
         axios.patch(`${LOCAL_HOST}/users/`, {deletePassword}, { headers })
             .then(() => {
                 AsyncStorage.removeItem('token');
