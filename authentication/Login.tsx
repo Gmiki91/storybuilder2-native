@@ -10,22 +10,22 @@ import { Button, Snackbar } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+// import * as WebBrowser from 'expo-web-browser';
+// import * as Google from 'expo-auth-session/providers/google';
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
 }
 
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
   const [error, setError] = useState('');
-  const [googleSubmitting, setGoogleSubmitting] = useState(false);
+  // const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const { setToken } = useAuth();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
   const Local_host = 'http://192.168.31.203:3030/api';
   const postLogin = (form: FieldValues) => {
     axios.post(`${Local_host}/users/login`, {
-      userInput: form.name,
-      password: form.password
+      userInput: form.name.trim(),
+      password: form.password.trim()
     }).then(result => {
       if (result.status === 200) {
         setToken(result.data.token);
@@ -37,21 +37,21 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
     });
   }
   
-  WebBrowser.maybeCompleteAuthSession()
+  // WebBrowser.maybeCompleteAuthSession()
   
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: '584741243002-uecbr1oj7obtpin2l3d884jnr80an3cp.apps.googleusercontent.com',
-    webClientId: '584741243002-uecbr1oj7obtpin2l3d884jnr80an3cp.apps.googleusercontent.com',
-    iosClientId: '584741243002-jmo14kldgqgcl146hvlqdudput99irpg.apps.googleusercontent.com',
-    androidClientId: '584741243002-9lev2d7tqa3t0hmcih897r3moou66cir.apps.googleusercontent.com',
-  });
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   expoClientId: 
+  //   webClientId: 
+  //   iosClientId:
+  //   androidClientId: 
+  // });
 
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { authentication } = response;
-      console.log(authentication);
-      }
-  }, [response]);
+  // useEffect(() => {
+  //   if (response?.type === 'success') {
+  //     const { authentication } = response;
+  //     console.log(authentication);
+  //     }
+  // }, [response]);
 
   return (
     <View style={{ marginTop: '40%' }}>
@@ -85,7 +85,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
         </Pressable>
         <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
-        <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button>
+        {/* <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button> */}
         <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
         <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
         <Snackbar onDismiss={() => setError('')} visible={error!==''} duration={3000}>{error}</Snackbar>

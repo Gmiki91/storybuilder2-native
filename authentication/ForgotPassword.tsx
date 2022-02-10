@@ -11,7 +11,7 @@ const ForgotPassword = () => {
     const [response, setResponse] = useState<string>();
 
     const resetPassword = () => {
-        axios.post(`${LOCAL_HOST}/users/forgotPassword`, { email })
+        axios.post(`${LOCAL_HOST}/users/forgotPassword`, { email:email.trim() })
             .then(result => {
                 setResponse(result.data.message)
             })

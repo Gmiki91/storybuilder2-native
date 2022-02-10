@@ -23,7 +23,7 @@ const ResetPassword:React.FC<NavigationProp> = ({ navigation }) => {
     const [isLoggedIn, setLoggedIn] = useState(false);
 
     const resetPassword = () => {
-        axios.patch(`${LOCAL_HOST}/users/resetPassword/${params.token}`, { password })
+        axios.patch(`${LOCAL_HOST}/users/resetPassword/${params.token}`, { password:password.trim() })
             .then(result => {
                 setToken(result.data.data);
                 setLoggedIn(true);

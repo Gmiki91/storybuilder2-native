@@ -17,12 +17,16 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
     const onPressDescription = () => {
         ref.current?.focus()
       }
+
     useEffect(() => {
         if (!isKeyBoardOpen) {
             ref.current?.blur()
         }
     }, [isKeyBoardOpen]);
 
+    const onChange = (value:string) => {
+        onChangeText(value)
+    }
     const linestyle = multiline ? styles.multiline : styles.oneline
     return <Pressable onPress={onPressDescription}>
         <TextInput
@@ -33,7 +37,7 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
             placeholder={placeholder}
             value={value}
             onBlur={onBlur}
-            onChangeText={value => onChangeText(value.trim())} />
+            onChangeText={onChange} />
     </Pressable>
 
 }

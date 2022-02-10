@@ -22,8 +22,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
     const LOCAL_HOST = 'http://192.168.31.203:3030/api';
     const handleNewStory = (form: FieldValues) => {
         const story = {
-            title: form.title,
-            description: form.description,
+            title: form.title.trim(),
+            description: form.description.trim(),
             language: form.language || languages[0].name,
             level: form.level || levels[0].code,
             openEnded:form.openEnded
@@ -58,11 +58,11 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
             <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}
-                    name="description (optional)"
+                    name="description"
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
                             multiline
-                            placeholder="Write a short description"
+                            placeholder="Write a short description (optional)"
                             value={value}
                             onBlur={onBlur}
                             onChangeText={value => onChange(value)} />

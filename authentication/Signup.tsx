@@ -22,9 +22,9 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
 
   const postSignup = (form: FieldValues) => {
     axios.post(`http://192.168.31.203:3030/api/users/signup`, {
-      name: form.name,
-      email: form.email,
-      password: form.password,
+      name: form.name.trim(),
+      email: form.email.trim(),
+      password: form.password.trim(),
 
     }).then(result => {
       if (result.status === 201) {
