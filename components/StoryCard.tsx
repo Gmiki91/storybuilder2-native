@@ -27,7 +27,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
     return (
         <Pressable style={styles.container} onPress={() => onPress(story._id)}>
             <ImageBackground style={{ width: '100%', height: '100%' }} source={require('../assets/papyrus.jpg')}>
-                <View style={{ padding: 15 }}>
+                <View style={{ padding: 15, borderBottomWidth:5 }}>
                     <View style={styles.row}>
                         <Text style={styles.title}>{story.title}</Text>
                         <View style={{ padding: 5 }} >
@@ -51,7 +51,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                         </View>
                     </View>
                 </View>
-               <Image style={styles.scrollBottom} source={require('../assets/scrolls/between.png')} />
+               {/* <Image style={styles.scrollBottom} source={require('../assets/scrolls/between.png')} /> */}
             </ImageBackground>
         </Pressable>
     )

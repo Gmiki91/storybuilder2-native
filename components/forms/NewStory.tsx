@@ -19,11 +19,11 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-    const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+    const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
     const handleNewStory = (form: FieldValues) => {
         const story = {
             title: form.title.trim(),
-            description: form.description.trim(),
+            description: form.description?.trim(),
             language: form.language || languages[0].name,
             level: form.level || levels[0].code,
             openEnded:form.openEnded

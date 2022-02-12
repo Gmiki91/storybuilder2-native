@@ -33,7 +33,7 @@ type PageData = {
     langInfo: LangInfo[]
 }
 
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const Stats: React.FC<Props> = ({ userProp, children }) => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();

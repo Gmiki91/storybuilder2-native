@@ -22,7 +22,7 @@ type ParamList = {
 
 type status = 'pending' | 'confirmed';
 type FormTypes = 'filter' | 'newPage' | 'rateLevel' | '';
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
@@ -197,7 +197,6 @@ const StoryScreen = () => {
     )
     return <Provider>
         <View style={styles.container}>
-
            <BackButton/>
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?

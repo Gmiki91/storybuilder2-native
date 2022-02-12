@@ -10,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 type Props = {
     stories: Story[];
 }
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryList: React.FC<Props> = ({ stories }) => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const { token } = useAuth();

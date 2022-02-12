@@ -21,7 +21,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   const { setToken } = useAuth();
 
   const postSignup = (form: FieldValues) => {
-    axios.post(`http://192.168.31.203:3030/api/users/signup`, {
+    axios.post(`https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api/users/signup`, {
       name: form.name.trim(),
       email: form.email.trim(),
       password: form.password.trim(),

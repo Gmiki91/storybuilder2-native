@@ -9,7 +9,7 @@ import { CustomInput } from "../components/UI/CustomInput";
 import { Button, Snackbar } from "react-native-paper";
 import { Color } from "../Global";
 
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const Profile = () => {
     const { token, setToken } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };

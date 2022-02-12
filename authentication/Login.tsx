@@ -21,7 +21,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
   // const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const { setToken } = useAuth();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-  const Local_host = 'http://192.168.31.203:3030/api';
+  const Local_host = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
   const postLogin = (form: FieldValues) => {
     axios.post(`${Local_host}/users/login`, {
       userInput: form.name.trim(),

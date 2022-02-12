@@ -5,7 +5,9 @@ import { Text, View  } from 'react-native';
 import { Form } from '../components/UI/Form';
 import AuthStyle from './AuthStyle';
 import { CustomInput } from '../components/UI/CustomInput';
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+import { Color } from '../Global';
+
+ const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [response, setResponse] = useState<string>();
@@ -23,7 +25,7 @@ const ForgotPassword = () => {
         <View style={AuthStyle.inputView}>
         <CustomInput placeholder="Enter your email" value={email} onChangeText={setEmail} />
         </View>
-        <Button disabled={email.trim()===''} onPress={resetPassword}>Get email</Button>
+        <Button disabled={email.trim()===''} color={Color.button} onPress={resetPassword}>Get email</Button>
         {response && <Text>{response}</Text>}
     </Form>
     </View>

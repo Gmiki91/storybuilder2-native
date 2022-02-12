@@ -1,6 +1,6 @@
 export const Color = {
-    main: '#fff4bd',
-    secondary:'#fce881',
+    main: '#ebebeb',
+    secondary:'#b8b8b8',
     button: '#000000',
 
     darkGreen: '#32a83c',

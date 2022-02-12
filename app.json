@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "storybuilder2-native",
+    "name": "Storybuilder",
     "slug": "storybuilder2-native",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/cavemanicon.png",
     "scheme": "mycoolredirect",
     "splash": {
       "image": "./assets/splash.png",
@@ -20,6 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.storybuilder",
+      "buildNumber": "1.0.0",
       "config":{
         "googleSignIn":{
           "reservedClientId":"com.googleusercontent.apps.584741243002-jmo14kldgqgcl146hvlqdudput99irpg"
@@ -28,9 +29,10 @@
     },
     "android": {
       "package": "com.storybuilder",
+      "versionCode": 1,
       "softwareKeyboardLayoutMode":"pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/cavemanicon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

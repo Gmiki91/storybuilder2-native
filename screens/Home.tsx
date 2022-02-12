@@ -14,7 +14,7 @@ import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { useIsFocused } from '@react-navigation/native';
 
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 
 type SearchCriteria = {
     storyName: string,
@@ -137,12 +137,12 @@ const Home = () => {
                     onKeyPress={(e) => console.log(e.nativeEvent)}
                     value={searchTitle} />
 
-                <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolls/top.png')}>
+                <ImageBackground style={styles.criteriaContainer} source={require('../assets/scrolls/stone.png')}>
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable style={{ paddingRight: '12%', paddingTop: '2%' }} onPress={() => setShowModal('Filter')} >
+                    <Pressable style={{ paddingRight: '12%', paddingTop: '5%' }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </ImageBackground>
@@ -168,7 +168,9 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: '5%'
+        marginTop: '6%',
+        borderBottomWidth:5,
+        height:60
     },
     scrollBottom: {
         width: '100%',

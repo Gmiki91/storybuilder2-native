@@ -7,7 +7,7 @@ import { Button } from 'react-native-paper';
 import { RootStackParamList } from '../App';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { CustomInput } from '../components/UI/CustomInput';
-const LOCAL_HOST = 'http://192.168.31.203:3030/api';
+const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type NavigationProp = {
     navigation: StackNavigationProp<RootStackParamList, 'ResetPassword'>;
   }
