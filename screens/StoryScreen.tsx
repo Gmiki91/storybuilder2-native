@@ -178,7 +178,7 @@ const StoryScreen = () => {
     const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
     const toggleStatus = pageStatus === 'confirmed'
         ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
-        : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Return to confirmed pages</Button>
+        : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Confirmed: {story.pageIds.length}</Button>
 
     const form = getForm();
     const mappedPages = pages.map((page, i) =>

@@ -85,7 +85,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
     return user ?
         <View style={styles.container}>
-                 {!userProp &&<BackButton/>}
+               
             <Form>
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
@@ -108,13 +108,15 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     </View>}
                 {children}
             </Form>
+            {!userProp &&<BackButton/>}
         </View>
         : <Text>Loading</Text>
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: '15%'
+        marginTop: '15%',
+        flex:1
     },
     group: {
         marginBottom: 15

@@ -58,7 +58,7 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button color={Color.lightRed} onPress={onClose}>Cancel</Button>
+        <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button>
         <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
       </View>
     </Form>

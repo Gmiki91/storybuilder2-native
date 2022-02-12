@@ -52,8 +52,6 @@ const StoryList: React.FC<Props> = ({ stories }) => {
         favoriteIds={favoriteIds}
     />
     return <FlatList
-        alwaysBounceVertical={false}
-        bounces={false}
         initialNumToRender={5}
         showsVerticalScrollIndicator={false}
         style={styles.list}

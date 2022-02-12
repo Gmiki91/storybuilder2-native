@@ -117,7 +117,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
 
         <Divider/>
         <View style={styles.buttonContainer}>
-            <Button color={Color.lightRed}  onPress={onClearForm} >Clear</Button>
+            <Button color={Color.cancelBtn}  onPress={onClearForm} >Clear</Button>
             <Button color={Color.button} onPress={onApply} >Apply</Button>
         </View>
     </Form>

@@ -112,7 +112,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
 
             </View>
             <View style={styles.buttonContainer}>
-                <Button color={Color.lightRed} onPress={onCloseForm} >Cancel</Button>
+                <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>

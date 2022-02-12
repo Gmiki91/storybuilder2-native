@@ -28,11 +28,11 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
     onRateText(vote, toConfirm);
   }
 
-  const likeButtonColor = rateByUser?.rate === 1 ? Color.lightGreen : Color.darkGreen;
+  const likeButtonColor = rateByUser?.rate === 1 ? Color.likeButton2 : Color.likeButton1;
   const likeButton = toConfirm ?
     <Button color={likeButtonColor} icon='check-circle-outline' disabled={ownContent && !toConfirm} onPress={() => getVote(1)} > Accept </Button>
     : <IconButton icon='arrow-up-bold-circle-outline' disabled={ownContent && !toConfirm} color={likeButtonColor} size={20} onPress={() => getVote(1)} />
-  const dislikeButtonColor = rateByUser?.rate === -1 ? Color.lightRed : Color.darkRed;
+  const dislikeButtonColor = rateByUser?.rate === -1 ? Color.dislikeButton2 : Color.dislikeButton1;
   const dislikeButton = toConfirm ?
     <Button color={dislikeButtonColor} icon='close-circle-outline' onPress={() => getVote(-1)} > Decline </Button>
     : <IconButton icon='arrow-down-bold-circle-outline' disabled={ownContent && !toConfirm} color={dislikeButtonColor} size={20} onPress={() => getVote(-1)} />
@@ -41,8 +41,8 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
 
   return (
     <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
-        { pageNumber === 1 && <Image style={styles.edge} source={require('../assets/scrolls/leftedge.png')} />} 
-      <ImageBackground style={{flex:1,  flexDirection: 'row',paddingBottom:'10%', paddingTop:'10%' }} source={require('../assets/scrolls/papir.png')}>
+        { pageNumber === 1 && <Image style={styles.edge} source={require('../assets/paper/leftedge.png')} />} 
+      <ImageBackground style={{flex:1,  flexDirection: 'row',paddingBottom:'10%', paddingTop:'10%' }} source={require('../assets/paper/pagecard.png')}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={() => onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
@@ -64,7 +64,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
           </View>
         </ScrollView>
       </ImageBackground>
-        { pageNumber === totalPageNumber && <Image style={styles.edge} source={require('../assets/scrolls/rightedge.png')} /> }
+        { pageNumber === totalPageNumber && <Image style={styles.edge} source={require('../assets/paper/rightedge.png')} /> }
     </View>
   )
 }
