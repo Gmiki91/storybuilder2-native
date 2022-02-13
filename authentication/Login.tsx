@@ -10,6 +10,7 @@ import { Button, Snackbar, Provider, Modal, Portal, ActivityIndicator } from 're
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
+import { ErrorMessage } from '../components/UI/ErrorMessage';
 // import * as WebBrowser from 'expo-web-browser';
 // import * as Google from 'expo-auth-session/providers/google';
 type NavigationProp = {
@@ -30,14 +31,10 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       password: form.password.trim()
     }).then(result => {
       setLoading(false);
-      if (result.status === 200) {
-        setToken(result.data.token);
-      } else {
-        setError('Wrong login credentials.');
-      }
+      setToken(result.data.token);
     }).catch(e => {
       setLoading(false);
-      setError('Error during logging in.');
+      setError(e.response.data.message);
     });
   }
 
@@ -72,6 +69,11 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
             <Controller
               control={control}
               name="name"
+              rules={{
+                required: { value: true, message: 'Required' },
+                minLength: { value: 3, message: 'Minimum length is 3 characters' },
+                maxLength: { value: 100, message: 'Maximum length is 100 characters' },
+              }}
               render={({ field: { onChange, value, onBlur } }) => (
                 <CustomInput
                   placeholder="Name or email"
@@ -80,10 +82,16 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
                   onChangeText={value => onChange(value)} />
               )} />
           </View>
+          {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
           <View style={AuthStyle.inputView}>
             <Controller
               control={control}
               name="password"
+              rules={{
+                required: { value: true, message: 'Required' },
+                minLength: { value: 6, message: 'Minimum length is 6 characters' },
+                maxLength: { value: 100, message: 'Maximum length is 100 characters' },
+              }}
               render={({ field: { onChange, value, onBlur } }) => (
                 <CustomInput
                   secureTextEntry
@@ -93,10 +101,11 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
                   onChangeText={value => onChange(value)} />
               )} />
           </View>
+          {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
           <Pressable style={AuthStyle.forgotBtnContainer} onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
           </Pressable>
-          <Button color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
+          <Button  disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
           {/* <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button> */}
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>

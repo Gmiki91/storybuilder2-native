@@ -51,7 +51,7 @@ const Home = () => {
         isLoading(true);
         Keyboard.dismiss()
         let mounted = true;
-        const stories = await axios.post(`${LOCAL_HOST}/stories/all`, {...searchCriteria,sortBy,sortDirection,searchTitle}, { headers }).then(result => result.data.stories)
+        const stories = await axios.post(`${LOCAL_HOST}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => result.data.stories)
         if (mounted) {
             setStories(stories);
             isLoading(false);
@@ -67,7 +67,7 @@ const Home = () => {
 
     const handleSort = (sortValue: string) => {
         if (sortBy === sortValue) {
-            setSortDirection(prevState=>-prevState);
+            setSortDirection(prevState => -prevState);
         } else {
             setSortBy(sortValue)
         }
@@ -112,7 +112,7 @@ const Home = () => {
                 filters={tempSearchCriteria}
                 changeFilter={(changes) => setTempSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
         } else if (showModal === 'NewStory') {
-            return <NewStory onNewStoryAdded={()=>getList()} onCloseForm={() => setShowModal('')} />
+            return <NewStory onNewStoryAdded={() => getList()} onCloseForm={() => setShowModal('')} />
         }
     }
     const form = getForm();
@@ -129,12 +129,11 @@ const Home = () => {
                 </Portal>
                 <Searchbar
                     onIconPress={onStoryNameSearch}
-                    style={{ width: '80%', height: 40, borderRadius: 40 }}
+                    style={styles.searchBar}
                     autoComplete={true}
                     placeholder='Search by title'
                     onChangeText={handleSearchBar}
                     onSubmitEditing={onStoryNameSearch}
-                    onKeyPress={(e) => console.log(e.nativeEvent)}
                     value={searchTitle} />
 
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/stone/top.png')}>
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: '6%',
-        height:59,
+        height: 59,
         backgroundColor: 'black',
         elevation: 3,
         shadowOffset: {
@@ -179,9 +178,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
     },
-    scrollBottom: {
-        width: '100%',
-        height: '8%'
+    searchBar: {
+        width: '80%',
+        height: 40,
+        borderRadius: 40,
+        backgroundColor: Color.main
     }
 })
 export default memo(Home);

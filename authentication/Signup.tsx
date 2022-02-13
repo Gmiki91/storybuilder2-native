@@ -35,7 +35,6 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
         setIsError(true);
       }
     }).catch(e => {
-      console.log(e)
       setIsError(true);
     });
   }
