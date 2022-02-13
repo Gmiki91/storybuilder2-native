@@ -1,24 +1,15 @@
 export const Color = {
+
+    main: '#fce3b3',
+    secondary: '#f6c05c',
+    button: '#cc6018',
+    cancelBtn: '#4d1f00',
     
-//stone
-
-//button: '#000000',
-// main: '#c3cad8',
-// secondary:'#5b5e72',
-// cancelBtn:'',
-
-
-//paper   
-    button:'#cc6018', 
-    main:'#f5ebc6',
-    secondary:"#ffe691",
-    cancelBtn:'#4d1f00',
-
-    likeButton1: '#32a83c',
-    likeButton2: '#49de49',
+    likeButton1: '#1f6926',
+    likeButton2: '#00c200',
     dislikeButton1: '#541d1d',
-    dislikeButton2: '#822e2e',
-    
+    dislikeButton2: '#cf3030',
+
 
     'A': '#32a83c',
     'A+': '#6fa832',

@@ -137,7 +137,7 @@ const Home = () => {
                     onKeyPress={(e) => console.log(e.nativeEvent)}
                     value={searchTitle} />
 
-                <ImageBackground style={styles.criteriaContainer} source={require('../assets/paper/top.png')}>
+                <ImageBackground style={styles.criteriaContainer} source={require('../assets/stone/top.png')}>
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}
@@ -169,7 +169,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: '6%',
-        height:59
+        height:59,
+        backgroundColor: 'black',
+        elevation: 3,
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
     },
     scrollBottom: {
         width: '100%',

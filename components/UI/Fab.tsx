@@ -7,6 +7,7 @@ type Props = {
 export const Fab: React.FC<Props> = ({ onPress }) => <FAB
     style={styles.fab}
     icon="plus"
+    color={Color.button}
     theme={{ colors: { accent: Color.secondary } }}
     onPress={onPress} />
 
@@ -17,6 +18,5 @@ const styles = StyleSheet.create({
         marginBottom:30,
         right: 0,
         bottom: 0,
-
     },
 })

@@ -26,8 +26,8 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
     }
     return (
         <Pressable style={styles.container} onPress={() => onPress(story._id)}>
-            <ImageBackground style={{ width: '100%', height: '100%' }} source={require('../assets/paper/storycard.jpg')}>
-                <View style={styles.card}>
+            <ImageBackground style={{ flex:1 }} source={require('../assets/stone/storycard.jpg')}>
+                <View style={{ padding: 15 }}>
                     <View style={styles.row}>
                         <Text style={styles.title}>{story.title}</Text>
                         <View style={{ padding: 5 }} >
@@ -51,7 +51,6 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                         </View>
                     </View>
                 </View>
-                <Image style={styles.scrollBottom} source={require('../assets/paper/between.png')} />
             </ImageBackground>
         </Pressable>
     )
@@ -59,10 +58,10 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'column',
-        //  marginBottom: 20,
-        elevation: 3,
+        marginBottom: 20,
+        backgroundColor:'black',
+        
+        elevation: 10,
         shadowOffset: {
             width: 0,
             height: 5,
@@ -70,9 +69,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
     },
-    card: {
-        padding: 15, //borderBottomWidth: 5
-    },
+
     row: {
         flex: 1,
         flexDirection: 'row',
@@ -84,10 +81,6 @@ const styles = StyleSheet.create({
         fontSize: 32,
         paddingBottom: 15,
 
-    },
-    scrollBottom: {
-        width: '100%',
-        height: 25
     }
 });
 export default memo(StoryCard)

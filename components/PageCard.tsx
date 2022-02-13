@@ -41,8 +41,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
 
   return (
     <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
-        { pageNumber === 1 && <Image style={styles.edge} source={require('../assets/paper/leftedge.png')} />} 
-      <ImageBackground style={{flex:1,  flexDirection: 'row',paddingBottom:'10%', paddingTop:'10%' }} source={require('../assets/paper/pagecard.png')}>
+      <ImageBackground resizeMode="stretch"  style={{padding:'3%', flex:1, margin:'1%' }} source={require('../assets/stone/pagecard.jpg')}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={() => onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
@@ -64,16 +63,13 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
           </View>
         </ScrollView>
       </ImageBackground>
-        { pageNumber === totalPageNumber && <Image style={styles.edge} source={require('../assets/paper/rightedge.png')} /> }
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     height: '100%',
-    
   },
   footer: {
     flexDirection: 'row',
@@ -92,9 +88,5 @@ const styles = StyleSheet.create({
     width: 32,
     borderRadius: 50,
     margin: 5
-  },
-  edge: {
-    height: '100%',
-    width: '10%',
   }
 })
