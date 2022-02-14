@@ -170,7 +170,7 @@ const StoryScreen = () => {
     }
 
     const getForm = () => {
-        if (formType === 'newPage') return <NewPage onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
+        if (formType === 'newPage') return <NewPage firstPage={false} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
         if (formType === 'rateLevel') return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
         return null;
     }

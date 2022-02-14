@@ -112,7 +112,7 @@ const Home = () => {
                 filters={tempSearchCriteria}
                 changeFilter={(changes) => setTempSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
         } else if (showModal === 'NewStory') {
-            return <NewStory onNewStoryAdded={() => getList()} onCloseForm={() => setShowModal('')} />
+            return <NewStory onCloseForm={() => setShowModal('')} />
         }
     }
     const form = getForm();

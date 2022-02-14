@@ -9,11 +9,12 @@ import {CustomInput} from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
 
 type Props = {
+  firstPage:boolean;
   onSubmit: (f: FieldValues) => void;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
-export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
+export const NewPage: React.FC<Props> = ({ firstPage,onSubmit, onClose }) => {
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
 
   const handleForm = (form: FieldValues) => {
@@ -58,8 +59,8 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose }) => {
           )} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button>
-        <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
+       {!firstPage && <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button> }
+        <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Confirm</Button>
       </View>
     </Form>
   );

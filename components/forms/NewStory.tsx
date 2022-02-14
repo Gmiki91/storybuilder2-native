@@ -1,36 +1,58 @@
 import axios from 'axios';
+import { useState } from 'react';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
 import { Color } from '../../Global';
-import { levels } from '../../models/LanguageLevels';
+import { LevelCode } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
 import { Form } from '../UI/Form';
 import { Divider, Button, Switch } from 'react-native-paper';
 import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
+import { NewPage } from './NewPage';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 type Props = {
     onCloseForm: () => void;
-    onNewStoryAdded: () => void;
+}
+type IncompletePage = {
+    text: string;
+    level: LevelCode;
 }
 
-export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
+export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
     const { token } = useAuth();
+    const navigation = useNavigation();
     const headers = { Authorization: `Bearer ${token}` };
+    const [page, setPage] = useState<IncompletePage>();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
     const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
-    const handleNewStory = (form: FieldValues) => {
+
+    const handleNewStory = async (form: FieldValues) => {
+        const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
+            .catch(error => console.log('hiba!!', error));
+
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
             language: form.language || languages[0].name,
-            level: form.level || levels[0].code,
-            openEnded:form.openEnded
-        }
+            pageId: pageId,
+            level: page?.level,
+            openEnded: form.openEnded
+        };
+
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-            .then(onNewStoryAdded)
+            .then(result=> navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId:result.data.storyId } })))
             .catch(error => console.log('hiba!!', error))
+    }
+
+    const handlePageConfirmed = (form: FieldValues) => {
+        const page = {
+            text: form.text,
+            level: form.level,
+        }
+        setPage(page);
     }
 
     return (
@@ -40,10 +62,10 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
                     control={control}
                     name="title"
                     rules={{
-                        required: {value:true, message:'Required'},
-                        minLength:{value:3, message:'Minimum length is 3 characters'},
-                        maxLength: {value:100, message:'Maximum length is 100 characters'},
-                       }}
+                        required: { value: true, message: 'Required' },
+                        minLength: { value: 3, message: 'Minimum length is 3 characters' },
+                        maxLength: { value: 100, message: 'Maximum length is 100 characters' },
+                    }}
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
                             style={{ fontSize: 22 }}
@@ -84,24 +106,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
                     )} />
             </View>
             <Divider />
-            <View style={styles.controllerContainer}>
-                <Controller
-                    control={control}
-                    name="level"
-                    render={({ field: { onChange, value, onBlur } }) => (
-                        <Picker
-                            selectedValue={value}
-                            onBlur={onBlur}
-                            onValueChange={value => onChange(value)} >
-                            {levels.map(level => {
-                                return <Picker.Item key={level.code} value={level.code} label={`${level.text} (${level.code})`} />
-                            })}
-                        </Picker>
-                    )} />
-            </View>
-            <Divider />
-            <View style={[styles.controllerContainer,{flexDirection:'row', justifyContent:'space-around', alignItems:'center'}]}>
-            <Text>May others contribute?</Text>
+            <View style={[styles.controllerContainer, { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }]}>
+                <Text>May others contribute?</Text>
                 <Controller
                     control={control}
                     name="openEnded"
@@ -111,9 +117,10 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, onNewStoryAdded }) => {
                     )} />
 
             </View>
+            <NewPage firstPage onSubmit={handlePageConfirmed} />
             <View style={styles.buttonContainer}>
                 <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>
-                <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
+                <Button disabled={!isValid || !page} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>
     );
