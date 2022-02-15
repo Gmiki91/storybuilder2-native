@@ -3,13 +3,13 @@ import { NativeSyntheticEvent,StyleSheet, Pressable, TextInput, TextInputFocusEv
 import { useKeyboard } from "../../hooks/KeyboardVisible";
 
 type Props = {
-    value: string,
-    placeholder: string
+    value?: string,
+    placeholder?: string
     multiline?:boolean
     secureTextEntry?:boolean
     style?: StyleProp<TextStyle>
     onBlur?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void,
-    onChangeText: (event: string) => void
+    onChangeText?: (event: string) => void
 }
 export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style,secureTextEntry, onBlur, onChangeText }) => {
     const isKeyBoardOpen = useKeyboard();
@@ -24,9 +24,6 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
         }
     }, [isKeyBoardOpen]);
 
-    const onChange = (value:string) => {
-        onChangeText(value)
-    }
     const linestyle = multiline ? styles.multiline : styles.oneline
     return <Pressable onPress={onPressDescription}>
         <TextInput
@@ -37,7 +34,7 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
             placeholder={placeholder}
             value={value}
             onBlur={onBlur}
-            onChangeText={onChange} />
+            onChangeText={onChangeText} />
     </Pressable>
 
 }

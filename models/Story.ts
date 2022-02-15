@@ -16,5 +16,8 @@ export type Story = {
     updatedAt: Date;
     openEnded: boolean;
     pageIds: string[];
-    pendingPageIds: string[]
+    pendingPageIds: string[];
+    word1: string;
+    word2: string;
+    word3: string;
 }

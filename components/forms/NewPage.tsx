@@ -1,66 +1,57 @@
-import { View, StyleSheet } from 'react-native';
-import { useForm, Controller, FieldValues } from 'react-hook-form'
-import { Picker } from '@react-native-picker/picker';
+import { View, StyleSheet,Text } from 'react-native';
+import { useForm, FieldValues } from 'react-hook-form'
 import { Form } from '../UI/Form';
+import { AntDesign } from "@expo/vector-icons";
 import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
 import { levels } from '../../models/LanguageLevels';
-import {CustomInput} from '../UI/CustomInput';
+import {PageText} from './elements/PageText';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
+import { Level } from './elements/Level';
+import { useState } from 'react';
 
 type Props = {
-  firstPage:boolean;
   onSubmit: (f: FieldValues) => void;
   onClose?: () => void;
+  words:string[];
 }
 
-export const NewPage: React.FC<Props> = ({ firstPage,onSubmit, onClose }) => {
+export const NewPage: React.FC<Props> = ({ onSubmit, onClose, words }) => {
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
+  const [word1, setWord1]= useState<boolean>(false);
+  const [word2, setWord2]= useState<boolean>(false);
+  const [word3, setWord3]= useState<boolean>(false);
 
   const handleForm = (form: FieldValues) => {
     if (!form.level) form.level = levels[0].code;
     onSubmit(form);
   }
 
+  const changeText=(event:string)=>{
+    if(event.includes(words[0]) && !word1) setWord1(true);
+    if(!event.includes(words[0]) && word1) setWord1(false);
+    if(event.includes(words[1]) && !word2) setWord2(true);
+    if(!event.includes(words[1]) && word2) setWord2(false);
+    if(event.includes(words[2]) && !word3) setWord3(true);
+    if(!event.includes(words[2]) && word3) setWord3(false);
+  }
+
+  const isEmpty = (value: string)=> value===null || value===undefined || value.trim()==='';
+  const wordsValid = ()=> (isEmpty(words[0]) || word1) && (isEmpty(words[1]) || word2) && (isEmpty(words[2]) || word2);
+  
   return (
     <Form>
-      <View  style={styles.controllerContainer}>
-        <Controller
-          control={control}
-          name="text"
-          rules={{
-            required: {value:true, message:'Required'},
-            minLength:{value:10, message:'Minimum length is 10 characters'},
-            maxLength: {value:5000, message:'Maximum length is 5000 characters'},
-           }}
-          render={({ field: { onChange, value, onBlur } }) => (
-            <CustomInput
-            multiline
-            placeholder={'Write here...'}
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange} />
-          )} />
+      <View style={styles.words}>
+      {!isEmpty(words[0]) ? word1 ? <Text style={{color:'green'}}>{words[0]} <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[0]} <AntDesign name="closecircle"/></Text>:null}
+      {!isEmpty(words[1]) ? word2 ? <Text style={{color:'green'}}>{words[1]}  <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[1]} <AntDesign name="closecircle"/></Text>:null}
+      {!isEmpty(words[2]) ? word3 ? <Text style={{color:'green'}}>{words[2]}  <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[2]} <AntDesign name="closecircle"/></Text>:null}
       </View>
+     <PageText checkWords={changeText} control={control}/>
       {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
-      <View style={styles.controllerContainer}>
-        <Controller
-          control={control}
-          name="level"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <Picker
-              selectedValue={value}
-              onBlur={onBlur}
-              onValueChange={value => onChange(value)} >
-              {levels.map(level => {
-                return <Picker.Item key={level.code} value={level.code} label={`${level.text} (${level.code})`} />
-              })}
-            </Picker>
-          )} />
-      </View>
+      <Level control={control}/>
       <View style={styles.buttonContainer}>
-       {!firstPage && <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button> }
-        <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Confirm</Button>
+        <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button>
+        <Button disabled={!isValid || !wordsValid()} color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
       </View>
     </Form>
   );
@@ -77,5 +68,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: 10
   },
+  words:{
+    alignItems: 'flex-end',
+    padding:5
+  }
 })
 

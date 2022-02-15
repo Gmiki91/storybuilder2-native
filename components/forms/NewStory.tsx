@@ -1,58 +1,54 @@
 import axios from 'axios';
-import { useState } from 'react';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
+import { Divider, Button, Switch } from 'react-native-paper';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
-import { Color } from '../../Global';
-import { LevelCode } from '../../models/LanguageLevels';
 import { useAuth } from '../../context/AuthContext';
+import { Color } from '../../Global';
 import { Form } from '../UI/Form';
-import { Divider, Button, Switch } from 'react-native-paper';
 import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
-import { NewPage } from './NewPage';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { PageText } from './elements/PageText';
+import { Level } from './elements/Level';
+import { Word } from './elements/Word';
+
 type Props = {
     onCloseForm: () => void;
-}
-type IncompletePage = {
-    text: string;
-    level: LevelCode;
 }
 
 export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
     const { token } = useAuth();
-    const navigation = useNavigation();
-    const headers = { Authorization: `Bearer ${token}` };
-    const [page, setPage] = useState<IncompletePage>();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
+    const headers = { Authorization: `Bearer ${token}` };
     const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
+    const navigation = useNavigation();
 
     const handleNewStory = async (form: FieldValues) => {
+        const page = {
+            text: form.text,
+            level: form.level,
+            language: form.language,
+            rating: []
+        }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
             .catch(error => console.log('hiba!!', error));
-
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
             language: form.language || languages[0].name,
             pageId: pageId,
-            level: page?.level,
-            openEnded: form.openEnded
+            level: form.level,
+            openEnded: form.openEnded,
+            word1:form.word1,
+            word2:form.word2, 
+            word3:form.word3
         };
 
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-            .then(result=> navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId:result.data.storyId } })))
+            .then(result => navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId } })))
             .catch(error => console.log('hiba!!', error))
-    }
-
-    const handlePageConfirmed = (form: FieldValues) => {
-        const page = {
-            text: form.text,
-            level: form.level,
-        }
-        setPage(page);
     }
 
     return (
@@ -76,7 +72,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     )} />
             </View>
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
-            <Divider />
+            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>Short description (optional)</Text>
             <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -84,12 +80,15 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     render={({ field: { onChange, value, onBlur } }) => (
                         <CustomInput
                             multiline
-                            placeholder="Write a short description (optional)"
+                            placeholder='Write here...'
                             value={value}
                             onBlur={onBlur}
                             onChangeText={value => onChange(value)} />
                     )} />
             </Pressable>
+            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>First page:</Text>
+            <PageText checkWords={()=>{}} control={control} />
+            {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -106,6 +105,12 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                     )} />
             </View>
             <Divider />
+            <Level control={control} />
+            <Divider />
+            <Text style={{paddingLeft:5, paddingTop:15}}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
+            <Word name='word1' placeholder='#1' control={control} />
+            <Word name='word2' placeholder='#2' control={control} />
+            <Word name='word3' placeholder='#3' control={control} />
             <View style={[styles.controllerContainer, { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }]}>
                 <Text>May others contribute?</Text>
                 <Controller
@@ -115,12 +120,10 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
 
                         <Switch value={value} onValueChange={value => onChange(value)} />
                     )} />
-
             </View>
-            <NewPage firstPage onSubmit={handlePageConfirmed} />
             <View style={styles.buttonContainer}>
                 <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>
-                <Button disabled={!isValid || !page} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
+                <Button disabled={!isValid} color={Color.button} onPress={() => handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>
     );
@@ -137,5 +140,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         marginBottom: 10,
         marginTop: 10,
-    },
+    }
 })

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
-import { Modal, Portal, Provider, Button, ActivityIndicator, IconButton } from 'react-native-paper';
+import { Modal, Portal, Provider, Button, ActivityIndicator } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from '../Global';
@@ -15,13 +15,14 @@ import { Fab } from '../components/UI/Fab';
 import Carousel from '../components/UI/Carousel';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { BackButton } from '../components/UI/BackButton';
+import { Words } from '../components/forms/Words';
 
 type ParamList = {
     Params: { storyId: string };
 };
 
 type status = 'pending' | 'confirmed';
-type FormTypes = 'filter' | 'newPage' | 'rateLevel' | '';
+type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | '';
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
@@ -42,8 +43,9 @@ const StoryScreen = () => {
         let mounted = true
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
-                if(mounted)
-                setUserId(result.data.user._id)})
+                if (mounted)
+                    setUserId(result.data.user._id)
+            })
             .catch(() => console.log('No user to display'));
         return () => { mounted = false }
     }, []);
@@ -54,8 +56,9 @@ const StoryScreen = () => {
         setLoading(true);
         axios.get(`${LOCAL_HOST}/stories/${params.storyId}`)
             .then(result => {
-                if(mounted)
-                setStory(result.data.story)})
+                if (mounted)
+                    setStory(result.data.story)
+            })
             .catch(() => console.log('No story to display'));
         return () => { mounted = false }
     }, [params.storyId])
@@ -68,17 +71,17 @@ const StoryScreen = () => {
         if (storyLength >= 0) {
             axios.get(`${LOCAL_HOST}/pages/many/${story[pageType]}`)
                 .then(result => {
-                    setPages(result.data.pages);
-                    setLoading(false);
+                    if (mounted) {
+                        setPages(result.data.pages);
+                        setLoading(false);
+                    }
                 })
                 .catch(() => console.log('No pages to display'));
         } else {
-            setLoading(false);
+            if (mounted) setLoading(false);
         }
         return () => { mounted = false }
     }, [story, pageType]);
-
-
 
     const addPage = async (form: FieldValues) => {
         const page = {
@@ -89,9 +92,10 @@ const StoryScreen = () => {
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
-        axios.post(`${LOCAL_HOST}/stories/pendingPage`, body, { headers }).then((result) => {
+        const confirmStatus = story.openEnded ? 'pendingPage' : 'page'
+        axios.post(`${LOCAL_HOST}/stories/${confirmStatus}`, body, { headers }).then((result) => {
             setStory(result.data.story);
-            setFormType('');
+            story.openEnded ? setFormType('') : setFormType('words')
         });
     }
 
@@ -103,21 +107,20 @@ const StoryScreen = () => {
         axios.delete(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`, { headers })
     }
 
-    const confirmPage = (vote: number, pageId: string, pageRatings: Rate[]) => {
-        const body = { pageId, storyId: params.storyId };
-        if (vote === -1) { //remove Page
-            axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers }); //remove page document
-            axios.put(`${LOCAL_HOST}/stories/pendingPage`, body, { headers })
-                .then(result => setStory(result.data.story)) //remove pageId from story
+    const removePage = (pageId: string) => {
+        axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers }); //remove page document
+        axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
+            .then(result => setStory(result.data.story)) //remove pageId from story
+    }
 
-        } else { //add Page
-            axios.put(`${LOCAL_HOST}/stories/page`, { ...body, pageRatings }, { headers })
-                .then(result => {
-                    setStory(result.data.story);
-                    setPageStatus('confirmed');
-                });
-            story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages
-        }
+    const confirmPage = (pageId: string, pageRatings: Rate[]) => {
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings }, { headers })
+            .then(result => {
+                setStory(result.data.story);
+                setPageStatus('confirmed');
+                setFormType('words');
+            });
+        story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
     const updateOnePage = (newPage: Page) => {
@@ -125,9 +128,11 @@ const StoryScreen = () => {
         updatedPages[currentInterval] = newPage;
         setPages(updatedPages);
     }
+
     const handleRateText = async (vote: number, confirming: boolean, pageId: string, ratings: Rate[]) => {
         if (confirming) {
-            confirmPage(vote, pageId, ratings);
+            if (vote === -1) removePage(pageId);
+            if (vote === 1) confirmPage(pageId, ratings);
         } else {
             const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId }, { headers }).then(result => result.data);
             updateOnePage(newPage);
@@ -161,7 +166,7 @@ const StoryScreen = () => {
                 setCurrentInterval(0)
             }
         }
-        toggleJump(prevState=>!prevState);
+        toggleJump(prevState => !prevState);
     }
 
     const toggleItems = (status: 'pending' | 'confirmed') => {
@@ -169,9 +174,22 @@ const StoryScreen = () => {
         setPageStatus(status);
     }
 
+    const setWords = (arr: string[]) => {
+        const body = {
+            storyId: params.storyId,
+            word1: arr[0],
+            word2: arr[1],
+            word3: arr[2]
+        }
+        axios.put(`${LOCAL_HOST}/stories/`, body, { headers });
+    }
+
     const getForm = () => {
-        if (formType === 'newPage') return <NewPage firstPage={false} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
-        if (formType === 'rateLevel') return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
+        switch (formType) {
+            case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
+            case 'rateLevel': return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
+            case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
+        }
         return null;
     }
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
@@ -197,7 +215,7 @@ const StoryScreen = () => {
     )
     return <Provider>
         <View style={styles.container}>
-           <BackButton/>
+            <BackButton />
             <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
             {story[pageType]?.length > 0 ?
                 <Carousel
