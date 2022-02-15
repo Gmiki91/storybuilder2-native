@@ -12,6 +12,7 @@ import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
 import { PageText } from './elements/PageText';
 import { Level } from './elements/Level';
+import { levels } from '../../models/LanguageLevels';
 import { Word } from './elements/Word';
 
 type Props = {
@@ -28,8 +29,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
     const handleNewStory = async (form: FieldValues) => {
         const page = {
             text: form.text,
-            level: form.level,
-            language: form.language,
+            level: form.level || levels[0].code,
+            language: form.language || languages[0].name,
             rating: []
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
@@ -39,13 +40,13 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             description: form.description?.trim(),
             language: form.language || languages[0].name,
             pageId: pageId,
-            level: form.level,
+            level: form.level|| levels[0].code,
             openEnded: form.openEnded,
             word1:form.word1,
             word2:form.word2, 
             word3:form.word3
         };
-
+        
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(result => navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId } })))
             .catch(error => console.log('hiba!!', error))
@@ -86,7 +87,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                             onChangeText={value => onChange(value)} />
                     )} />
             </Pressable>
-            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>First page:</Text>
+            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>First page</Text>
             <PageText checkWords={()=>{}} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>
@@ -123,7 +124,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             </View>
             <View style={styles.buttonContainer}>
                 <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>
-                <Button disabled={!isValid} color={Color.button} onPress={() => handleSubmit(handleNewStory)} >Submit</Button>
+                <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>
     );

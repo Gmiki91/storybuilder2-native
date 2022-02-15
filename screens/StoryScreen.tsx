@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
-import { Modal, Portal, Provider, Button, ActivityIndicator } from 'react-native-paper';
+import { Modal, Portal, Provider, Button, ActivityIndicator,Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from '../Global';
@@ -9,13 +9,13 @@ import { useAuth } from '../context/AuthContext';
 import { NewPage } from '../components/forms/NewPage';
 import { RateLevel } from '../components/forms/RateLevel';
 import { PageCard } from '../components/PageCard';
-import { Story } from '../models/Story';
-import { Page, Rate } from '../models/Page';
 import { Fab } from '../components/UI/Fab';
 import Carousel from '../components/UI/Carousel';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { BackButton } from '../components/UI/BackButton';
 import { Words } from '../components/forms/Words';
+import { Page, Rate } from '../models/Page';
+import { Story } from '../models/Story';
 
 type ParamList = {
     Params: { storyId: string };
@@ -36,6 +36,7 @@ const StoryScreen = () => {
     const [pageStatus, setPageStatus] = useState<status>('confirmed');
     const [loading, setLoading] = useState(false);
     const [jump, toggleJump] = useState(false);
+    const [snackMessage, setSnackMessage] = useState('');
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
     // init userId
@@ -95,11 +96,14 @@ const StoryScreen = () => {
         const confirmStatus = story.openEnded ? 'pendingPage' : 'page'
         axios.post(`${LOCAL_HOST}/stories/${confirmStatus}`, body, { headers }).then((result) => {
             setStory(result.data.story);
+            if(result.data.tributeCompleted){
+                setSnackMessage('You completed your daily tribute and have recieved 1 clay tablet. Well done!');
+            }
             story.openEnded ? setFormType('') : setFormType('words')
         });
     }
 
-    // remove all pages except the current one
+    // softdelete all pages except the current one
     const removePendingPages = (pageId: string) => {
         const index = story.pendingPageIds.indexOf(pageId)
         const idsToDelete = [...story.pendingPageIds];
@@ -121,6 +125,11 @@ const StoryScreen = () => {
                 setFormType('words');
             });
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
+    }
+
+    const onNewPagePressed =() =>{
+    //    if(user.)
+        setFormType('newPage')
     }
 
     const updateOnePage = (newPage: Page) => {
@@ -145,6 +154,7 @@ const StoryScreen = () => {
         axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
+            axios.put(`${LOCAL_HOST}/stories/level`,{pageIds:story.pageIds},{ headers });
         });
     }
 
@@ -234,10 +244,10 @@ const StoryScreen = () => {
                     {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
                 </Modal>
             </Portal>
-
             {toggleStatus}
         </View>
-        {addPageVisible && <Fab onPress={() => setFormType('newPage')} />}
+        {addPageVisible && <Fab onPress={onNewPagePressed} />}
+          <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage!=''} duration={4000}>{snackMessage} </Snackbar>
     </Provider>
 }
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { Ionicons, Foundation, AntDesign } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -16,6 +16,7 @@ import Stats from "./components/Stats";
 import ResetPassword from "./authentication/ResetPassword";
 import ForgotPassword from "./authentication/ForgotPassword";
 import { Color } from "./Global";
+import DailyTribute from "./screens/DailyTribute";
 
 export type RootStackParamList = {
   Login: undefined,
@@ -24,11 +25,12 @@ export type RootStackParamList = {
   Settings: undefined,
   StoryScreen: undefined,
   Profile: undefined,
-  Stats:undefined,
+  Stats: undefined,
   Logout: undefined,
   ResetPassword: undefined,
   ForgotPassword: undefined,
   Home: undefined,
+  DailyTribute: undefined,
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -54,15 +56,20 @@ export default function App() {
 
 
   const VisibleTabs = () => (
-    <Tab.Navigator screenOptions={() => ({tabBarStyle: {backgroundColor:Color.main}})}>
-            <Tab.Screen component={Home} name="Stories" options={{
+    <Tab.Navigator screenOptions={() => ({ tabBarStyle: { backgroundColor: Color.main } })}>
+      <Tab.Screen component={Home} name="Stories" options={{
         header: () => null,
-        tabBarIcon: ({ color, size }) => (<Foundation name="list" size={size} color={color} />)
+        tabBarIcon: ({ color, size }) => (<MaterialIcons name="table-view" size={size} color={color} />)
       }} />
 
-      <Tab.Screen component={Profile} name="Profile"  options={{
+      <Tab.Screen component={DailyTribute} name="DailyTribute" options={{
+       header: () => null,
+       tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
+     }} />
+     
+      <Tab.Screen component={Profile} name="Profile" options={{
         header: () => null,
-        tabBarIcon: ({ color, size }) => (<AntDesign name="user" size={size} color={color} />)
+        tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="human-child" size={size} color={color} />)
       }} />
 
       <Tab.Screen component={Logout} name="Logout" options={{
