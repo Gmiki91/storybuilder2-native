@@ -4,29 +4,27 @@ import { CustomInput } from '../../UI/CustomInput';
 import styles from "./style"
 type Props = {
     control: Control<FieldValues, object>
-    checkWords:(event:string)=>void;
 }
-export const PageText: React.FC<Props> = ({ control,checkWords }) => {
+export const Title: React.FC<Props> = ({ control }) => {
 
     return (
         <View style={styles.controllerContainer}>
             <Controller
                 control={control}
-                name="text"
+                name="title"
                 rules={{
                     required: { value: true, message: 'Required' },
-                    minLength: { value: 10, message: 'Minimum length is 10 characters' },
-                    maxLength: { value: 5000, message: 'Maximum length is 5000 characters' },
+                    minLength: { value: 3, message: 'Minimum length is 3 characters' },
+                    maxLength: { value: 100, message: 'Maximum length is 100 characters' },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput
-                        multiline
-                        placeholder={'Write here...'}
+                        style={{ fontSize: 22 }}
+                        placeholder="Story title"
                         value={value}
                         onBlur={onBlur}
-                        onChangeText={(value)=>{onChange(value), checkWords(value)}} />
+                        onChangeText={value => onChange(value)} />
                 )} />
         </View>
-
     )
 }

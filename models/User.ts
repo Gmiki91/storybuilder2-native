@@ -3,5 +3,6 @@ export type User={
     name:string,
     email:string,
     active:boolean,
-    lastLoggedIn:Date
+    numberOfTablets:number,
+    lastActivity:Date
 }

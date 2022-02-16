@@ -11,6 +11,8 @@ import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
 import { ErrorMessage } from '../components/UI/ErrorMessage';
+import { NewStory } from '../components/forms/NewStory';
+
 // import * as WebBrowser from 'expo-web-browser';
 // import * as Google from 'expo-auth-session/providers/google';
 type NavigationProp = {
@@ -20,8 +22,10 @@ type NavigationProp = {
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   // const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const { setToken } = useAuth();
+  const [savedToken, setSavedToken] = useState();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
   const Local_host = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
   const postLogin = (form: FieldValues) => {
@@ -31,7 +35,12 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       password: form.password.trim()
     }).then(result => {
       setLoading(false);
-      setToken(result.data.token);
+      if (result.data.confirmed) {
+        setToken(result.data.token);
+      } else {
+        setShowModal(true);
+        setSavedToken(result.data.token);
+      }
     }).catch(e => {
       setLoading(false);
       setError(e.response.data.message);
@@ -58,8 +67,8 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
     <Provider>
       <Portal>
         <Modal
-          visible={loading}>
-          <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />
+          visible={loading || showModal}>
+          {showModal ? <NewStory tokenProp={savedToken} onCloseForm={() => { }} /> : <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />}
         </Modal>
       </Portal>
 
@@ -105,7 +114,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           <Pressable style={AuthStyle.forgotBtnContainer} onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
           </Pressable>
-          <Button  disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
+          <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
           {/* <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button> */}
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>

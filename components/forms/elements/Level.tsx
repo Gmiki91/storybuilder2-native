@@ -1,8 +1,8 @@
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { Controller, FieldValues, Control } from 'react-hook-form'
 import { Picker } from '@react-native-picker/picker';
 import { levels } from '../../../models/LanguageLevels';
-
+import styles from "./style";
 type Props = {
     control: Control<FieldValues, object>
 }
@@ -25,9 +25,3 @@ export const Level: React.FC<Props> = ({ control }) => (
     
 )
 
-const styles = StyleSheet.create({
-    controllerContainer: {
-        paddingLeft: 5,
-        paddingRight: 5,
-    }
-});

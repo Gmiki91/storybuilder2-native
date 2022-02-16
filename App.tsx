@@ -30,7 +30,7 @@ export type RootStackParamList = {
   ResetPassword: undefined,
   ForgotPassword: undefined,
   Home: undefined,
-  DailyTribute: undefined,
+  Daily: undefined,
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -62,7 +62,7 @@ export default function App() {
         tabBarIcon: ({ color, size }) => (<MaterialIcons name="table-view" size={size} color={color} />)
       }} />
 
-      <Tab.Screen component={DailyTribute} name="DailyTribute" options={{
+      <Tab.Screen component={DailyTribute} name="Daily" options={{
        header: () => null,
        tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
      }} />

@@ -90,10 +90,11 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
-                    <Text style={{ fontSize: 12, }}>Logged in: {moment.utc(user.lastLoggedIn).local().startOf('seconds').fromNow()}</Text>
+                    <Text style={{ fontSize: 12, }}>Logged in: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
                     {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
                 </View>
                 <View style={styles.group}>
+                    <Text >Tablets: {user.numberOfTablets}</Text>
                     <Text >Stories: {storyData.size}</Text>
                     <Text >Rating: {storyRating} ({storyData.upVotes} / {storyData.totalVotes})</Text>
                 </View>

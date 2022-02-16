@@ -5,6 +5,7 @@ export const Color = {
     button: '#cc6018',
     cancelBtn: '#4d1f00',
     
+    storyCard:'#f0c380',
     likeButton1: '#1f6926',
     likeButton2: '#00c200',
     dislikeButton1: '#541d1d',

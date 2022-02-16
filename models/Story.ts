@@ -14,7 +14,7 @@ export type Story = {
         average:Rate
     }
     updatedAt: Date;
-    openEnded: boolean;
+    open: boolean;
     pageIds: string[];
     pendingPageIds: string[];
     word1: string;

@@ -12,21 +12,25 @@ import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
 import { PageText } from './elements/PageText';
 import { Level } from './elements/Level';
+import { Title } from './elements/Title';
 import { levels } from '../../models/LanguageLevels';
 import { Word } from './elements/Word';
 
 type Props = {
     onCloseForm: () => void;
+    tokenProp?: string
 }
 
-export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
-    const { token } = useAuth();
+export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
+    const { token, setToken } = useAuth();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-    const headers = { Authorization: `Bearer ${token}` };
+
     const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
     const navigation = useNavigation();
 
     const handleNewStory = async (form: FieldValues) => {
+        const realToken = token || tokenProp;
+        const headers = { Authorization: `Bearer ${realToken}` };
         const page = {
             text: form.text,
             level: form.level || levels[0].code,
@@ -40,40 +44,26 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             description: form.description?.trim(),
             language: form.language || languages[0].name,
             pageId: pageId,
-            level: form.level|| levels[0].code,
-            openEnded: form.openEnded,
-            word1:form.word1,
-            word2:form.word2, 
-            word3:form.word3
+            level: form.level || levels[0].code,
+            word1: form.word1,
+            word2: form.word2,
+            word3: form.word3
         };
-        
+
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
-            .then(result => navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId } })))
+            .then(result => {
+                if (tokenProp) setToken(tokenProp);
+                else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
+            })
             .catch(error => console.log('hiba!!', error))
     }
 
     return (
         <Form>
-            <View style={styles.controllerContainer}>
-                <Controller
-                    control={control}
-                    name="title"
-                    rules={{
-                        required: { value: true, message: 'Required' },
-                        minLength: { value: 3, message: 'Minimum length is 3 characters' },
-                        maxLength: { value: 100, message: 'Maximum length is 100 characters' },
-                    }}
-                    render={({ field: { onChange, value, onBlur } }) => (
-                        <CustomInput
-                            style={{ fontSize: 22 }}
-                            placeholder="Story title"
-                            value={value}
-                            onBlur={onBlur}
-                            onChangeText={value => onChange(value)} />
-                    )} />
-            </View>
+            {tokenProp && <Text style={{justifyContent:'center'}}>Create your first story</Text>}
+            <Title control={control}/>
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
-            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>Short description (optional)</Text>
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional)</Text>
             <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -87,8 +77,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
                             onChangeText={value => onChange(value)} />
                     )} />
             </Pressable>
-            <Text style={{paddingLeft:5, paddingTop:15, paddingBottom:5}}>First page</Text>
-            <PageText checkWords={()=>{}} control={control} />
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
+            <PageText checkWords={() => { }} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>
                 <Controller
@@ -108,22 +98,22 @@ export const NewStory: React.FC<Props> = ({ onCloseForm }) => {
             <Divider />
             <Level control={control} />
             <Divider />
-            <Text style={{paddingLeft:5, paddingTop:15}}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
+            <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
             <Word name='word1' placeholder='#1' control={control} />
             <Word name='word2' placeholder='#2' control={control} />
             <Word name='word3' placeholder='#3' control={control} />
-            <View style={[styles.controllerContainer, { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }]}>
+            {/* <View style={[styles.controllerContainer, { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }]}>
                 <Text>May others contribute?</Text>
                 <Controller
                     control={control}
-                    name="openEnded"
+                    name="open"
                     render={({ field: { onChange, value, onBlur } }) => (
 
                         <Switch value={value} onValueChange={value => onChange(value)} />
                     )} />
-            </View>
+            </View> */}
             <View style={styles.buttonContainer}>
-                <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>
+                {!tokenProp && <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>}
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
         </Form>

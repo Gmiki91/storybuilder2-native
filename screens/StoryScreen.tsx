@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
-import { Modal, Portal, Provider, Button, ActivityIndicator,Snackbar } from 'react-native-paper';
+import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from '../Global';
@@ -16,6 +16,7 @@ import { BackButton } from '../components/UI/BackButton';
 import { Words } from '../components/forms/Words';
 import { Page, Rate } from '../models/Page';
 import { Story } from '../models/Story';
+import { User } from '../models/User';
 
 type ParamList = {
     Params: { storyId: string };
@@ -28,7 +29,7 @@ const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-    const [userId, setUserId] = useState('');
+    const [user, setUser] = useState({} as User);
     const [story, setStory] = useState({} as Story);
     const [pages, setPages] = useState<Page[]>([]);
     const [currentInterval, setCurrentInterval] = useState(0);
@@ -39,13 +40,13 @@ const StoryScreen = () => {
     const [snackMessage, setSnackMessage] = useState('');
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
 
-    // init userId
+    // init user
     useEffect(() => {
         let mounted = true
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
                 if (mounted)
-                    setUserId(result.data.user._id)
+                    setUser(result.data.user)
             })
             .catch(() => console.log('No user to display'));
         return () => { mounted = false }
@@ -93,13 +94,13 @@ const StoryScreen = () => {
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
-        const confirmStatus = story.openEnded ? 'pendingPage' : 'page'
+        const confirmStatus = story.open ? 'pendingPage' : 'page'
         axios.post(`${LOCAL_HOST}/stories/${confirmStatus}`, body, { headers }).then((result) => {
             setStory(result.data.story);
-            if(result.data.tributeCompleted){
+            if (result.data.tributeCompleted) {
                 setSnackMessage('You completed your daily tribute and have recieved 1 clay tablet. Well done!');
             }
-            story.openEnded ? setFormType('') : setFormType('words')
+            story.open ? setFormType('') : setFormType('words')
         });
     }
 
@@ -127,9 +128,12 @@ const StoryScreen = () => {
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
-    const onNewPagePressed =() =>{
-    //    if(user.)
-        setFormType('newPage')
+    const onNewPagePressed = () => {
+        if (user.numberOfTablets < 1) {
+            setSnackMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
+        } else {
+            setFormType('newPage');
+        }
     }
 
     const updateOnePage = (newPage: Page) => {
@@ -154,7 +158,7 @@ const StoryScreen = () => {
         axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
-            axios.put(`${LOCAL_HOST}/stories/level`,{pageIds:story.pageIds},{ headers });
+            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds }, { headers });
         });
     }
 
@@ -203,7 +207,7 @@ const StoryScreen = () => {
         return null;
     }
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
-    const addPageVisible = onLastPage && (story.openEnded || userId === story.authorId);
+    const addPageVisible = onLastPage && story.open;
     const toggleStatus = pageStatus === 'confirmed'
         ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
         : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Confirmed: {story.pageIds.length}</Button>
@@ -215,9 +219,9 @@ const StoryScreen = () => {
             page={page}
             pageNumber={i + 1}
             totalPageNumber={story[pageType]?.length}
-            userId={userId}
-            ownContent={userId === (page.authorId || story.authorId)}
-            toConfirm={pageStatus === 'pending' && story.authorId === userId}
+            userId={user._id}
+            ownContent={user._id === (page.authorId || story.authorId)}
+            toConfirm={pageStatus === 'pending' && story.authorId === user._id}
             onRateLevel={openRateLevelModule}
             onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings)}
             jump={jumpTo}
@@ -247,7 +251,7 @@ const StoryScreen = () => {
             {toggleStatus}
         </View>
         {addPageVisible && <Fab onPress={onNewPagePressed} />}
-          <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage!=''} duration={4000}>{snackMessage} </Snackbar>
+        <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={4000}>{snackMessage} </Snackbar>
     </Provider>
 }
 const styles = StyleSheet.create({

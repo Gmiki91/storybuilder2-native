@@ -11,7 +11,7 @@ export type FilterTypes = {
     from: string,
     languages: string[],
     levels: string[],
-    openEnded: string;
+    open: string;
 }
 
 type Props = {
@@ -80,18 +80,18 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
             <Radio
                 label='Yes'
                 value='yes'
-                status={filters.openEnded === 'true' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, openEnded: 'true' })} />
+                status={filters.open === 'true' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, open: 'true' })} />
             <Radio
                 label='No'
                 value='no'
-                status={filters.openEnded === 'false' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, openEnded: 'false' })} />
+                status={filters.open === 'false' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, open: 'false' })} />
             <Radio
                 label='Both'
                 value='both'
-                status={filters.openEnded === 'both' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, openEnded: 'both' })} />
+                status={filters.open === 'both' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, open: 'both' })} />
         </View>
 
         <Divider/>

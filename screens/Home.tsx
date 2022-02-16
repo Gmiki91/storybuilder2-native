@@ -13,6 +13,7 @@ import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { useIsFocused } from '@react-navigation/native';
+import { User } from '../models/User';
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 
@@ -21,7 +22,7 @@ type SearchCriteria = {
     from: string,
     languages: string[],
     levels: string[],
-    openEnded: string;
+    open: string;
 }
 
 const defaultSearchCriteria = {
@@ -29,13 +30,14 @@ const defaultSearchCriteria = {
     from: 'all',
     languages: [],
     levels: [],
-    openEnded: 'both'
+    open: 'both'
 }
 
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
     const isFocused = useIsFocused();
     const { token } = useAuth();
+    const [user, setUser] = useState({} as User);
     const headers = { Authorization: `Bearer ${token}` };
     const [searchTitle, setSearchTitle] = useState('');
     const [sortBy, setSortBy] = useState('ratingAvg');
@@ -46,6 +48,18 @@ const Home = () => {
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(false);
+
+
+    useEffect(() => {
+        let mounted = true
+        axios.get(`${LOCAL_HOST}/users/`, { headers })
+            .then(result => {
+                if (mounted)
+                    setUser(result.data.user)
+            })
+            .catch(() => console.log('No user to display'));
+        return () => { mounted = false }
+    }, []);
 
     const getList = useCallback(async () => {
         isLoading(true);
@@ -74,8 +88,8 @@ const Home = () => {
     }
 
     const filtersOn = () => {
-        const { from, languages, levels, openEnded } = searchCriteria;
-        return from !== 'all' || languages.length > 0 || levels.length > 0 || openEnded !== 'both'
+        const { from, languages, levels, open } = searchCriteria;
+        return from !== 'all' || languages.length > 0 || levels.length > 0 || open !== 'both'
     }
 
     const onClearFilter = () => {
@@ -102,6 +116,13 @@ const Home = () => {
             setSearchCriteria(prevState => ({ ...prevState, storyName: '' }))
         }
         setSearchTitle(value)
+    }
+    const onNewStoryClicked = () => {
+        if (user.numberOfTablets < 1 ) {
+            setErrorMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
+        } else {
+            setShowModal('NewStory')
+        }
     }
 
     const getForm = () => {
@@ -149,7 +170,7 @@ const Home = () => {
                     ? <SadMessageBox message='No stories to show' />
                     : <StoryList stories={stories} />}
             </View>
-            <Fab onPress={() => setShowModal('NewStory')} />
+            <Fab onPress={onNewStoryClicked} />
             <Snackbar onDismiss={() => setErrorMessage('')} visible={errorMessage !== ''} duration={4000}>{errorMessage}</Snackbar>
         </Provider>
     )
