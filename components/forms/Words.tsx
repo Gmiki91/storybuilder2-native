@@ -14,7 +14,7 @@ export const Words: React.FC<Props> = ({ onSubmit, onClose }) => {
     const { control, handleSubmit } = useForm({ mode: 'onBlur' });
 
     const handleForm = (f: FieldValues) => {
-        const array = [f.word1, f.word2, f.word3];
+        const array = [f.word1?.toLowerCase(), f.word2?.toLowerCase(), f.word3?.toLowerCase()];
         onSubmit(array);
     }
 

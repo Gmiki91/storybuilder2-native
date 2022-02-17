@@ -3,6 +3,9 @@ export type User={
     name:string,
     email:string,
     active:boolean,
+    dailyCompleted:boolean,
     numberOfTablets:number,
-    lastActivity:Date
+    lastActivity:Date,
+    markedStoryAt:Date
+    markedStoryId:string,
 }

@@ -7,11 +7,14 @@ import { useIsFocused, useNavigation, CommonActions } from '@react-navigation/na
 import StoryCard from '../components/StoryCard';
 import { Story } from '../models/Story';
 import { Color } from '../Global';
+import { ClayTablet } from '../components/UI/ClayTablet';
+import { Timer } from '../components/UI/Timer';
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type Data = {
     story: Story,
-    time: number,
+    hoursLeft: number,
+    minutesLeft: number
 }
 const DailyTribute = () => {
     const { token } = useAuth();
@@ -26,25 +29,17 @@ const DailyTribute = () => {
             isLoading(true);
             axios.get(`${LOCAL_HOST}/stories/tribute/data`, { headers })
                 .then(result => {
-
                     if (mounted) {
-                        setData({ story: result.data.story, time: result.data.markedStoryAt });
+                        const timeInMs = new Date(result.data.markedStoryAt).getTime();
+                        const hoursLeft = (24 - ((Date.now() - timeInMs) / 1000 / 60 / 60));
+                        const minutesLeft = (24 * 60 - ((Date.now() - timeInMs) / 1000 / 60));
+                        setData({ story: result.data.story, hoursLeft, minutesLeft });
                         isLoading(false)
                     }
                 })
             return () => { mounted = false }
         }
     }, [isFocused]);
-
-    // useEffect(() => {
-    //     // if last tribute + 24 hours < new Date - active
-    //     // else inactive
-    //     // if active : findMarkedStory. If null, mark one.
-    //     axios.get(`${LOCAL_HOST}/stories/`, { headers })
-    //         .then(result => {
-
-    //         })
-    // },[lastTribute]);
 
     const openStory = (storyId: string) => {
         navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))
@@ -56,32 +51,41 @@ const DailyTribute = () => {
                 <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />
             </Modal>
         </Portal>
-        {data.story &&
-            <View style={styles.container}>
-              
-                <StoryCard
-                
-                    story={data.story}
-                    onPress={openStory}
-                    favoriteIds={[]}
-                    addToFavorites={() => { }}
-                    removeFromFavorites={() => { }}
-                    hideFavorite
-                />
-                <View style={{backgroundColor: Color.secondary, padding:10,borderRadius:10 }}>
-                  <Text >{24 - ((Date.now() - data.time) / 1000 / 60 / 60 / 24)} hour(s) left</Text>
-                  </View>
-            </View>
-        }
+        <View style={styles.container}>
+            {data.story ?
+                <View>
+                    <View style={styles.header}>
+                        <Text>Contribute to this story to get 1x </Text>
+                        <ClayTablet />
+                    </View>
+                    <View style={styles.cardContainer}>
+                        <StoryCard
+                            story={data.story}
+                            onPress={openStory}
+                            favoriteIds={[]}
+                            addToFavorites={() => { }}
+                            removeFromFavorites={() => { }}
+                            hideFavorite />
+                    </View>
+                    <Timer text={''} minutes={data.minutesLeft} hours={data.hoursLeft} />
+                </View> :
+                <Timer text={'until next tribute'} minutes={data.minutesLeft} hours={data.hoursLeft} />}
+        </View>
     </Provider>
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
+    header: {
+        backgroundColor: Color.secondary, padding: 5, borderRadius: 5, marginBottom: 5, flexDirection: 'row', alignItems: 'center'
+    },
+    cardContainer: {
+        width: '95%'
+    }
 })
 
 export default DailyTribute;

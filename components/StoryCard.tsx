@@ -1,5 +1,5 @@
 import { Story } from "../models/Story"
-import { Pressable, Text, View, StyleSheet} from 'react-native'
+import { Pressable, Text, View, StyleSheet } from 'react-native'
 import { Color } from '../Global';
 import { Author } from "./Author";
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -12,7 +12,7 @@ type Props = {
     onPress: (storyId: string) => void,
     removeFromFavorites: (storyId: string) => void,
     addToFavorites: (storyId: string) => void,
-    hideFavorite?: boolean, 
+    hideFavorite?: boolean,
 
 }
 
@@ -28,32 +28,32 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
     }
     return (
         <Pressable style={styles.container} onPress={() => onPress(story._id)}>
-       
-                <View style={{ padding: 15 }}>
-                    <View style={styles.row}>
-                        <Text style={styles.title}>{story.title}</Text>
-                        {!hideFavorite && <View style={{ padding: 5 }} >
-                            {favoriteIds.includes(story._id) ?
-                                <Pressable onPress={() => removeFromFavorites(story._id)}><MaterialIcons name="favorite" size={36} color={Color.dislikeButton2} /></Pressable> :
-                                <Pressable onPress={() => addToFavorites(story._id)}><MaterialIcons name="favorite-outline" size={36} color={Color.dislikeButton2} /></Pressable>}
-                        </View>}
-                    </View>
-                    <Text>{story.description}</Text>
-                    <Author name={story.authorName} userId={story.authorId} />
-                    <View style={styles.row}>
-                        <Text>{story.language}: {story.level}</Text>
-                        <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
-                    </View>
-                    <Text>Pages: {story.pageIds.length}</Text>
-                    <View style={styles.row}>
-                        <Text>Pending: {story.pendingPageIds.length}</Text>
-                        {!story.open && <FontAwesome name="lock" size={24} color="black" />}
-                        <View style={{ flexDirection: 'row' }}>
-                            {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} </Text>}<Text>({story.rating.total} votes)</Text>
-                        </View>
+
+            <View style={{ padding: 15 }}>
+                <View style={styles.row}>
+                    <Text style={styles.title}>{story.title}</Text>
+                    {!hideFavorite && <View style={{ padding: 5 }} >
+                        {favoriteIds.includes(story._id) ?
+                            <Pressable onPress={() => removeFromFavorites(story._id)}><MaterialIcons name="favorite" size={36} color={Color.dislikeButton2} /></Pressable> :
+                            <Pressable onPress={() => addToFavorites(story._id)}><MaterialIcons name="favorite-outline" size={36} color={Color.dislikeButton2} /></Pressable>}
+                    </View>}
+                </View>
+                <Text>{story.description}</Text>
+                <Author name={story.authorName} userId={story.authorId} />
+                <View style={styles.row}>
+                    <Text>{story.language}: {story.level}</Text>
+                <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
+                </View>
+                <Text>Pages: {story.pageIds.length}</Text>
+                <View style={styles.row}>
+                    <Text>Pending: {story.pendingPageIds.length}</Text>
+                    {!story.open && <FontAwesome name="lock" size={24} color="black" />}
+                    <View style={{ flexDirection: 'row' }}>
+                        {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} </Text>}<Text>({story.rating.total} votes)</Text>
                     </View>
                 </View>
-      
+            </View>
+
         </Pressable>
     )
 }
@@ -61,8 +61,8 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
 const styles = StyleSheet.create({
     container: {
         marginBottom: 20,
-        backgroundColor:Color.storyCard,
-        borderWidth:1,
+        backgroundColor: Color.storyCard,
+        borderWidth: 1,
         elevation: 10,
         shadowOffset: {
             width: 0,

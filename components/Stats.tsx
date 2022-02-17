@@ -7,6 +7,7 @@ import { User } from "../models/User";
 import { Form } from './UI/Form';
 import moment from 'moment';
 import {BackButton} from './UI/BackButton';
+import { ClayTablet } from "./UI/ClayTablet";
 type ParamList = {
     Params: {
         userId: string
@@ -90,11 +91,11 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
-                    <Text style={{ fontSize: 12, }}>Logged in: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
+                    <Text style={{ fontSize: 12, }}>Last activity: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
                     {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
+                    {userProp && <Text >{user.numberOfTablets} x <ClayTablet/></Text>}
                 </View>
                 <View style={styles.group}>
-                    <Text >Tablets: {user.numberOfTablets}</Text>
                     <Text >Stories: {storyData.size}</Text>
                     <Text >Rating: {storyRating} ({storyData.upVotes} / {storyData.totalVotes})</Text>
                 </View>

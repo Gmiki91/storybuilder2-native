@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView} from 'react-native';
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
@@ -8,6 +8,7 @@ import Stats from "../components/Stats";
 import { CustomInput } from "../components/UI/CustomInput";
 import { Button, Snackbar } from "react-native-paper";
 import { Color } from "../Global";
+import { useIsFocused } from "@react-navigation/native";
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const Profile = () => {
@@ -18,16 +19,18 @@ const Profile = () => {
     const [deletePassword, setDeletePassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [response, setResponse] = useState('');
-
+    const isFocused = useIsFocused();
     useEffect(() => {
         let mounted = true;
+        if(isFocused){
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
                 if (mounted)
                     setUser(result.data.user);
             })
+        }
         return () => { mounted = false }
-    }, []);
+    }, [isFocused]);
 
     const handlePasswordChange = () => {
         axios.patch(`${LOCAL_HOST}/users/updatePassword`, { currentPassword, newPassword }, { headers })

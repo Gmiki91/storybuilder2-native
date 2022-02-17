@@ -28,12 +28,13 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose, words }) => {
   }
 
   const changeText=(event:string)=>{
-    if(event.includes(words[0]) && !word1) setWord1(true);
-    if(!event.includes(words[0]) && word1) setWord1(false);
-    if(event.includes(words[1]) && !word2) setWord2(true);
-    if(!event.includes(words[1]) && word2) setWord2(false);
-    if(event.includes(words[2]) && !word3) setWord3(true);
-    if(!event.includes(words[2]) && word3) setWord3(false);
+    const eventLC = event.toLocaleLowerCase();
+    if(eventLC.includes(words[0]) && !word1) setWord1(true);
+    if(!eventLC.includes(words[0]) && word1) setWord1(false);
+    if(eventLC.includes(words[1]) && !word2) setWord2(true);
+    if(!eventLC.includes(words[1]) && word2) setWord2(false);
+    if(eventLC.includes(words[2]) && !word3) setWord3(true);
+    if(!eventLC.includes(words[2]) && word3) setWord3(false);
   }
 
   const isEmpty = (value: string)=> value===null || value===undefined || value.trim()==='';

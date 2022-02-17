@@ -113,26 +113,32 @@ const StoryScreen = () => {
     }
 
     const removePage = (pageId: string) => {
-        axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers }); //remove page document
+        axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers })
+            .catch(e => console.log('dekete', e)); //remove page document
         axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
-            .then(result => setStory(result.data.story)) //remove pageId from story
+            .then(result => {
+                setPageStatus('confirmed');
+                setStory(result.data.story);
+            }) //remove pageId from story
+            .catch(e => console.log('pending', e));
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
-        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings }, { headers })
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings, pageIds:story.pageIds }, { headers })
             .then(result => {
                 setStory(result.data.story);
                 setPageStatus('confirmed');
                 setFormType('words');
-            });
+            })
+            .catch(e=>console.log(e));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
     const onNewPagePressed = () => {
-        if (user.numberOfTablets < 1) {
-            setSnackMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
-        } else {
+        if (user.numberOfTablets >= 1 || (user.markedStoryId === story._id && !user.dailyCompleted)) {
             setFormType('newPage');
+        } else {
+            setSnackMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
         }
     }
 
@@ -158,8 +164,9 @@ const StoryScreen = () => {
         axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
-            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds }, { headers });
-        });
+            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId:story._id }, { headers })
+            .catch((error) => console.log('tefasz', error))
+        }).catch(e=>console.log('anádat',e))
     }
 
     const openRateLevelModule = () => {
