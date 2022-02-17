@@ -38,7 +38,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             rating: []
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
-            .catch(error => console.log('hiba!!', error));
+            .catch(error => console.log('postPage error', error));
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
@@ -55,7 +55,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                 if (tokenProp) setToken(tokenProp);
                 else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
             })
-            .catch(error => console.log('hiba!!', error))
+            .catch(error => console.log('postStory error', error))
     }
 
     return (

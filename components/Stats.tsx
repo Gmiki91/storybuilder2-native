@@ -51,7 +51,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     if(mounted)
                     setUser(result.data.user);
                 })
-                .catch(e=>console.log(e));
+                .catch(e=>console.log('getUser error',e));
         } else {
             if(mounted)
             setUser(userProp)
@@ -70,7 +70,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     totalVotes: result.data.totalVotes,
                     upVotes: result.data.upVotes
                 })})
-                .catch(e=>console.log(e));
+                .catch(e=>console.log('getStories error',e));
             axios.get(`${LOCAL_HOST}/pages/all/${user._id}`, { headers })
                 .then(result => {
                     if(mounted) 
@@ -81,7 +81,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                         langInfo: result.data.langInfo
                     })
                 })
-                .catch(e=>console.log(e));
+                .catch(e=>console.log('getPages error',e));
         }
         return () => { mounted = false }
     }, [user])

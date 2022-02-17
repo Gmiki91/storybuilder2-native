@@ -49,7 +49,7 @@ const StoryScreen = () => {
                 if (mounted)
                     setUser(result.data.user)
             })
-            .catch(() => console.log('No user to display'));
+            .catch((e) => console.log('No user to display',e));
         return () => { mounted = false }
     }, []);
 
@@ -62,7 +62,7 @@ const StoryScreen = () => {
                 if (mounted)
                     setStory(result.data.story)
             })
-            .catch(() => console.log('No story to display'));
+            .catch((e) => console.log('No story to display',e));
         return () => { mounted = false }
     }, [params.storyId])
 
@@ -79,7 +79,7 @@ const StoryScreen = () => {
                         setLoading(false);
                     }
                 })
-                .catch(() => console.log('No pages to display'));
+                .catch((e) => console.log('No pages to display',e));
         } else {
             if (mounted) setLoading(false);
         }
@@ -114,13 +114,13 @@ const StoryScreen = () => {
 
     const removePage = (pageId: string) => {
         axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers })
-            .catch(e => console.log('dekete', e)); //remove page document
+            .catch(e => console.log('removePage error', e)); //remove page document
         axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
             .then(result => {
                 setPageStatus('confirmed');
                 setStory(result.data.story);
             }) //remove pageId from story
-            .catch(e => console.log('pending', e));
+            .catch(e => console.log('removePageId from story error', e));
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
@@ -131,7 +131,7 @@ const StoryScreen = () => {
                 setPageStatus('confirmed');
                 setFormType('words');
             })
-            .catch(e => console.log('tebuzi',e));
+            .catch(e => console.log('confirm Page error',e));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
@@ -166,8 +166,8 @@ const StoryScreen = () => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
             axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId: story._id }, { headers })
-                .catch((error) => console.log(error))
-        }).catch(e => console.log(e))
+                .catch((error) => console.log('rateStoryLevel error ',error))
+        }).catch(e => console.log('ratePageLevel error',e))
     }
 
     const openRateLevelModule = () => {

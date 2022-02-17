@@ -27,7 +27,7 @@ const Profile = () => {
             .then(result => {
                 if (mounted)
                     setUser(result.data.user);
-            }).catch(e=>console.log(e));
+            }).catch(e=>console.log('profile getuser error',e));
         }
         return () => { mounted = false }
     }, [isFocused]);

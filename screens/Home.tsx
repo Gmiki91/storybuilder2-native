@@ -57,7 +57,7 @@ const Home = () => {
                 if (mounted)
                     setUser(result.data.user)
             })
-            .catch(() => console.log('No user to display'));
+            .catch((e) => console.log('No user to display',e));
         return () => { mounted = false }
     }, []);
 
