@@ -199,9 +199,9 @@ const StoryScreen = () => {
     const setWords = (arr: string[]) => {
         const body = {
             storyId: params.storyId,
-            word1: arr[0],
-            word2: arr[1],
-            word3: arr[2]
+            word1: arr[0]?.toLocaleLowerCase().trim(),
+            word2: arr[1]?.toLocaleLowerCase().trim(),
+            word3: arr[2]?.toLocaleLowerCase().trim()
         }
         axios.put(`${LOCAL_HOST}/stories/`, body, { headers });
     }

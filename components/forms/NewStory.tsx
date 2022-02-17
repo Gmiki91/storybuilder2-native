@@ -45,9 +45,9 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             language: form.language || languages[0].name,
             pageId: pageId,
             level: form.level || levels[0].code,
-            word1: form.word1,
-            word2: form.word2,
-            word3: form.word3
+            word1: form.word1?.toLowerCase().trim(),
+            word2: form.word2?.toLowerCase().trim(),
+            word3: form.word3?.toLowerCase().trim()
         };
 
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
