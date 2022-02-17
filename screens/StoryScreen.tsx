@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
@@ -17,13 +17,14 @@ import { Words } from '../components/forms/Words';
 import { Page, Rate } from '../models/Page';
 import { Story } from '../models/Story';
 import { User } from '../models/User';
+import { EditStory } from '../components/forms/EditStory';
 
 type ParamList = {
     Params: { storyId: string };
 };
 
 type status = 'pending' | 'confirmed';
-type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | '';
+type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | 'editStory'|'';
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
@@ -124,13 +125,13 @@ const StoryScreen = () => {
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
-        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings, pageIds:story.pageIds }, { headers })
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings, pageIds: story.pageIds }, { headers })
             .then(result => {
                 setStory(result.data.story);
                 setPageStatus('confirmed');
                 setFormType('words');
             })
-            .catch(e=>console.log(e));
+            .catch(e => console.log(e));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
@@ -164,9 +165,9 @@ const StoryScreen = () => {
         axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
-            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId:story._id }, { headers })
-            .catch((error) => console.log('tefasz', error))
-        }).catch(e=>console.log('anádat',e))
+            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId: story._id }, { headers })
+                .catch((error) => console.log( error))
+        }).catch(e => console.log(e))
     }
 
     const openRateLevelModule = () => {
@@ -210,6 +211,7 @@ const StoryScreen = () => {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
+            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onSubmit={() => setFormType('')} onClose={() => setFormType('')} />
         }
         return null;
     }
@@ -237,7 +239,9 @@ const StoryScreen = () => {
     return <Provider>
         <View style={styles.container}>
             <BackButton />
-            <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
+            <Pressable onPress={()=>setFormType('editStory')}>
+                <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
+            </Pressable>
             {story[pageType]?.length > 0 ?
                 <Carousel
                     length={story[pageType]?.length}
