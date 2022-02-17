@@ -57,7 +57,7 @@ const StoryScreen = () => {
     useEffect(() => {
         let mounted = true
         setLoading(true);
-        axios.get(`${LOCAL_HOST}/stories/${params.storyId}`)
+        axios.get(`${LOCAL_HOST}/stories/one/${params.storyId}`)
             .then(result => {
                 if (mounted)
                     setStory(result.data.story)
@@ -86,7 +86,7 @@ const StoryScreen = () => {
         return () => { mounted = false }
     }, [story, pageType]);
 
-    const addPage = async (form: FieldValues) => {
+    const addPendingPage = async (form: FieldValues) => {
         const page = {
             text: form.text,
             level: form.level,
@@ -95,13 +95,12 @@ const StoryScreen = () => {
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
-        const confirmStatus = story.open ? 'pendingPage' : 'page'
-        axios.post(`${LOCAL_HOST}/stories/${confirmStatus}`, body, { headers }).then((result) => {
+        axios.post(`${LOCAL_HOST}/stories/pendingPage`, body, { headers }).then((result) => {
             setStory(result.data.story);
             if (result.data.tributeCompleted) {
                 setSnackMessage('You completed your daily tribute and have recieved 1 clay tablet. Well done!');
             }
-            story.open ? setFormType('') : setFormType('words')
+            setFormType('');
         });
     }
 
@@ -125,13 +124,14 @@ const StoryScreen = () => {
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
-        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: params.storyId, pageRatings, pageIds: story.pageIds }, { headers })
+        const pageIds = [...story.pageIds, pageId]
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings, pageIds }, { headers })
             .then(result => {
                 setStory(result.data.story);
                 setPageStatus('confirmed');
                 setFormType('words');
             })
-            .catch(e => console.log(e));
+            .catch(e => console.log('tebuzi',e));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
@@ -166,7 +166,7 @@ const StoryScreen = () => {
             updateOnePage(result.data.updatedPage)
             setFormType('');
             axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId: story._id }, { headers })
-                .catch((error) => console.log( error))
+                .catch((error) => console.log(error))
         }).catch(e => console.log(e))
     }
 
@@ -204,11 +204,12 @@ const StoryScreen = () => {
             word3: arr[2]?.toLocaleLowerCase().trim()
         }
         axios.put(`${LOCAL_HOST}/stories/`, body, { headers });
+        setFormType('')
     }
 
     const getForm = () => {
         switch (formType) {
-            case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
+            case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
             case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />

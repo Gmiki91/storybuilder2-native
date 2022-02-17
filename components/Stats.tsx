@@ -51,6 +51,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     if(mounted)
                     setUser(result.data.user);
                 })
+                .catch(e=>console.log(e));
         } else {
             if(mounted)
             setUser(userProp)
@@ -61,14 +62,15 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     useEffect(() => {
         let mounted = true;
         if (user) {
-            axios.get(`${LOCAL_HOST}/stories/all/${user._id}`, { headers })
+            axios.get(`${LOCAL_HOST}/stories/many/${user._id}`, { headers })
                 .then(result =>{ 
                    if(mounted) 
                     setStoryData({
                     size: result.data.size,
                     totalVotes: result.data.totalVotes,
                     upVotes: result.data.upVotes
-                })});
+                })})
+                .catch(e=>console.log(e));
             axios.get(`${LOCAL_HOST}/pages/all/${user._id}`, { headers })
                 .then(result => {
                     if(mounted) 
@@ -78,7 +80,8 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                         upVotes: result.data.upVotes,
                         langInfo: result.data.langInfo
                     })
-                });
+                })
+                .catch(e=>console.log(e));
         }
         return () => { mounted = false }
     }, [user])

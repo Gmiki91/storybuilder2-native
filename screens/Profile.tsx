@@ -27,7 +27,7 @@ const Profile = () => {
             .then(result => {
                 if (mounted)
                     setUser(result.data.user);
-            })
+            }).catch(e=>console.log(e));
         }
         return () => { mounted = false }
     }, [isFocused]);
@@ -42,7 +42,7 @@ const Profile = () => {
     }
 
     const handleDeleteUser = () => {
-        axios.patch(`${LOCAL_HOST}/stories/all/${user._id}`, { headers }).catch(error => setResponse(error.response.data.message));
+        axios.patch(`${LOCAL_HOST}/stories/many/${user._id}`, { headers }).catch(error => setResponse(error.response.data.message));
         axios.patch(`${LOCAL_HOST}/users/`, { deletePassword }, { headers })
             .then(() => {
                 AsyncStorage.removeItem('token');

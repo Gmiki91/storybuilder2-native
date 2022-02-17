@@ -51,26 +51,26 @@ const DailyTribute = () => {
                 <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />
             </Modal>
         </Portal>
-        <View style={styles.container}>
-            {data.story ?
-                <View>
-                    <View style={styles.header}>
-                        <Text>Contribute to this story to get 1x </Text>
-                        <ClayTablet />
-                    </View>
-                    <View style={styles.cardContainer}>
-                        <StoryCard
-                            story={data.story}
-                            onPress={openStory}
-                            favoriteIds={[]}
-                            addToFavorites={() => { }}
-                            removeFromFavorites={() => { }}
-                            hideFavorite />
-                    </View>
-                    <Timer text={''} minutes={data.minutesLeft} hours={data.hoursLeft} />
-                </View> :
-                <Timer text={'until next tribute'} minutes={data.minutesLeft} hours={data.hoursLeft} />}
-        </View>
+
+        {data.story ? <View style={styles.container}>
+            <View style={styles.header}>
+                <Text>Contribute to this story to get 1x </Text>
+                <ClayTablet />
+            </View>
+            <View style={styles.cardContainer}>
+                <StoryCard
+                    story={data.story}
+                    onPress={openStory}
+                    favoriteIds={[]}
+                    addToFavorites={() => { }}
+                    removeFromFavorites={() => { }}
+                    hideFavorite />
+            </View>
+            <Timer text={''} minutes={data.minutesLeft} hours={data.hoursLeft} />
+        </View> :
+            <View style={styles.container}>
+                <Timer text={'until next tribute'} minutes={data.minutesLeft} hours={data.hoursLeft} />
+            </View>}
     </Provider>
 }
 
