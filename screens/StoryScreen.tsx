@@ -211,7 +211,7 @@ const StoryScreen = () => {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
-            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onSubmit={() => setFormType('')} onClose={() => setFormType('')} />
+            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
         }
         return null;
     }
