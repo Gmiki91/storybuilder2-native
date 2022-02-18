@@ -3,7 +3,6 @@ import { View, Text, Pressable } from 'react-native';
 import { Controller, FieldValues, Control } from 'react-hook-form'
 import { CustomInput } from '../../UI/CustomInput';
 import styles from "./style"
-import { Button } from 'react-native-paper';
 import sentences from '../../../assets/sentences.json';
 type Props = {
     control: Control<FieldValues, object>
@@ -11,11 +10,18 @@ type Props = {
 }
 export const PageText: React.FC<Props> = ({ control, checkWords }) => {
     const [randomSentence, setRandomSentence] = useState<string>('Write here...');
+    const [hideButton, setHideButton] = useState<boolean>(false);
 
     const getRandomSentence = () => {
         const sentence = sentences.data[Math.floor(Math.random() * sentences.data.length)].sentence;
         setRandomSentence(sentence);
     }
+    const valueChange = (value:string)=>{
+        checkWords(value);
+        if(value.trim()!=='' && !hideButton) setHideButton(true)
+        else if(value.trim()==='' && hideButton)setHideButton(false)
+    }
+
     return (
         <View style={styles.controllerContainer}>
             <Controller
@@ -32,11 +38,11 @@ export const PageText: React.FC<Props> = ({ control, checkWords }) => {
                         placeholder={randomSentence}
                         value={value}
                         onBlur={onBlur}
-                        onChangeText={(value) => { onChange(value), checkWords(value) }} />
+                        onChangeText={(value) => { onChange(value), valueChange(value) }} />
                 )} />
-                 <Pressable  onPress={getRandomSentence}>
+            {!hideButton && <Pressable  onPress={getRandomSentence}>
             <Text style={{fontSize:12, textDecorationLine: 'underline', marginBottom:5}}>Don't know how to start? Get a random sentence!</Text>
-            </Pressable>
+            </Pressable>}
         </View>
 
     )
