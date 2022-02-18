@@ -12,11 +12,12 @@ type Props = {
     onPress: (storyId: string) => void,
     removeFromFavorites: (storyId: string) => void,
     addToFavorites: (storyId: string) => void,
+    lastOne?:boolean
     hideFavorite?: boolean,
 
 }
 
-const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites, hideFavorite }) => {
+const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites,lastOne, hideFavorite }) => {
     const getColor = (rating: string) => {
         switch (rating) {
             case 'Excellent': return '#058700';
@@ -26,8 +27,9 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
             case 'Terrible': return '#870000';
         }
     }
+    const listBottom = lastOne? {marginBottom:'25%'}:null;
     return (
-        <Pressable style={styles.container} onPress={() => onPress(story._id)}>
+        <Pressable style={[styles.container,listBottom]} onPress={() => onPress(story._id)}>
 
             <View style={{ padding: 15 }}>
                 <View style={styles.row}>

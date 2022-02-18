@@ -43,13 +43,14 @@ const StoryList: React.FC<Props> = ({ stories }) => {
         navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))
     }
 
-    const renderItem: ListRenderItem<Story> = ({ item }) => <StoryCard
+    const renderItem: ListRenderItem<Story> = ({ item, index }) => <StoryCard
         key={item._id}
         onPress={goToStory}
         removeFromFavorites={removeFromFavorites}
         addToFavorites={addToFavorites}
         story={item}
         favoriteIds={favoriteIds}
+        lastOne = {stories.length-1===index}
     />
     return <FlatList
         initialNumToRender={5}
@@ -65,7 +66,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
 
 const styles = StyleSheet.create({
     list: {
-        width: '100%',
+        width: '100%'
     }
 
 })
