@@ -103,7 +103,7 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>
-      <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/stone/background.png')}>
+      <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.png')}>
         <NavigationContainer theme={navTheme}>
           {token ? HiddenTabs : LogIn}
         </NavigationContainer>

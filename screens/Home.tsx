@@ -157,7 +157,7 @@ const Home = () => {
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
 
-                <ImageBackground style={styles.criteriaContainer} source={require('../assets/stone/top.png')}>
+                <ImageBackground style={styles.criteriaContainer} source={require('../assets/top.png')}>
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}

@@ -1,13 +1,21 @@
-import { View } from 'react-native';
+import { useState } from 'react'
+import { View, Text, Pressable } from 'react-native';
 import { Controller, FieldValues, Control } from 'react-hook-form'
 import { CustomInput } from '../../UI/CustomInput';
 import styles from "./style"
+import { Button } from 'react-native-paper';
+import sentences from '../../../assets/sentences.json';
 type Props = {
     control: Control<FieldValues, object>
-    checkWords:(event:string)=>void;
+    checkWords: (event: string) => void;
 }
-export const PageText: React.FC<Props> = ({ control,checkWords }) => {
+export const PageText: React.FC<Props> = ({ control, checkWords }) => {
+    const [randomSentence, setRandomSentence] = useState<string>('Write here...');
 
+    const getRandomSentence = () => {
+        const sentence = sentences.data[Math.floor(Math.random() * sentences.data.length)].sentence;
+        setRandomSentence(sentence);
+    }
     return (
         <View style={styles.controllerContainer}>
             <Controller
@@ -21,11 +29,14 @@ export const PageText: React.FC<Props> = ({ control,checkWords }) => {
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput
                         multiline
-                        placeholder={'Write here...'}
+                        placeholder={randomSentence}
                         value={value}
                         onBlur={onBlur}
-                        onChangeText={(value)=>{onChange(value), checkWords(value)}} />
+                        onChangeText={(value) => { onChange(value), checkWords(value) }} />
                 )} />
+                 <Pressable  onPress={getRandomSentence}>
+            <Text style={{fontSize:12, textDecorationLine: 'underline', marginBottom:5}}>Don't know how to start? Get a random sentence!</Text>
+            </Pressable>
         </View>
 
     )

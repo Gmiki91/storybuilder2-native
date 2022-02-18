@@ -4,10 +4,10 @@
     "slug": "storybuilder2-native",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/stone/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "mycoolredirect",
     "splash": {
-      "image": "./assets/stone/splash.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -32,12 +32,12 @@
       "versionCode": 1,
       "softwareKeyboardLayoutMode":"pan",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/stone/icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/stone/icon.png"
+      "favicon": "./assets/icon.png"
     }
   }
 }

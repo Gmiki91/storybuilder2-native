@@ -41,7 +41,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
 
   return (
     <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
-      <ImageBackground resizeMode="stretch"  style={{padding:'3%', flex:1, margin:'1%' }} source={require('../assets/stone/pagecard.jpg')}>
+      <ImageBackground resizeMode="stretch"  style={{padding:'3%', flex:1, margin:'1%' }} source={require('../assets/pagecard.jpg')}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={() => onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
           <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
