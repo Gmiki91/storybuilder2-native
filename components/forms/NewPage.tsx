@@ -4,10 +4,8 @@ import { Form } from '../UI/Form';
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from 'react-native-paper'
 import { Color } from '../../Global';
-import { levels } from '../../models/LanguageLevels';
 import {PageText} from './elements/PageText';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
-import { Level } from './elements/Level';
 import { useState } from 'react';
 
 type Props = {
@@ -22,10 +20,6 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose, words }) => {
   const [word2, setWord2]= useState<boolean>(false);
   const [word3, setWord3]= useState<boolean>(false);
 
-  const handleForm = (form: FieldValues) => {
-    if (!form.level) form.level = levels[0].code;
-    onSubmit(form);
-  }
 
   const changeText=(event:string)=>{
     const eventLC = event.toLocaleLowerCase();
@@ -49,10 +43,9 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose, words }) => {
       </View>
      <PageText checkWords={changeText} control={control}/>
       {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
-      <Level control={control}/>
       <View style={styles.buttonContainer}>
         <Button color={Color.cancelBtn} onPress={onClose}>Cancel</Button>
-        <Button disabled={!isValid || !wordsValid()} color={Color.button} onPress={handleSubmit(handleForm)}>Submit</Button>
+        <Button disabled={!isValid || !wordsValid()} color={Color.button} onPress={handleSubmit(onSubmit)}>Submit</Button>
       </View>
     </Form>
   );

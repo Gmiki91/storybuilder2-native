@@ -43,7 +43,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                 <Text>{story.description}</Text>
                 <Author name={story.authorName} userId={story.authorId} />
                 <View style={styles.row}>
-                    <Text>{story.language}: {story.level}</Text>
+                    <Text>{story.language}: {story.level.code}</Text>
                 <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
                 </View>
                 <Text>Pages: {story.pageIds.length}</Text>

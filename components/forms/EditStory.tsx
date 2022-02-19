@@ -10,7 +10,7 @@ import {Form} from '../UI/Form';
 type Props = {
     story: Story;
     editable: boolean;
-    onClose?: () => void;
+    onClose: () => void;
 }
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 export const EditStory = ({  onClose, story, editable }: Props) => {

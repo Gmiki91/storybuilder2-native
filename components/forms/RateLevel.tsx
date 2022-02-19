@@ -11,7 +11,7 @@ type Props = {
 export const RateLevel: React.FC<Props> = ({ level, onSubmit, onClose }) => {
     const currentLevel = levels.find(l => l.code === level.code);
     return currentLevel ? <Form>
-        <Text>This text is level {currentLevel.code} ({currentLevel.text}). </Text>
+        <Text>This story is level {currentLevel.code} ({currentLevel.text}). </Text>
         <Text>Do you agree?</Text>
         <View style={{ flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>

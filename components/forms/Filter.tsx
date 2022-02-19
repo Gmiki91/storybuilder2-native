@@ -1,11 +1,11 @@
 import { levels } from '../../models/LanguageLevels';
 import data from '../../assets/languages.json';
 import { Form } from '../UI/Form';
-import {  Text, View, StyleSheet  } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Radio } from '../UI/Radio';
 import { Color } from '../../Global';
-import { Chip, Divider,Button } from 'react-native-paper';
+import { Chip, Divider, Button } from 'react-native-paper';
 
 export type FilterTypes = {
     from: string,
@@ -57,7 +57,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
             {data.map(lang => <Picker.Item key={lang.code} value={lang.name} label={lang.name} />)}
         </Picker>
 
-        <Divider/>
+        <Divider />
 
         <Text>Selected levels:</Text>
         <View style={{ flexDirection: 'row' }}>
@@ -72,10 +72,27 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
             onValueChange={e => { handleChange('levels', e) }} >
             {levels.map(level => <Picker.Item key={level.code} value={level.code} label={`${level.code} - ${level.text}`} />)}
         </Picker>
-
-        <Divider/>
-
-        <Text>Open for new submissions:</Text>
+        <Divider />
+        <Text>Stories:</Text>
+        <View style={styles.buttonContainer}>
+            <Radio
+                label='Own'
+                value='own'
+                status={filters.from === 'own' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, from: 'own' })} />
+            <Radio
+                label='Favorite'
+                value="favorite"
+                status={filters.from === 'favorite' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, from: 'favorite' })} />
+            <Radio
+                label='All'
+                value="all"
+                status={filters.from === 'all' ? 'checked' : 'unchecked'}
+                onPress={() => changeFilter({ ...filters, from: 'all' })} />
+        </View>
+        <Divider />
+        <Text>Archived:</Text>
         <View style={styles.buttonContainer}>
             <Radio
                 label='Yes'
@@ -94,30 +111,9 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
                 onPress={() => changeFilter({ ...filters, open: 'both' })} />
         </View>
 
-        <Divider/>
-
-        <Text>Stories from:</Text>
+        <Divider />
         <View style={styles.buttonContainer}>
-            <Radio
-                label='Own'
-                value='own'
-                status={filters.from === 'own' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, from: 'own' })} />
-            <Radio
-                label='Favorite'
-                value="favorite"
-                status={filters.from === 'favorite' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, from: 'favorite' })} />
-            <Radio
-                label='All'
-                value="all"
-                status={filters.from === 'all' ? 'checked' : 'unchecked'}
-                onPress={() => changeFilter({ ...filters, from: 'all' })} />
-        </View>
-
-        <Divider/>
-        <View style={styles.buttonContainer}>
-            <Button color={Color.cancelBtn}  onPress={onClearForm} >Clear</Button>
+            <Button color={Color.cancelBtn} onPress={onClearForm} >Clear</Button>
             <Button color={Color.button} onPress={onApply} >Apply</Button>
         </View>
     </Form>
@@ -128,6 +124,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         marginBottom: 10,
-        marginTop:10,
+        marginTop: 10,
     }
 })

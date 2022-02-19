@@ -12,11 +12,10 @@ type Props = {
   userId: String;
   ownContent: boolean;
   toConfirm: boolean;
-  onRateLevel: (page: Page) => void;
   onRateText: (rate: number, confirming: boolean) => void;
   jump: (amount: number) => void;
 }
-export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateLevel, onRateText, jump }) => {
+export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateText, jump }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
   const getVote = (n: number) => {
@@ -43,8 +42,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
     <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
       <ImageBackground resizeMode="stretch"  style={{padding:'3%', flex:1, margin:'1%' }} source={require('../assets/pagecard.jpg')}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Button mode='outlined' color={Color[page.level.code]} style={styles.level} onPress={() => onRateLevel(page)}><Text style={{ fontSize: 18 }}>{page.level.code}</Text></Button>
-          <Text style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }} >{page.text}</Text>
+          <Text style={{ paddingLeft: 10, paddingRight: 10, paddingTop:10, flex: 1 }} >{page.text}</Text>
           <View style={styles.footer}>
             <View style={{ flexDirection: 'row' }}>
               {likeButton}
@@ -80,13 +78,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginBottom: 15,
   },
-  level: {
-    alignSelf: 'flex-end',
-    textAlign: 'center',
-    alignItems: 'center',
-    fontSize: 22,
-    width: 32,
-    borderRadius: 50,
-    margin: 5
-  }
+ 
 })

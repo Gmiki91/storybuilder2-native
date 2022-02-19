@@ -24,7 +24,7 @@ type ParamList = {
 };
 
 type status = 'pending' | 'confirmed';
-type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | 'editStory'|'';
+type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | 'editStory' | '';
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
@@ -49,7 +49,7 @@ const StoryScreen = () => {
                 if (mounted)
                     setUser(result.data.user)
             })
-            .catch((e) => console.log('No user to display',e));
+            .catch((e) => console.log('No user to display', e));
         return () => { mounted = false }
     }, []);
 
@@ -62,7 +62,7 @@ const StoryScreen = () => {
                 if (mounted)
                     setStory(result.data.story)
             })
-            .catch((e) => console.log('No story to display',e));
+            .catch((e) => console.log('No story to display', e));
         return () => { mounted = false }
     }, [params.storyId])
 
@@ -79,7 +79,7 @@ const StoryScreen = () => {
                         setLoading(false);
                     }
                 })
-                .catch((e) => console.log('No pages to display',e));
+                .catch((e) => console.log('No pages to display', e));
         } else {
             if (mounted) setLoading(false);
         }
@@ -131,7 +131,7 @@ const StoryScreen = () => {
                 setPageStatus('confirmed');
                 setFormType('words');
             })
-            .catch(e => console.log('confirm Page error',e));
+            .catch(e => console.log('confirm Page error', e));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
@@ -161,17 +161,13 @@ const StoryScreen = () => {
     }
 
     const handleRateLevel = (rate: string) => {
-        const body = { rate: rate, pageId: pages[currentInterval]._id };
-        axios.put(`${LOCAL_HOST}/pages/rateLevel`, body, { headers }).then((result) => {
-            updateOnePage(result.data.updatedPage)
-            setFormType('');
-            axios.put(`${LOCAL_HOST}/stories/level`, { pageIds: story.pageIds, storyId: story._id }, { headers })
-                .catch((error) => console.log('rateStoryLevel error ',error))
-        }).catch(e => console.log('ratePageLevel error',e))
-    }
-
-    const openRateLevelModule = () => {
-        setFormType('rateLevel');
+        const body = { rate: rate, storyId: story._id };
+        axios.put(`${LOCAL_HOST}/stories/level`, body, { headers })
+            .then(result => {
+                setStory(result.data.story);
+                setFormType('');
+            })
+            .catch((error) => console.log('rateStoryLevel error ', error))
     }
 
     const jumpTo = (amount: number) => {
@@ -203,16 +199,17 @@ const StoryScreen = () => {
             word2: arr[1]?.toLocaleLowerCase().trim(),
             word3: arr[2]?.toLocaleLowerCase().trim()
         }
-        axios.put(`${LOCAL_HOST}/stories/`, body, { headers });
-        setFormType('')
+        axios.put(`${LOCAL_HOST}/stories/`, body, { headers })
+            .then(result => { setStory(result.data.story); setFormType('') })
+            .catch(err => console.log('setWords error: ', err));
     }
 
     const getForm = () => {
         switch (formType) {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
-            case 'rateLevel': return <RateLevel level={pages[currentInterval].level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
+            case 'rateLevel': return <RateLevel level={story.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
-            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
+            case 'editStory': return <EditStory  editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
         }
         return null;
     }
@@ -232,17 +229,17 @@ const StoryScreen = () => {
             userId={user._id}
             ownContent={user._id === (page.authorId || story.authorId)}
             toConfirm={pageStatus === 'pending' && story.authorId === user._id}
-            onRateLevel={openRateLevelModule}
             onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings)}
             jump={jumpTo}
         />
     )
     return <Provider>
         <View style={styles.container}>
-            <BackButton />
-            <Pressable onPress={()=>setFormType('editStory')}>
-                <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
-            </Pressable>
+          
+                <Pressable onPress={() => setFormType('editStory')}>
+                    <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
+                </Pressable>
+              
             {story[pageType]?.length > 0 ?
                 <Carousel
                     length={story[pageType]?.length}
@@ -263,22 +260,23 @@ const StoryScreen = () => {
             {toggleStatus}
         </View>
         {addPageVisible && <Fab onPress={onNewPagePressed} />}
+        <BackButton />
+        <Button mode='contained' style={styles.level} color={Color[story.level?.code]} onPress={()=>setFormType('rateLevel')}><Text style={{ fontSize: 18 }}>{story.level?.code}</Text></Button>
         <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={4000}>{snackMessage} </Snackbar>
     </Provider>
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
+
     },
     title: {
-        backgroundColor: Color.main,
         textAlign: 'center',
-        borderRadius: 15,
         fontSize: 20,
-        marginBottom: 5,
-        padding: 5,
+        padding: '2%',
+        backgroundColor: Color.main,
         borderBottomWidth: 5,
         borderWidth: 1,
         elevation: 3,
@@ -288,7 +286,18 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
+        borderRadius: 15,
     },
+
+    level:{
+        borderRadius:15,
+        position: 'absolute',
+        marginRight: 10,
+        marginTop:25,
+        right: 0,
+        top: 0,
+    },
+
     scrollBottom: {
         height: '100%',
         width: '12%'

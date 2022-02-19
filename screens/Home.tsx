@@ -40,7 +40,7 @@ const Home = () => {
     const [user, setUser] = useState({} as User);
     const headers = { Authorization: `Bearer ${token}` };
     const [searchTitle, setSearchTitle] = useState('');
-    const [sortBy, setSortBy] = useState('ratingAvg');
+    const [sortBy, setSortBy] = useState('title');
     const [sortDirection, setSortDirection] = useState(1);
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
@@ -57,7 +57,7 @@ const Home = () => {
                 if (mounted)
                     setUser(result.data.user)
             })
-            .catch((e) => console.log('No user to display',e));
+            .catch((e) => console.log('No user to display', e));
         return () => { mounted = false }
     }, []);
 
@@ -65,12 +65,13 @@ const Home = () => {
         isLoading(true);
         Keyboard.dismiss()
         let mounted = true;
-        const stories = await axios.post(`${LOCAL_HOST}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => result.data.stories)
-        if (mounted) {
-            setStories(stories);
-            isLoading(false);
-            setShowModal('');
-        }
+        axios.post(`${LOCAL_HOST}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => {
+            if (mounted) {
+                setStories(result.data.stories);
+                isLoading(false);
+                setShowModal('');
+            }
+        });
         return () => { mounted = false }
     }, [searchCriteria, sortBy, sortDirection]);
 
@@ -118,7 +119,7 @@ const Home = () => {
         setSearchTitle(value)
     }
     const onNewStoryClicked = () => {
-        if (user.numberOfTablets < 1 ) {
+        if (user.numberOfTablets < 1) {
             setErrorMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
         } else {
             setShowModal('NewStory')

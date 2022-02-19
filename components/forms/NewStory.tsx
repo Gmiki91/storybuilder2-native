@@ -33,7 +33,6 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         const headers = { Authorization: `Bearer ${realToken}` };
         const page = {
             text: form.text,
-            level: form.level || levels[0].code,
             language: form.language || languages[0].name,
             rating: []
         }
@@ -61,25 +60,9 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     return (
         <Form>
             {tokenProp && <Text style={{justifyContent:'center'}}>Create your first story</Text>}
+           
             <Title control={control}/>
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
-            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional)</Text>
-            <Pressable style={styles.controllerContainer}>
-                <Controller
-                    control={control}
-                    name="description"
-                    render={({ field: { onChange, value, onBlur } }) => (
-                        <CustomInput
-                            multiline
-                            placeholder='Write here...'
-                            value={value}
-                            onBlur={onBlur}
-                            onChangeText={value => onChange(value)} />
-                    )} />
-            </Pressable>
-            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
-            <PageText checkWords={() => { }} control={control} />
-            {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -98,20 +81,29 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             <Divider />
             <Level control={control} />
             <Divider />
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional)</Text>
+            <Pressable style={styles.controllerContainer}>
+                <Controller
+                    control={control}
+                    name="description"
+                    render={({ field: { onChange, value, onBlur } }) => (
+                        <CustomInput
+                            multiline
+                            placeholder='Write here...'
+                            value={value}
+                            onBlur={onBlur}
+                            onChangeText={value => onChange(value)} />
+                    )} />
+            </Pressable>
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
+            <PageText checkWords={() => { }} control={control} />
+            {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
+           
             <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
             <Word name='word1' placeholder='#1' control={control} />
             <Word name='word2' placeholder='#2' control={control} />
             <Word name='word3' placeholder='#3' control={control} />
-            {/* <View style={[styles.controllerContainer, { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }]}>
-                <Text>May others contribute?</Text>
-                <Controller
-                    control={control}
-                    name="open"
-                    render={({ field: { onChange, value, onBlur } }) => (
 
-                        <Switch value={value} onValueChange={value => onChange(value)} />
-                    )} />
-            </View> */}
             <View style={styles.buttonContainer}>
                 {!tokenProp && <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>}
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>

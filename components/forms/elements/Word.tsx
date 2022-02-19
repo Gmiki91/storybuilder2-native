@@ -12,6 +12,9 @@ export const Word: React.FC<Props> = ({ control, name,placeholder }) => (
         <Controller
                 control={control}
                 name={name}
+                rules={{
+                    maxLength: { value: 50, message: 'Maximum length is 50 characters' },
+                }}
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput
                         placeholder={placeholder || ''}
