@@ -47,7 +47,7 @@ const Home = () => {
     const [stories, setStories] = useState<Story[]>([]);
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, isLoading] = useState(false);
+    const [loading, isLoading] = useState(true);
 
 
     useEffect(() => {
@@ -62,7 +62,7 @@ const Home = () => {
     }, []);
 
     const getList = useCallback(async () => {
-        isLoading(true);
+        if (!loading) isLoading(true);
         Keyboard.dismiss()
         let mounted = true;
         axios.post(`${LOCAL_HOST}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => {
@@ -77,7 +77,8 @@ const Home = () => {
 
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
-        getList();
+        if (!isFocused) isLoading(true);
+        else getList();
     }, [getList, isFocused]);
 
     const handleSort = (sortValue: string) => {
@@ -139,16 +140,17 @@ const Home = () => {
     }
     const form = getForm();
     const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
+
     return (
         <Provider>
+            <Portal>
+                <Modal
+                    visible={showModal !== '' || loading}
+                    onDismiss={() => setShowModal('')}>
+                    {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
+                </Modal>
+            </Portal>
             <View style={styles.container}>
-                <Portal>
-                    <Modal
-                        visible={showModal !== '' || loading}
-                        onDismiss={() => setShowModal('')}>
-                        {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
-                    </Modal>
-                </Portal>
                 <Searchbar
                     onIconPress={onStoryNameSearch}
                     style={styles.searchBar}
@@ -157,7 +159,6 @@ const Home = () => {
                     onChangeText={handleSearchBar}
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
-
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/top.png')}>
                     <SortBy
                         direction={sortDirection}
@@ -167,11 +168,13 @@ const Home = () => {
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </ImageBackground>
+
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show' />
                     : <StoryList stories={stories} />}
+
+                <Fab onPress={onNewStoryClicked} />
             </View>
-            <Fab onPress={onNewStoryClicked} />
             <Snackbar onDismiss={() => setErrorMessage('')} visible={errorMessage !== ''} duration={4000}>{errorMessage}</Snackbar>
         </Provider>
     )

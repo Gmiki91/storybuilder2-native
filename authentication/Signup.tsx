@@ -6,7 +6,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
 import AuthStyle from './AuthStyle';
-import { useAuth } from '../context/AuthContext';
 import { Button, Snackbar } from 'react-native-paper';
 import { Form } from '../components/UI/Form';
 import { Color } from '../Global';
@@ -21,7 +20,6 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [savedToken, setSavedToken] = useState();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-  const { setToken } = useAuth();
 
   const postSignup = (form: FieldValues) => {
     axios.post(`https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api/users/signup`, {
@@ -111,7 +109,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
           <Button color={Color.button} disabled={!isValid} onPress={handleSubmit(postSignup)}>Sign up</Button>
           <Pressable onPress={() => navigation.navigate('Login')} style={{ marginTop: 10, alignItems: 'center' }}><Text>Already have an account?</Text></Pressable>
         </Form>
-        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={3000}>Username already taken</Snackbar>
+        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={3000}>Username or email already taken</Snackbar>
       </View>
     </Provider>
   )

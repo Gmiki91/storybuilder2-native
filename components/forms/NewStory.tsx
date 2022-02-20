@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
-import { Divider, Button, Switch } from 'react-native-paper';
+import { Divider, Button } from 'react-native-paper';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
@@ -52,7 +52,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(result => {
                 if (tokenProp) setToken(tokenProp);
-                else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
+                //else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
+                navigation.dispatch(CommonActions.navigate({ name: 'Home'}));
             })
             .catch(error => console.log('postStory error', error))
     }
@@ -60,7 +61,6 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     return (
         <Form>
             {tokenProp && <Text style={{justifyContent:'center'}}>Create your first story</Text>}
-           
             <Title control={control}/>
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>

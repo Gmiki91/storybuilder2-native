@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
 import { Color } from '../Global';
 import { useAuth } from '../context/AuthContext';
@@ -36,27 +36,32 @@ const StoryScreen = () => {
     const [currentInterval, setCurrentInterval] = useState(0);
     const [formType, setFormType] = useState<FormTypes>('');
     const [pageStatus, setPageStatus] = useState<status>('confirmed');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [jump, toggleJump] = useState(false);
     const [snackMessage, setSnackMessage] = useState('');
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
+    const isFocused = useIsFocused();
 
     // init user
     useEffect(() => {
         let mounted = true
-        axios.get(`${LOCAL_HOST}/users/`, { headers })
-            .then(result => {
-                if (mounted)
-                    setUser(result.data.user)
-            })
-            .catch((e) => console.log('No user to display', e));
+        if (isFocused) {
+            axios.get(`${LOCAL_HOST}/users/`, { headers })
+                .then(result => {
+                    if (mounted)
+                        setUser(result.data.user)
+                })
+                .catch((e) => console.log('No user to display', e));
+        } else {
+            setLoading(true);
+        }
         return () => { mounted = false }
-    }, []);
+    }, [isFocused]);
 
     // init story
     useEffect(() => {
         let mounted = true
-        setLoading(true);
+        if (!loading) setLoading(true);
         axios.get(`${LOCAL_HOST}/stories/one/${params.storyId}`)
             .then(result => {
                 if (mounted)
@@ -69,9 +74,9 @@ const StoryScreen = () => {
     //init pages
     useEffect(() => {
         let mounted = true
-        if (!loading) setLoading(true);
         const storyLength = story[pageType]?.length - 1;
         if (storyLength >= 0) {
+            if (!loading) setLoading(true);
             axios.get(`${LOCAL_HOST}/pages/many/${story[pageType]}`)
                 .then(result => {
                     if (mounted) {
@@ -80,8 +85,6 @@ const StoryScreen = () => {
                     }
                 })
                 .catch((e) => console.log('No pages to display', e));
-        } else {
-            if (mounted) setLoading(false);
         }
         return () => { mounted = false }
     }, [story, pageType]);
@@ -209,7 +212,7 @@ const StoryScreen = () => {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={story.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
-            case 'editStory': return <EditStory  editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
+            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
         }
         return null;
     }
@@ -234,34 +237,32 @@ const StoryScreen = () => {
         />
     )
     return <Provider>
+        <Portal>
+            <Modal
+                visible={formType !== '' || loading}
+                onDismiss={() => setFormType('')}>
+                {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
+            </Modal>
+        </Portal>
         <View style={styles.container}>
-          
-                <Pressable onPress={() => setFormType('editStory')}>
-                    <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
-                </Pressable>
-              
-            {story[pageType]?.length > 0 ?
-                <Carousel
+            <Pressable onPress={() => setFormType('editStory')}>
+                <Text numberOfLines={2} ellipsizeMode='tail' style={styles.title}>{story.title}</Text>
+            </Pressable>
+            {story[pageType]?.length === 0 ? <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />
+                : <Carousel
                     length={story[pageType]?.length}
                     changeInterval={(value) => setCurrentInterval(prevState => prevState + value)}
                     pageType={pageType}
                     jump={jump}
                     currentInterval={currentInterval}>
                     {mappedPages}
-                </Carousel>
-                : <SadMessageBox message={`This story has no ${pageStatus} pages yet`} />}
-            <Portal>
-                <Modal
-                    visible={formType !== '' || loading}
-                    onDismiss={() => setFormType('')}>
-                    {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
-                </Modal>
-            </Portal>
+                </Carousel>}
+
             {toggleStatus}
+            <BackButton />
+            {addPageVisible && <Fab onPress={onNewPagePressed} />}
+            <Button mode='contained' style={styles.level} color={Color[story.level?.code]} onPress={() => setFormType('rateLevel')}><Text style={{ fontSize: 18 }}>{story.level?.code}</Text></Button>
         </View>
-        {addPageVisible && <Fab onPress={onNewPagePressed} />}
-        <BackButton />
-        <Button mode='contained' style={styles.level} color={Color[story.level?.code]} onPress={()=>setFormType('rateLevel')}><Text style={{ fontSize: 18 }}>{story.level?.code}</Text></Button>
         <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={4000}>{snackMessage} </Snackbar>
     </Provider>
 }
@@ -289,11 +290,11 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
 
-    level:{
-        borderRadius:15,
+    level: {
+        borderRadius: 15,
         position: 'absolute',
         marginRight: 10,
-        marginTop:25,
+        marginTop: 25,
         right: 0,
         top: 0,
     },
