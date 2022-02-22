@@ -76,7 +76,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
                 required: { value: true, message: 'Required' },
                 minLength: { value: 3, message: 'Minimum length is 3 characters' },
                 maxLength: { value: 100, message: 'Maximum length is 100 characters' },
-                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email pattern' }
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+\s*$/, message: 'Invalid email pattern' }
               }}
               render={({ field: { onChange, value, onBlur } }) => (
                 <CustomInput

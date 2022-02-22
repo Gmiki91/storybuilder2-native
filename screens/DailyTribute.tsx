@@ -30,10 +30,8 @@ const DailyTribute = () => {
             axios.get(`${LOCAL_HOST}/stories/tribute/data`, { headers })
                 .then(result => {
                     if (mounted) {
-                        const timeInMs = new Date(result.data.markedStoryAt).getTime();
-                        const hoursLeft = (24 - ((Date.now() - timeInMs) / 1000 / 60 / 60));
-                        const minutesLeft = (24 * 60 - ((Date.now() - timeInMs) / 1000 / 60));
-                        setData({ story: result.data.story, hoursLeft, minutesLeft });
+                        const { story, minutesLeft, hoursLeft } = result.data;
+                        setData({ story, hoursLeft, minutesLeft });
                         isLoading(false)
                     }
                 })
