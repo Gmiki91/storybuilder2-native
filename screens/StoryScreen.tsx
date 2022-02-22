@@ -112,11 +112,11 @@ const StoryScreen = () => {
         const index = story.pendingPageIds.indexOf(pageId)
         const idsToDelete = [...story.pendingPageIds];
         idsToDelete.splice(index, 1);
-        axios.delete(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`, { headers })
+        axios.patch(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`,{storyId:story._id}, { headers })
     }
 
     const removePage = (pageId: string) => {
-        axios.delete(`${LOCAL_HOST}/pages/${pageId}`, { headers })
+        axios.patch(`${LOCAL_HOST}/pages/${pageId}`,{storyId:story._id}, { headers })
             .catch(e => console.log('removePage error', e)); //remove page document
         axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
             .then(result => {
