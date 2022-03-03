@@ -27,7 +27,7 @@ const Profile = () => {
             .then(result => {
                 if (mounted)
                     setUser(result.data.user);
-            }).catch(e=>console.log('profile getuser error',e));
+            }).catch(error=> setResponse(error.response.data.message));
         }
         return () => { mounted = false }
     }, [isFocused]);
@@ -51,8 +51,7 @@ const Profile = () => {
             .catch(error => setResponse(error.response.data.message));
     }
 
-
-    return user ?
+    return user?
         <ScrollView>
             <Stats userProp={user}>
                 <View style={{ paddingTop: 40, marginTop: 40, borderTopWidth: 1 }}>
@@ -69,7 +68,7 @@ const Profile = () => {
                 <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={3000}>{response}</Snackbar>
             </Stats>
         </ScrollView>
-        : <Text>Loading</Text>
+        :  <Text>Loading</Text>
 
 }
 

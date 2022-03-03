@@ -16,7 +16,7 @@ import { Title } from './elements/Title';
 import { levels, LevelCode } from '../../models/LanguageLevels';
 import { Word } from './elements/Word';
 import { RadioButton } from '../UI/RadioButton';
-
+import { Snackbar } from 'react-native-paper';
 type Props = {
     onCloseForm: () => void;
     tokenProp?: string
@@ -24,6 +24,7 @@ type Props = {
 
 export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     const [selectedLevel, setSelectedLevel] = useState<LevelCode>('A');
+    const [error, setError] = useState('');
     const { token, setToken } = useAuth();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
 
@@ -39,7 +40,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             rating: []
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
-            .catch(error => console.log('postPage error', error));
+            .catch(error => setError('An error occured while saving the page'));
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
@@ -56,7 +57,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                 //else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
                 navigation.dispatch(CommonActions.navigate({ name: 'Home'}));
             })
-            .catch(error => console.log('postStory error', error))
+            .catch(error => setError('An error occured while saving the story'))
     }
 
     return (
@@ -120,6 +121,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                 {!tokenProp && <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>}
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
+            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
         </Form>
     );
 };

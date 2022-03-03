@@ -57,7 +57,7 @@ const Home = () => {
                 if (mounted)
                     setUser(result.data.user)
             })
-            .catch((e) => console.log('No user to display', e));
+            .catch(() =>setErrorMessage('An error occured while loading the user data'));
         return () => { mounted = false }
     }, []);
 
@@ -71,7 +71,8 @@ const Home = () => {
                 isLoading(false);
                 setShowModal('');
             }
-        });
+        })
+        .catch(() =>setErrorMessage('An error occured while loading the stories'));
         return () => { mounted = false }
     }, [searchCriteria, sortBy, sortDirection]);
 

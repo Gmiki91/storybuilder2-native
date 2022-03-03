@@ -1,6 +1,7 @@
 import axios from "axios";
-import { View, Text, StyleSheet } from 'react-native';
 import { useEffect, useState } from "react";
+import { View, Text, StyleSheet } from 'react-native';
+import{Snackbar} from 'react-native-paper';
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
@@ -41,6 +42,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
     const headers = { Authorization: `Bearer ${token}` };
 
     const [user, setUser] = useState<User>();
+    const [error, setError] = useState('');
     const [storyData, setStoryData] = useState<StoryData>({} as StoryData);
     const [pageData, setPageData] = useState<PageData>({} as PageData);
     useEffect(() => {
@@ -51,7 +53,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     if(mounted)
                     setUser(result.data.user);
                 })
-                .catch(e=>console.log('getUser error',e));
+                .catch(e=>setError('Error while loading the user data.'));
         } else {
             if(mounted)
             setUser(userProp)
@@ -70,7 +72,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     totalVotes: result.data.totalVotes,
                     upVotes: result.data.upVotes
                 })})
-                .catch(e=>console.log('getStories error',e));
+                .catch(e=>setError('Error while loading the user data.'));
             axios.get(`${LOCAL_HOST}/pages/all/${user._id}`, { headers })
                 .then(result => {
                     if(mounted) 
@@ -81,7 +83,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                         langInfo: result.data.langInfo
                     })
                 })
-                .catch(e=>console.log('getPages error',e));
+                .catch(e=>setError('Error while loading the user data.'));
         }
         return () => { mounted = false }
     }, [user])
@@ -114,6 +116,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                 {children}
             </Form>
             {!userProp &&<BackButton/>}
+            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
         </View>
         : <Text>Loading</Text>
 }

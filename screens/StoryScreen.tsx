@@ -51,7 +51,7 @@ const StoryScreen = () => {
                     if (mounted)
                         setUser(result.data.user)
                 })
-                .catch((e) => console.log('No user to display', e));
+                .catch(() => setSnackMessage('No user to display'));
         } else {
             setLoading(true);
         }
@@ -67,7 +67,7 @@ const StoryScreen = () => {
                 if (mounted)
                     setStory(result.data.story)
             })
-            .catch((e) => console.log('No story to display', e));
+            .catch(() => setSnackMessage('No story to display'));
         return () => { mounted = false }
     }, [params.storyId])
 
@@ -84,7 +84,7 @@ const StoryScreen = () => {
                         setLoading(false);
                     }
                 })
-                .catch((e) => console.log('No pages to display', e));
+                .catch(() => setSnackMessage('No pages to display'));
         }
         return () => { mounted = false }
     }, [story, pageType]);
@@ -98,13 +98,15 @@ const StoryScreen = () => {
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
-        axios.post(`${LOCAL_HOST}/stories/pendingPage`, body, { headers }).then((result) => {
-            setStory(result.data.story);
-            if (result.data.tributeCompleted) {
-                setSnackMessage('You completed your daily tribute and have recieved 1 clay tablet. Well done!');
-            }
-            setFormType('');
-        });
+        axios.post(`${LOCAL_HOST}/stories/pendingPage`, body, { headers })
+            .then((result) => {
+                setStory(result.data.story);
+                if (result.data.tributeCompleted) {
+                    setSnackMessage('You completed your daily tribute and have recieved 1 clay tablet. Well done!');
+                }
+                setFormType('');
+            })
+            .catch(() => setSnackMessage('An error has occurred'));
     }
 
     // softdelete all pages except the current one
@@ -112,18 +114,18 @@ const StoryScreen = () => {
         const index = story.pendingPageIds.indexOf(pageId)
         const idsToDelete = [...story.pendingPageIds];
         idsToDelete.splice(index, 1);
-        axios.patch(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`,{storyId:story._id}, { headers })
+        axios.patch(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`, { storyId: story._id }, { headers })
     }
 
     const removePage = (pageId: string) => {
-        axios.patch(`${LOCAL_HOST}/pages/${pageId}`,{storyId:story._id}, { headers })
-            .catch(e => console.log('removePage error', e)); //remove page document
+        axios.patch(`${LOCAL_HOST}/pages/${pageId}`, { storyId: story._id }, { headers })
+            .catch(() => setSnackMessage('An error has occured while removing the page')); //remove page document
         axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
             .then(result => {
                 setPageStatus('confirmed');
                 setStory(result.data.story);
             }) //remove pageId from story
-            .catch(e => console.log('removePageId from story error', e));
+            .catch(() => setSnackMessage('An error has occured while removing the page'));
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
@@ -134,7 +136,7 @@ const StoryScreen = () => {
                 setPageStatus('confirmed');
                 setFormType('words');
             })
-            .catch(e => console.log('confirm Page error', e));
+            .catch(() => setSnackMessage('An error has occured'));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
     }
 
@@ -157,9 +159,12 @@ const StoryScreen = () => {
             if (vote === -1) removePage(pageId);
             if (vote === 1) confirmPage(pageId, ratings);
         } else {
-            const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId }, { headers }).then(result => result.data);
+            const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId }, { headers })
+                .then(result => result.data)
+                .catch(() => setSnackMessage('An error has occured'));
             updateOnePage(newPage);
-            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { vote, storyId: params.storyId }, { headers }); // rate only counts if page is not pending
+            if (pageStatus === 'confirmed') axios.put(`${LOCAL_HOST}/stories/rate`, { vote, storyId: params.storyId }, { headers }) // rate only counts if page is not pending
+                .catch(() => setSnackMessage('An error has occured'));
         }
     }
 
@@ -170,7 +175,7 @@ const StoryScreen = () => {
                 setStory(result.data.story);
                 setFormType('');
             })
-            .catch((error) => console.log('rateStoryLevel error ', error))
+            .catch(() => setSnackMessage('An error has occured'));
     }
 
     const jumpTo = (amount: number) => {
@@ -204,7 +209,7 @@ const StoryScreen = () => {
         }
         axios.put(`${LOCAL_HOST}/stories/`, body, { headers })
             .then(result => { setStory(result.data.story); setFormType('') })
-            .catch(err => console.log('setWords error: ', err));
+            .catch(() => setSnackMessage('An error has occured'));
     }
 
     const getForm = () => {

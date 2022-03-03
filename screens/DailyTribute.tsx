@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from "react-native"
-import { Provider, Modal, Portal, ActivityIndicator } from 'react-native-paper';
+import { Provider, Modal, Portal, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
 import { useIsFocused, useNavigation, CommonActions } from '@react-navigation/native';
 import StoryCard from '../components/StoryCard';
@@ -19,10 +19,13 @@ type Data = {
 const DailyTribute = () => {
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-    const [data, setData] = useState<Data>({} as Data);
-    const [loading, isLoading] = useState(true);
     const isFocused = useIsFocused();
     const navigation = useNavigation();
+
+    const [data, setData] = useState<Data>({} as Data);
+    const [error, setError] = useState('');
+    const [loading, isLoading] = useState(true);
+
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
@@ -35,7 +38,7 @@ const DailyTribute = () => {
                         isLoading(false)
                     }
                 })
-                .catch(error => console.log('getTributeError', error))
+                .catch(error => setError('An error has occured'))
         } else {
             isLoading(true);
         }
@@ -74,6 +77,7 @@ const DailyTribute = () => {
             <View style={styles.container}>
                 <Timer text={'until next tribute'} minutes={data.minutesLeft} hours={data.hoursLeft} />
             </View>}
+            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
     </Provider>
 }
 
