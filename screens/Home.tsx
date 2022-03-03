@@ -97,12 +97,12 @@ const Home = () => {
     const onClearFilter = () => {
         setTempSearchCriteria(defaultSearchCriteria);
         setSearchCriteria(defaultSearchCriteria);
-        getList();
+  
     }
 
     const onApplyFilter = () => {
         setSearchCriteria(tempSearchCriteria);
-        getList();
+     
     }
 
     const onStoryNameSearch = () => {

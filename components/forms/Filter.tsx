@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Radio } from '../UI/Radio';
 import { Color } from '../../Global';
 import { Chip, Divider, Button } from 'react-native-paper';
+import { CheckBox } from '../UI/CheckBox';
 
 export type FilterTypes = {
     from: string,
@@ -33,7 +34,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         }
     }
 
-    const handleRemoveFilter = (filter: 'languages' | 'levels', value: string) => {
+    const handleRemove = (filter: 'languages' | 'levels', value: string) => {
         const arr = [...filters[filter]];
         const index = arr.findIndex(e => e === value);
         arr.splice(index, 1);
@@ -42,11 +43,17 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         changeFilter(updatedFilters);
     }
 
+    const handleLevel=(checked:boolean, value:string)=>{
+        if(checked) handleChange('levels', value)
+        else handleRemove('levels',value)
+          
+    }
+
     return <Form>
         <Text>Selected languages:</Text>
-        <View style={{ flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'column'}}>
             {filters.languages.map(lang =>
-                <Chip key={lang} onPress={() => handleRemoveFilter('languages', lang)} onClose={() => handleRemoveFilter('languages', lang)}>
+                <Chip style={{  backgroundColor: Color.secondary}}key={lang} onPress={() => handleRemove('languages', lang)} onClose={() => handleRemove('languages', lang)}>
                     <Text>{lang}</Text>
                 </Chip>
             )}
@@ -60,18 +67,8 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         <Divider />
 
         <Text>Selected levels:</Text>
-        <View style={{ flexDirection: 'row' }}>
-            {filters.levels.map(lvl =>
-                <Chip key={lvl} onPress={() => handleRemoveFilter('levels', lvl)} onClose={() => handleRemoveFilter('levels', lvl)}>
-                    <Text>{lvl}</Text>
-                </Chip>
-            )}
-        </View>
-        <Picker
-            selectedValue={''}
-            onValueChange={e => { handleChange('levels', e) }} >
-            {levels.map(level => <Picker.Item key={level.code} value={level.code} label={`${level.code} - ${level.text}`} />)}
-        </Picker>
+        {levels.map(level => <CheckBox onPress={(checked)=>handleLevel(checked, level.code)} key={level.code} checked={filters.levels.indexOf(level.code)!==-1} label={`${level.code} - ${level.text}`} />)}
+    
         <Divider />
         <Text>Stories:</Text>
         <View style={styles.buttonContainer}>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useState } from 'react';
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Divider, Button } from 'react-native-paper';
@@ -11,10 +12,10 @@ import { Form } from '../UI/Form';
 import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
 import { PageText } from './elements/PageText';
-import { Level } from './elements/Level';
 import { Title } from './elements/Title';
-import { levels } from '../../models/LanguageLevels';
+import { levels, LevelCode } from '../../models/LanguageLevels';
 import { Word } from './elements/Word';
+import { RadioButton } from '../UI/RadioButton';
 
 type Props = {
     onCloseForm: () => void;
@@ -22,6 +23,7 @@ type Props = {
 }
 
 export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
+    const [selectedLevel, setSelectedLevel] = useState<LevelCode>('A');
     const { token, setToken } = useAuth();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
 
@@ -43,12 +45,11 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             description: form.description?.trim(),
             language: form.language || languages[0].name,
             pageId: pageId,
-            level: form.level || levels[0].code,
+            level: selectedLevel,
             word1: form.word1?.toLowerCase().trim(),
             word2: form.word2?.toLowerCase().trim(),
             word3: form.word3?.toLowerCase().trim()
         };
-
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(result => {
                 if (tokenProp) setToken(tokenProp);
@@ -60,8 +61,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
     return (
         <Form>
-            {tokenProp && <Text style={{justifyContent:'center'}}>Create your first story</Text>}
-            <Title control={control}/>
+            {tokenProp && <Text style={{ justifyContent: 'center' }}>Create your first story</Text>}
+            <Title control={control} />
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
             <View style={styles.controllerContainer}>
                 <Controller
@@ -79,7 +80,18 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     )} />
             </View>
             <Divider />
-            <Level control={control} />
+            <View>
+                {levels.map(level => (
+                    <RadioButton
+                        key={level.code}
+                        label={`${level.text} (${level.code})`}
+                        value={level.code}
+                        checked={selectedLevel === level.code}
+                        onPress={() => setSelectedLevel(level.code)}
+                    />
+                ))}
+
+            </View>
             <Divider />
             <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional)</Text>
             <Pressable style={styles.controllerContainer}>
@@ -98,7 +110,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
             <PageText checkWords={() => { }} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
-           
+
             <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
             <Word name='word1' placeholder='#1' control={control} />
             <Word name='word2' placeholder='#2' control={control} />

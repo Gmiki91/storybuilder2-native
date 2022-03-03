@@ -51,7 +51,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                     <Text>Pending: {story.pendingPageIds.length}</Text>
                     {!story.open && <FontAwesome name="lock" size={24} color="black" />}
                     <View style={{ flexDirection: 'row' }}>
-                        {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} </Text>}<Text>({story.rating.total} votes)</Text>
+                        {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} ({story.rating.total} votes)</Text>}
                     </View>
                 </View>
             </View>
