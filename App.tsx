@@ -44,10 +44,11 @@ const navTheme = {
 };
 export default function App() {
   const [token, setAuthToken] = useState<string>();
-
+  const [loading, setLoading] = useState<boolean>(true);
   const getToken = async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) setAuthToken(token);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function App() {
     setAuthToken(token);
   }
 
-  return (
+  return !loading && (
     <AuthContext.Provider value={{ token, setToken }}>
       <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.png')}>
         <NavigationContainer theme={navTheme}>
