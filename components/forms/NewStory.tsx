@@ -37,10 +37,9 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         const page = {
             text: form.text,
             language: form.language || languages[0].name,
-            rating: []
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
-            .catch(error => setError('An error occured while saving the page'));
+            .catch(() => setError('An error occured while saving the page'));
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
