@@ -7,13 +7,13 @@ import sentences from '../../../assets/sentences.json';
 type Props = {
     control: Control<FieldValues, object>
     checkWords: (event: string) => void;
+    newStory?:boolean;
 }
-const MAX_CHAR = 280;
-export const PageText: React.FC<Props> = ({ control, checkWords }) => {
+export const PageText: React.FC<Props> = ({ control, checkWords,newStory }) => {
     const [randomSentence, setRandomSentence] = useState<string>('Write here...');
     const [hideButton, setHideButton] = useState<boolean>(false);
     const [charCount, setCharCount] = useState(0);
-
+    const maxChar = newStory ? 1400 : 280;
     const getRandomSentence = () => {
         const sentence = sentences.data[Math.floor(Math.random() * sentences.data.length)].sentence;
         setRandomSentence(sentence);
@@ -27,14 +27,14 @@ export const PageText: React.FC<Props> = ({ control, checkWords }) => {
 
     return (
         <View style={styles.controllerContainer}>
-             <Text style={MAX_CHAR<charCount ? {color:'red'}:{color:'black'}} >{charCount}/{MAX_CHAR}</Text>
+             <Text style={maxChar<charCount ? {color:'red'}:{color:'black'}} >{charCount}/{maxChar}</Text>
             <Controller
                 control={control}
                 name="text"
                 rules={{
                     required: { value: true, message: 'Required' },
                     minLength: { value: 10, message: 'Minimum length is 10 characters' },
-                    maxLength: { value: MAX_CHAR, message: `Maximum length is ${MAX_CHAR} characters` },
+                    maxLength: { value: maxChar, message: `Maximum length is ${maxChar} characters` },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput

@@ -51,15 +51,16 @@ const Home = () => {
 
 
     useEffect(() => {
-        let mounted = true
+        let mounted = true;
+        if(isFocused){
         axios.get(`${LOCAL_HOST}/users/`, { headers })
             .then(result => {
                 if (mounted)
-                    setUser(result.data.user)
-            })
-            .catch(() =>setErrorMessage('An error occured while loading the user data'));
+                    setUser(result.data.user);
+            }).catch(error=> setErrorMessage(error.response.data.message));
+        }
         return () => { mounted = false }
-    }, []);
+    }, [isFocused]);
 
     const getList = useCallback(async () => {
         if (!loading) isLoading(true);

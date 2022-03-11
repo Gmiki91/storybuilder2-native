@@ -108,7 +108,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     )} />
             </Pressable>
             <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
-            <PageText checkWords={() => { }} control={control} />
+            <PageText newStory checkWords={() => { }} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
 
             <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
