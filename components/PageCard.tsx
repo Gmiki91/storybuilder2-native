@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView } from 'react-native';
 import { Page } from "../models/Page";
 import { Color } from "../Global";
 import { Button, IconButton } from 'react-native-paper';

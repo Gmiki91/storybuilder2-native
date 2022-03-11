@@ -58,16 +58,14 @@ export default function App() {
 
   const VisibleTabs = () => (
     <Tab.Navigator screenOptions={() => ({ tabBarStyle: { backgroundColor: Color.main } })}>
+      <Tab.Screen component={DailyTribute} name="Daily" options={{
+        header: () => null,
+        tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
+      }} />
       <Tab.Screen component={Home} name="Stories" options={{
         header: () => null,
         tabBarIcon: ({ color, size }) => (<MaterialIcons name="table-view" size={size} color={color} />)
       }} />
-
-      <Tab.Screen component={DailyTribute} name="Daily" options={{
-       header: () => null,
-       tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
-     }} />
-     
       <Tab.Screen component={Profile} name="Profile" options={{
         header: () => null,
         tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="human-child" size={size} color={color} />)

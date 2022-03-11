@@ -129,8 +129,7 @@ const StoryScreen = () => {
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[]) => {
-        const pageIds = [...story.pageIds, pageId]
-        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings, pageIds }, { headers })
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings }, { headers })
             .then(result => {
                 setStory(result.data.story);
                 setPageStatus('confirmed');
@@ -271,6 +270,7 @@ const StoryScreen = () => {
         <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={4000}>{snackMessage} </Snackbar>
     </Provider>
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
