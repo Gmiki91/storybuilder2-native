@@ -98,7 +98,7 @@ const Stats: React.FC<Props> = ({ userProp, children }) => {
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
                     <Text style={{ fontSize: 12, }}>Last activity: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
                     {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
-                    {userProp && <Text >{user.numberOfTablets} x <ClayTablet/></Text>}
+                  <Text >{user.numberOfTablets} x <ClayTablet/></Text>
                 </View>
                 <View style={styles.group}>
                     <Text >Stories: {storyData.size}</Text>
