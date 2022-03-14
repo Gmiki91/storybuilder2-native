@@ -92,9 +92,7 @@ const StoryScreen = () => {
     const addPendingPage = async (form: FieldValues) => {
         const page = {
             text: form.text,
-            level: form.level,
             language: story.language,
-            rating: []
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
@@ -221,7 +219,7 @@ const StoryScreen = () => {
         return null;
     }
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
-    const addPageVisible = onLastPage && story.open;
+    const addPageVisible = onLastPage && story.open && pageStatus === 'confirmed';
     const toggleStatus = pageStatus === 'confirmed'
         ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
         : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Confirmed: {story.pageIds.length}</Button>
