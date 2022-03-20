@@ -9,6 +9,7 @@ import { CustomInput } from "../components/UI/CustomInput";
 import { Button, Snackbar } from "react-native-paper";
 import { Color } from "../Global";
 import { useIsFocused } from "@react-navigation/native";
+import Logout from "../authentication/Logout";
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const Profile = () => {
@@ -60,6 +61,7 @@ const Profile = () => {
                     <CustomInput secureTextEntry value={newPassword} onChangeText={setNewPassword} placeholder='New password' />
                     <Button mode="outlined" color={Color.button} onPress={handlePasswordChange}>Update</Button>
                 </View>
+                <Logout/>
                 <View style={{ marginTop: 30 }}>
                     <Text>Delete account:</Text>
                     <CustomInput secureTextEntry value={deletePassword} onChangeText={setDeletePassword} placeholder='Current password' />
@@ -69,7 +71,6 @@ const Profile = () => {
             </Stats>
         </ScrollView>
         :  <Text>Loading</Text>
-
 }
 
 export default Profile;

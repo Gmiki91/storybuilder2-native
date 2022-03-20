@@ -1,22 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
+import { Button } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
+import { Color } from '../Global';
 
 const Logout =  () => {
     const { setToken } = useAuth();
-   
-    useEffect(() => {
-        let mounted=true;
-        if(mounted)
-        clear();
-        return () => { mounted = false }
-    })
-    
 
-    const clear=async()=>{
+    const logout=async()=>{
         setToken(undefined);
         await AsyncStorage.removeItem('token');
     }
-    return (null)
+
+    return (<Button mode="outlined" color={Color.button} onPress={logout}>Logout</Button>)
 }
 export default Logout;

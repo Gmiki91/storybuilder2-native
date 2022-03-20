@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, View, Pressable, ImageBackground, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, Pressable, ImageBackground, Keyboard } from 'react-native';
 import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
@@ -45,6 +45,7 @@ const Home = () => {
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
+    const [storiesWithPendings, setStoriesWithPendings] = useState<Story[]>([]);
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(true);
@@ -52,12 +53,18 @@ const Home = () => {
 
     useEffect(() => {
         let mounted = true;
-        if(isFocused){
-        axios.get(`${LOCAL_HOST}/users/`, { headers })
-            .then(result => {
-                if (mounted)
-                    setUser(result.data.user);
-            }).catch(error=> setErrorMessage(error.response.data.message));
+        if (isFocused) {
+            axios.get(`${LOCAL_HOST}/users/`, { headers })
+                .then(result => {
+                    if (mounted)
+                        setUser(result.data.user);
+                }).catch(error => setErrorMessage(error.response.data.message));
+            axios.get(`${LOCAL_HOST}/stories`, { headers })
+                .then(result => {
+                    if (mounted)
+                        setStoriesWithPendings(result.data.stories);
+                }).catch(error => setErrorMessage(error.response.data.message));
+
         }
         return () => { mounted = false }
     }, [isFocused]);
@@ -73,7 +80,7 @@ const Home = () => {
                 setShowModal('');
             }
         })
-        .catch(() =>setErrorMessage('An error occured while loading the stories'));
+            .catch(() => setErrorMessage('An error occured while loading the stories'));
         return () => { mounted = false }
     }, [searchCriteria, sortBy, sortDirection]);
 
@@ -98,13 +105,13 @@ const Home = () => {
 
     const onClearFilter = () => {
         setTempSearchCriteria(defaultSearchCriteria);
-        setSearchCriteria(defaultSearchCriteria);
-  
+        setSearchCriteria({ ...defaultSearchCriteria });
+
     }
 
     const onApplyFilter = () => {
-        setSearchCriteria(tempSearchCriteria);
-     
+        setSearchCriteria({ ...tempSearchCriteria });
+
     }
 
     const onStoryNameSearch = () => {
@@ -127,6 +134,12 @@ const Home = () => {
         } else {
             setShowModal('NewStory')
         }
+    }
+    const togglePendnigs = () => {
+        if (stories !== storiesWithPendings)
+            setStories(storiesWithPendings);
+        else
+            getList();
     }
 
     const getForm = () => {
@@ -162,11 +175,14 @@ const Home = () => {
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/top.png')}>
+                    {storiesWithPendings.length!==0 && <Pressable onPress={togglePendnigs} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
+                        <Text style={{textDecorationLine:stories===storiesWithPendings ? 'underline' : 'none', color:'red'}}>Pendings!</Text>
+                    </Pressable>}
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable style={{ paddingRight: '12%', paddingTop: '5%' }} onPress={() => setShowModal('Filter')} >
+                    <Pressable style={{ paddingRight: '5%', paddingTop: '5%' }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </ImageBackground>
