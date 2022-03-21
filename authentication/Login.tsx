@@ -35,7 +35,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
       password: form.password.trim()
     }).then(result => {
       setLoading(false);
-      if (result.data.confirmed) {
+      if (result.data.user.confirmed) {
         setToken(result.data.token);
       } else {
         setShowModal(true);

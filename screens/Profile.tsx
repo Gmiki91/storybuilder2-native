@@ -43,9 +43,10 @@ const Profile = () => {
     }
 
     const handleDeleteUser = () => {
-        axios.patch(`${LOCAL_HOST}/stories/many/${user._id}`, { headers }).catch(error => setResponse(error.response.data.message));
+       
         axios.patch(`${LOCAL_HOST}/users/`, { deletePassword }, { headers })
             .then(() => {
+                axios.delete(`${LOCAL_HOST}/stories/all`, { headers }).catch(error => setResponse(error.response.data.message));
                 AsyncStorage.removeItem('token');
                 setToken(undefined);
             })
@@ -55,13 +56,13 @@ const Profile = () => {
     return user?
         <ScrollView>
             <Stats userProp={user}>
-                <View style={{ paddingTop: 40, marginTop: 40, borderTopWidth: 1 }}>
+                <Logout/>
+                <View style={{ paddingTop: 20, marginTop: 20 }}>
                     <Text>Update password:</Text>
                     <CustomInput secureTextEntry value={currentPassword} onChangeText={setCurrentPassword} placeholder='Current password' />
                     <CustomInput secureTextEntry value={newPassword} onChangeText={setNewPassword} placeholder='New password' />
                     <Button mode="outlined" color={Color.button} onPress={handlePasswordChange}>Update</Button>
                 </View>
-                <Logout/>
                 <View style={{ marginTop: 30 }}>
                     <Text>Delete account:</Text>
                     <CustomInput secureTextEntry value={deletePassword} onChangeText={setDeletePassword} placeholder='Current password' />

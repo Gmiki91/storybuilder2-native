@@ -11,6 +11,6 @@ const Logout =  () => {
         await AsyncStorage.removeItem('token');
     }
 
-    return (<Button mode="outlined" color={Color.button} onPress={logout}>Logout</Button>)
+    return (<Button mode="text" color={Color.button} style={{}} onPress={logout}>Logout</Button>)
 }
 export default Logout;

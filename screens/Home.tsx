@@ -46,6 +46,7 @@ const Home = () => {
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
     const [storiesWithPendings, setStoriesWithPendings] = useState<Story[]>([]);
+    const [tempStories, setTempStories] = useState<Story[]>([]);
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(true);
@@ -136,10 +137,13 @@ const Home = () => {
         }
     }
     const togglePendnigs = () => {
-        if (stories !== storiesWithPendings)
+        if (stories !== storiesWithPendings) {
+            setTempStories(stories);
             setStories(storiesWithPendings);
-        else
-            getList();
+        }
+        else {
+            setStories(tempStories);
+        }
     }
 
     const getForm = () => {
@@ -175,8 +179,8 @@ const Home = () => {
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
                 <ImageBackground style={styles.criteriaContainer} source={require('../assets/top.png')}>
-                    {storiesWithPendings.length!==0 && <Pressable onPress={togglePendnigs} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
-                        <Text style={{textDecorationLine:stories===storiesWithPendings ? 'underline' : 'none', color:'red'}}>Pendings!</Text>
+                    {storiesWithPendings.length !== 0 && <Pressable onPress={togglePendnigs} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
+                        <Text style={{ textDecorationLine: stories === storiesWithPendings ? 'underline' : 'none', color: 'red' }}>Pendings!</Text>
                     </Pressable>}
                     <SortBy
                         direction={sortDirection}
