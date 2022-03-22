@@ -18,6 +18,7 @@ import { Page, Rate } from '../models/Page';
 import { Story } from '../models/Story';
 import { User } from '../models/User';
 import { EditStory } from '../components/forms/EditStory';
+import { Note } from '../models/Note';
 
 type ParamList = {
     Params: { storyId: string };
@@ -96,6 +97,8 @@ const StoryScreen = () => {
         }
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId);
         const body = { pageId, storyId: params.storyId };
+        if (user._id !== story.authorId) addNotes();
+
         axios.post(`${LOCAL_HOST}/stories/pendingPage`, body, { headers })
             .then((result) => {
                 setStory(result.data.story);
@@ -113,22 +116,27 @@ const StoryScreen = () => {
         const idsToDelete = [...story.pendingPageIds];
         idsToDelete.splice(index, 1);
         axios.patch(`${LOCAL_HOST}/pages/many/${idsToDelete.join(',')}`, { storyId: story._id }, { headers })
+            .then(result => addRejectNotes(result.data.authorIds))
     }
 
     const removePage = (pageId: string) => {
+        //remove page document
         axios.patch(`${LOCAL_HOST}/pages/${pageId}`, { storyId: story._id }, { headers })
-            .catch(() => setSnackMessage('An error has occured while removing the page')); //remove page document
+            .then(result => addRejectNotes([result.data.authorId]))
+            .catch(() => setSnackMessage('An error has occured while removing the page'));
+        //remove pageId from story
         axios.put(`${LOCAL_HOST}/stories/pendingPage`, { pageId, storyId: params.storyId }, { headers })
             .then(result => {
                 setPageStatus('confirmed');
                 setStory(result.data.story);
-            }) //remove pageId from story
+            })
             .catch(() => setSnackMessage('An error has occured while removing the page'));
     }
 
-    const confirmPage = (pageId: string, pageRatings: Rate[]) => {
+    const confirmPage = (pageId: string, pageRatings: Rate[], authorId: string) => {
         axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings }, { headers })
             .then(result => {
+                addConfirmatioNotes(authorId);
                 setStory(result.data.story);
                 setPageStatus('confirmed');
                 setFormType('words');
@@ -151,10 +159,10 @@ const StoryScreen = () => {
         setPages(updatedPages);
     }
 
-    const handleRateText = async (vote: number, confirming: boolean, pageId: string, ratings: Rate[]) => {
+    const handleRateText = async (vote: number, confirming: boolean, pageId: string, ratings: Rate[], authorId: string) => {
         if (confirming) {
             if (vote === -1) removePage(pageId);
-            if (vote === 1) confirmPage(pageId, ratings);
+            if (vote === 1) confirmPage(pageId, ratings, authorId);
         } else {
             const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId }, { headers })
                 .then(result => result.data)
@@ -209,6 +217,39 @@ const StoryScreen = () => {
             .catch(() => setSnackMessage('An error has occured'));
     }
 
+    const addConfirmatioNotes = (id: string) => {
+        const note = {
+            date: Date.now(),
+            message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been accepted.`,
+            code: 'A'
+        }
+
+        axios.post(`${LOCAL_HOST}/notifications/${[id]}`, { note }, { headers });
+    }
+
+    const addRejectNotes = (arr: string[]) => {
+        const note = {
+            date: Date.now(),
+            message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been rejected.`,
+            code: 'C'
+        }
+
+        axios.post(`${LOCAL_HOST}/notifications/${arr.join(',')}`, { note }, { headers });
+    }
+
+    const addNotes = () => {
+        const note: Note = {
+            date: Date.now(),
+            message: `You've submitted page #${story.pageIds.length} for story "${story.title}". It is pending confirmation.`,
+            code: 'B'
+        }
+        axios.post(`${LOCAL_HOST}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
+        if (!isNaN(+story.authorId)) {
+            note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
+            axios.post(`${LOCAL_HOST}/notifications/${[story.authorId]}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
+        }
+    }
+
     const getForm = () => {
         switch (formType) {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
@@ -234,7 +275,7 @@ const StoryScreen = () => {
             userId={user._id}
             ownContent={user._id === (page.authorId || story.authorId)}
             toConfirm={pageStatus === 'pending' && story.authorId === user._id}
-            onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings)}
+            onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings, page.authorId)}
             jump={jumpTo}
         />
     )

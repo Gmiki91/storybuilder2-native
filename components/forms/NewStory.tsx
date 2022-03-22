@@ -17,6 +17,7 @@ import { levels, LevelCode } from '../../models/LanguageLevels';
 import { Word } from './elements/Word';
 import { RadioButton } from '../UI/RadioButton';
 import { Snackbar } from 'react-native-paper';
+import { Note } from '../../models/Note';
 type Props = {
     onCloseForm: () => void;
     tokenProp?: string
@@ -34,10 +35,17 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     const handleNewStory = async (form: FieldValues) => {
         const realToken = token || tokenProp;
         const headers = { Authorization: `Bearer ${realToken}` };
+        const note: Note = {
+            date: Date.now(),
+            message: `Story "${form.title.trim()}" has been added`,
+            code: 'B'
+        }
+        axios.post(`${LOCAL_HOST}/notifications/`, {note}, { headers })
         const page = {
             text: form.text,
             language: form.language || languages[0].name,
         }
+
         const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
             .catch(() => setError('An error occured while saving the page'));
         const story = {
@@ -54,7 +62,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             .then(result => {
                 if (tokenProp) setToken(tokenProp);
                 //else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
-                navigation.dispatch(CommonActions.navigate({ name: 'Home'}));
+                navigation.dispatch(CommonActions.navigate({ name: 'Home' }));
             })
             .catch(error => setError('An error occured while saving the story'))
     }

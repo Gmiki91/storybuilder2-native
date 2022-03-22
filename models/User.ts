@@ -5,6 +5,6 @@ export type User={
     active:boolean,
     dailyCompleted:boolean,
     numberOfTablets:number,
-    lastActivity:Date,
+    lastActivity:number,
     markedStoryId:string,
 }
