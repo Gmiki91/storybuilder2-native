@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import Stats from "../components/Stats";
 import { CustomInput } from "../components/UI/CustomInput";
-import { ActivityIndicator, Button, Divider, IconButton, Snackbar } from "react-native-paper";
+import { ActivityIndicator, Button,  IconButton, Snackbar } from "react-native-paper";
 import { Color } from "../Global";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Note } from "../models/Note";
@@ -108,7 +108,6 @@ const Profile = () => {
                                     <Text>{notification.message}</Text>
                                     <Text style={{textAlign: 'right'}}>{moment.utc(notification.date).local().startOf('seconds').fromNow()}</Text>
                                 </Pressable>)}
-                            <Divider />
                         </View>
                     </View>}
                 {tab === 'Settings' &&

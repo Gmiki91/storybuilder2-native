@@ -224,10 +224,8 @@ const StoryScreen = () => {
             code: 'A',
             storyId: story._id
         }
-        if (story.authorId === user._id) {
-            note.message += '.. By yourself...'
-        }
-        axios.post(`${LOCAL_HOST}/notifications/${[id]}`, { note }, { headers });
+      
+        axios.post(`${LOCAL_HOST}/notifications/${id}`, { note }, { headers });
     }
 
     const addRejectNotes = (arr: string[]) => {
@@ -248,13 +246,12 @@ const StoryScreen = () => {
             code: 'B',
             storyId: story._id
         }
-        if (story.authorId === user._id) {
-            note.message += '.. Your own confirmation...'
-        }
+       
         axios.post(`${LOCAL_HOST}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-        if (!isNaN(+story.authorId)) {
+        if (story.authorName!=='Source') {
             note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
-            axios.post(`${LOCAL_HOST}/notifications/${[story.authorId]}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
+            console.log([story.authorId]);
+            axios.post(`${LOCAL_HOST}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         }
     }
 
