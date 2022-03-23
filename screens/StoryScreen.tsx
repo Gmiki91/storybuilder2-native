@@ -103,7 +103,7 @@ const StoryScreen = () => {
             .then((result) => {
                 setStory(result.data.story);
                 if (result.data.tributeCompleted) {
-                    setSnackMessage('You completed your daily tribute and have recieved 1 tablet. Well done!');
+                    setSnackMessage(`You completed your daily tribute. Well done!`);
                 }
                 setFormType('');
             })

@@ -1,4 +1,4 @@
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -55,14 +55,17 @@ export default function App() {
 
 
   const VisibleTabs = () => (
-    <Tab.Navigator screenOptions={() => ({ tabBarStyle: { backgroundColor: Color.main } })}>
+    <Tab.Navigator screenOptions={() => ({
+      tabBarActiveTintColor: Color.cancelBtn,
+      tabBarInactiveTintColor: Color.button, tabBarStyle: { backgroundColor: Color.main }
+    })}>
       <Tab.Screen component={DailyTribute} name="Daily" options={{
         header: () => null,
         tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
       }} />
       <Tab.Screen component={Home} name="Stories" options={{
         header: () => null,
-        tabBarIcon: ({ color, size }) => (<MaterialIcons name="table-view" size={size} color={color} />)
+        tabBarIcon: ({ color, size }) => (<Foundation name="page-multiple" size={size} color={color} />)
       }} />
       <Tab.Screen component={Profile} name="Profile" options={{
         header: () => null,
