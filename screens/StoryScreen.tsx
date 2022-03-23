@@ -222,7 +222,10 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been accepted.`,
             code: 'A',
-            storyId:story._id
+            storyId: story._id
+        }
+        if (story.authorId === user._id) {
+            note.message += '.. By yourself...'
         }
         axios.post(`${LOCAL_HOST}/notifications/${[id]}`, { note }, { headers });
     }
@@ -232,7 +235,7 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been rejected.`,
             code: 'C',
-            storyId:story._id
+            storyId: story._id
         }
 
         axios.post(`${LOCAL_HOST}/notifications/${arr.join(',')}`, { note }, { headers });
@@ -243,7 +246,10 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `You've submitted page #${story.pageIds.length} for story "${story.title}". It is pending confirmation.`,
             code: 'B',
-            storyId:story._id
+            storyId: story._id
+        }
+        if (story.authorId === user._id) {
+            note.message += '.. Your own confirmation...'
         }
         axios.post(`${LOCAL_HOST}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         if (!isNaN(+story.authorId)) {

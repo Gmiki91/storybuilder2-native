@@ -98,7 +98,6 @@ const Profile = () => {
                 <IconButton icon="exit-to-app" onPress={handleLogout} style={{ marginLeft: '2%' }} color={tab === 'Logout' ? Color.cancelBtn : Color.button} />
             </Top>
             <ScrollView >
-
                 {tab === 'Logout' && <SadMessageBox message="Good-bye!"/>}
                 {tab === 'Stats' && <Stats userProp={user}> </Stats>}
                 {tab === 'Notifications' &&
