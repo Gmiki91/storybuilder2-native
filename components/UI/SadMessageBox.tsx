@@ -14,6 +14,7 @@ export const SadMessageBox = ({ message }: Props) => (
 const styles = StyleSheet.create({
     card:{
         width: '90%', alignSelf: 'center', alignItems: 'center', backgroundColor: Color.secondary, borderRadius: 50,padding:5,
+        marginTop:'1%',
         borderBottomWidth:5,
         borderWidth: 1,
         elevation: 3,

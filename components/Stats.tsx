@@ -93,7 +93,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
     const notProfile = !userProp ? { flex:1 } : null;
     return user ?
         <View style={[styles.container, notProfile]}>
-            <View style={styles.card}>
+            <View style={[styles.card, {width:userProp ? '100%' : '90%'}]}>
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
@@ -129,11 +129,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     card: {
-        width: '90%',
         padding: '5%',
         backgroundColor: Color.storyCard,
         borderWidth: 1,
-        borderRadius:10,
         elevation: 10,
         shadowOffset: {
             width: 0,

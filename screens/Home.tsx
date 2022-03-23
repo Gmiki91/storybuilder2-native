@@ -14,6 +14,7 @@ import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { useIsFocused } from '@react-navigation/native';
 import { User } from '../models/User';
+import { Top } from '../components/UI/Top';
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 
@@ -178,7 +179,7 @@ const Home = () => {
                     onChangeText={handleSearchBar}
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
-                <ImageBackground style={styles.criteriaContainer} source={require('../assets/top.png')}>
+                <Top >
                     {storiesWithPendings.length !== 0 && <Pressable onPress={togglePendnigs} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
                         <Text style={{ textDecorationLine: stories === storiesWithPendings ? 'underline' : 'none', color: 'red' }}>Pendings!</Text>
                     </Pressable>}
@@ -189,7 +190,7 @@ const Home = () => {
                     <Pressable style={{ paddingRight: '5%', paddingTop: '5%' }} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
-                </ImageBackground>
+                </Top>
 
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show' />
@@ -208,22 +209,6 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         flex: 1,
         alignItems: 'center',
-    },
-
-    criteriaContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: '6%',
-        height: 59,
-        backgroundColor: 'black',
-        elevation: 3,
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 6.27,
     },
     searchBar: {
         width: '80%',

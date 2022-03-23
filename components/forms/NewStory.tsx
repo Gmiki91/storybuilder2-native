@@ -35,12 +35,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     const handleNewStory = async (form: FieldValues) => {
         const realToken = token || tokenProp;
         const headers = { Authorization: `Bearer ${realToken}` };
-        const note: Note = {
-            date: Date.now(),
-            message: `Story "${form.title.trim()}" has been added`,
-            code: 'B'
-        }
-        axios.post(`${LOCAL_HOST}/notifications/`, {note}, { headers })
+
         const page = {
             text: form.text,
             language: form.language || languages[0].name,
@@ -60,9 +55,19 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         };
         axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
             .then(result => {
-                if (tokenProp) setToken(tokenProp);
-                //else navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId: result.data.storyId }}))
-                navigation.dispatch(CommonActions.navigate({ name: 'Home' }));
+                const note: Note = {
+                    date: Date.now(),
+                    message: `Story "${form.title.trim()}" has been added`,
+                    code: 'B',
+                    storyId: result.data.storyId
+                }
+                axios.post(`${LOCAL_HOST}/notifications/`, { note }, { headers })
+                if (tokenProp) {
+                    setToken(tokenProp);
+                    navigation.dispatch(CommonActions.navigate({ name: 'Home' }));
+                } else {
+                    onCloseForm();
+                }
             })
             .catch(error => setError('An error occured while saving the story'))
     }

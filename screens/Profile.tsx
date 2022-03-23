@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Alert, Pressable } from 'react-native';
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
@@ -8,8 +8,11 @@ import Stats from "../components/Stats";
 import { CustomInput } from "../components/UI/CustomInput";
 import { ActivityIndicator, Button, Divider, IconButton, Snackbar } from "react-native-paper";
 import { Color } from "../Global";
-import { useIsFocused } from "@react-navigation/native";
+import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Note } from "../models/Note";
+import moment from "moment";
+import { Top } from "../components/UI/Top";
+import { SadMessageBox } from "../components/UI/SadMessageBox";
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout';
@@ -22,8 +25,10 @@ const Profile = () => {
     const [deletePassword, setDeletePassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [response, setResponse] = useState('');
-    const isFocused = useIsFocused();
     const [tab, setTab] = useState<Tab>('Notifications');
+    const isFocused = useIsFocused();
+    const navigation = useNavigation();
+
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
@@ -32,11 +37,11 @@ const Profile = () => {
                     if (mounted)
                         setUser(result.data.user);
                 }).catch(error => setResponse(error.response.data.message));
-                
+
             axios.get(`${LOCAL_HOST}/notifications/`, { headers })
                 .then(result => {
                     if (mounted)
-                    setNotifications(result.data.notifications);
+                        setNotifications(result.data.notifications);
                 }).catch(error => setResponse(error.response.data.message));
         }
         return () => { mounted = false }
@@ -73,31 +78,38 @@ const Profile = () => {
         );
     }
 
+    
+    const goToStory = (storyId: string) => {
+        navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))
+    }
+
     const confirmed = async () => {
         setToken(undefined);
         await AsyncStorage.removeItem('token');
     }
-    
+
     return user ?
-    <View style={{ flex: 1, flexDirection: 'column', marginTop: '15%' }}>
+        <View style={{ flex: 1, flexDirection: 'column', marginTop: '15%' }}>
             <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={3000}>{response}</Snackbar>
+            <Top>
+                <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
+                <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />
+                <IconButton icon="chart-bar" onPress={() => setTab('Stats')} style={{ marginLeft: '2%' }} color={tab === 'Stats' ? Color.cancelBtn : Color.button} />
+                <IconButton icon="exit-to-app" onPress={handleLogout} style={{ marginLeft: '2%' }} color={tab === 'Logout' ? Color.cancelBtn : Color.button} />
+            </Top>
             <ScrollView >
-                <View style={styles.header}>
-                    <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
-                    <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />
-                    <IconButton icon="chart-bar" onPress={() => setTab('Stats')} style={{ marginLeft: '2%' }} color={tab === 'Stats' ? Color.cancelBtn : Color.button} />
-                    <IconButton icon="exit-to-app" onPress={handleLogout} style={{ marginLeft: '2%' }} color={tab === 'Logout' ? Color.cancelBtn : Color.button} />
-                </View>
-                {tab === 'Logout' && <Text style={styles.goodbye}> Good-bye! </Text>}
+
+                {tab === 'Logout' && <SadMessageBox message="Good-bye!"/>}
                 {tab === 'Stats' && <Stats userProp={user}> </Stats>}
                 {tab === 'Notifications' &&
                     <View style={styles.container}>
                         <View style={styles.card}>
                             {notifications.map((notification) =>
-                            <View key={notification.date}>
-                            <Text >{notification.message}</Text>
-                            <Divider/>
-                            </View>)}
+                                <Pressable onPress={()=>goToStory(notification.storyId)} style={{ padding: '3%', marginBottom: '1%', borderRadius: 10, backgroundColor: Color[notification.code] }} key={notification.date}>
+                                    <Text>{notification.message}</Text>
+                                    <Text style={{textAlign: 'right'}}>{moment.utc(notification.date).local().startOf('seconds').fromNow()}</Text>
+                                </Pressable>)}
+                            <Divider />
                         </View>
                     </View>}
                 {tab === 'Settings' &&
@@ -114,30 +126,19 @@ const Profile = () => {
                     </View>}
             </ScrollView>
         </View>
-        : <ActivityIndicator style={{justifyContent: 'center', alignItems: 'center', flex:1}} size={'large'} animating={!user} color={Color.secondary} />
+        : <ActivityIndicator style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }} size={'large'} animating={!user} color={Color.secondary} />
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: '5%',
-        marginRight: '5%',
-        borderWidth: 1,
-        backgroundColor: Color.storyCard
-    },
-
     container: {
         justifyContent: 'center',
         alignItems: 'center',
     },
     card: {
-        width: '90%',
+        width: '100%',
         padding: '5%',
         backgroundColor: Color.storyCard,
         borderWidth: 1,
-        borderRadius: 10,
         elevation: 10,
         shadowOffset: {
             width: 0,
