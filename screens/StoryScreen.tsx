@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
@@ -162,7 +162,16 @@ const StoryScreen = () => {
     const handleRateText = async (vote: number, confirming: boolean, pageId: string, ratings: Rate[], authorId: string) => {
         if (confirming) {
             if (vote === -1) removePage(pageId);
-            if (vote === 1) confirmPage(pageId, ratings, authorId);
+            if (vote === 1){
+                Alert.alert(
+                    "Accepting page",
+                    "All other pending pages will be rejected. Are you sure?",
+                    [
+                        { text: "Cancel"},
+                        { text: "Yes", onPress: () =>  confirmPage(pageId, ratings, authorId)}
+                    ]
+                );
+            }
         } else {
             const { newPage } = await axios.put(`${LOCAL_HOST}/pages/rateText`, { vote, pageId }, { headers })
                 .then(result => result.data)
