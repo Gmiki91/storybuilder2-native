@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from "react-native"
-import { Provider, Modal, Portal, ActivityIndicator, Snackbar } from 'react-native-paper';
+import { Provider, Modal, Portal, ActivityIndicator, Snackbar} from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
 import { useIsFocused, useNavigation, CommonActions } from '@react-navigation/native';
 import StoryCard from '../components/StoryCard';
 import { Story } from '../models/Story';
 import { Color } from '../Global';
-import { ClayTablet } from '../components/UI/ClayTablet';
 import { Timer } from '../components/UI/Timer';
+import { Coin } from '../components/UI/Coin';
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type Data = {
@@ -59,8 +59,8 @@ const DailyTribute = () => {
         {data.story ?
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text>Contribute to this story to get 1x </Text>
-                    <ClayTablet />
+                    <Text>Contribute to this story to get 1 </Text>
+                    <Coin/>
                 </View>
                 <View style={styles.cardContainer}>
                     <StoryCard
@@ -77,7 +77,7 @@ const DailyTribute = () => {
             <View style={styles.container}>
                 <Timer text={'until next story'} minutes={data.minutesLeft} hours={data.hoursLeft} />
             </View>}
-            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
+        <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
     </Provider>
 }
 

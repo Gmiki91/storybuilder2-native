@@ -52,15 +52,9 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(true);
 
-
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
-            axios.get(`${LOCAL_HOST}/users/`, { headers })
-                .then(result => {
-                    if (mounted)
-                        setUser(result.data.user);
-                }).catch(error => setErrorMessage(error.response.data.message));
             axios.get(`${LOCAL_HOST}/stories`, { headers })
                 .then(result => {
                     if (mounted)
@@ -70,6 +64,16 @@ const Home = () => {
         }
         return () => { mounted = false }
     }, [isFocused]);
+
+    const getUser = useCallback(async () => {
+        let mounted = true;
+        axios.get(`${LOCAL_HOST}/users/`, { headers })
+            .then(result => {
+                if (mounted)
+                    setUser(result.data.user);
+            }).catch(error => setErrorMessage(error.response.data.message));
+        return () => { mounted = false }
+    }, []);
 
     const getList = useCallback(async () => {
         if (!loading) isLoading(true);
@@ -89,7 +93,10 @@ const Home = () => {
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard
     useEffect(() => {
         if (!isFocused) isLoading(true);
-        else getList();
+        else {
+            getList();
+            getUser();
+        }
     }, [getList, isFocused]);
 
     const handleSort = (sortValue: string) => {
@@ -131,11 +138,16 @@ const Home = () => {
         setSearchTitle(value)
     }
     const onNewStoryClicked = () => {
-        if (user.numberOfTablets < 1) {
-            setErrorMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
+        if (user.frogcoins < 3) {
+            setErrorMessage(`You need ${3 - user.frogcoins} more accepted pages to start a new story. `)
         } else {
             setShowModal('NewStory')
         }
+    }
+    const newStoryClosed = (submitted: boolean) => {
+        if (submitted)
+            getUser();
+        setShowModal('');
     }
     const togglePendnigs = () => {
         if (stories !== storiesWithPendings) {
@@ -155,7 +167,7 @@ const Home = () => {
                 filters={tempSearchCriteria}
                 changeFilter={(changes) => setTempSearchCriteria(prevState => ({ ...prevState, ...changes }))} />
         } else if (showModal === 'NewStory') {
-            return <NewStory onCloseForm={() => setShowModal('')} />
+            return <NewStory onCloseForm={newStoryClosed} />
         }
     }
     const form = getForm();
@@ -198,7 +210,7 @@ const Home = () => {
 
                 <Fab onPress={onNewStoryClicked} />
             </View>
-            <Snackbar onDismiss={() => setErrorMessage('')} visible={errorMessage !== ''} duration={4000}>{errorMessage}</Snackbar>
+            <Snackbar onDismiss={() => setErrorMessage('')} visible={errorMessage !== ''} duration={2000}>{errorMessage}</Snackbar>
         </Provider>
     )
 }

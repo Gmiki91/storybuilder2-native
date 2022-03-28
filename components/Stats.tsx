@@ -7,8 +7,8 @@ import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import moment from 'moment';
 import { BackButton } from './UI/BackButton';
-import { ClayTablet } from "./UI/ClayTablet";
 import { Color } from "../Global";
+import { Coin } from "./UI/Coin";
 type ParamList = {
     Params: {
         userId: string
@@ -90,16 +90,19 @@ const Stats: React.FC<Props> = ({ userProp }) => {
     }, [user])
     const storyRating = storyData.totalVotes !== 0 ? `${(storyData.upVotes / storyData.totalVotes * 100).toFixed()}%` : null
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
-    const notProfile = !userProp ? { flex:1 } : null;
+    const notProfile = !userProp ? { flex: 1 } : null;
     return user ?
         <View style={[styles.container, notProfile]}>
-            <View style={[styles.card, {width:userProp ? '100%' : '90%'}]}>
+            <View style={[styles.card, { width: userProp ? '100%' : '90%' }]}>
                 <View style={styles.group}>
                     <Text style={{ fontSize: 36, }}>{user.name}</Text>
                     <Text style={{ fontSize: 12, }}>{user.email}</Text>
                     <Text style={{ fontSize: 12, }}>Last activity: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
                     {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
-                    <Text >{user.numberOfTablets} x <ClayTablet /></Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text >{user.coins}x </Text>
+                        <Coin />
+                    </View>
                 </View>
                 <View style={styles.group}>
                     <Text >Stories: {storyData.size}</Text>
@@ -114,11 +117,11 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                         <Text>Used languages:</Text>
                         {pageData.langInfo?.map(obj => <Text key={obj.language}>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
                     </View>}
-        
+
             </View>
             {!userProp && <BackButton />}
 
-            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
+            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
         </View>
         : <Text>Loading</Text>
 }

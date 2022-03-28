@@ -19,7 +19,7 @@ import { RadioButton } from '../UI/RadioButton';
 import { Snackbar } from 'react-native-paper';
 import { Note } from '../../models/Note';
 type Props = {
-    onCloseForm: () => void;
+    onCloseForm: (submitted:boolean) => void;
     tokenProp?: string
 }
 
@@ -66,7 +66,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     setToken(tokenProp);
                     navigation.dispatch(CommonActions.navigate({ name: 'Home' }));
                 } else {
-                    onCloseForm();
+                    onCloseForm(true);
                 }
             })
             .catch(error => setError('An error occured while saving the story'))
@@ -130,10 +130,10 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             <Word name='word3' placeholder='#3' control={control} />
 
             <View style={styles.buttonContainer}>
-                {!tokenProp && <Button color={Color.cancelBtn} onPress={onCloseForm} >Cancel</Button>}
+                {!tokenProp && <Button color={Color.cancelBtn} onPress={()=>onCloseForm(false)} >Cancel</Button>}
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
-            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={4000}>{error}</Snackbar>
+            <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
         </Form>
     );
 };

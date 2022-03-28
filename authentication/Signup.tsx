@@ -109,7 +109,7 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
           <Button color={Color.button} disabled={!isValid} onPress={handleSubmit(postSignup)}>Sign up</Button>
           <Pressable onPress={() => navigation.navigate('Login')} style={{ marginTop: 10, alignItems: 'center' }}><Text>Already have an account?</Text></Pressable>
         </Form>
-        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={3000}>Username or email already taken</Snackbar>
+        <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={2000}>Username or email already taken</Snackbar>
       </View>
     </Provider>
   )

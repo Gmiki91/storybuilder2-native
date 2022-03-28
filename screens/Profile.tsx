@@ -90,7 +90,7 @@ const Profile = () => {
 
     return user ?
         <View style={{ flex: 1, flexDirection: 'column', marginTop: '15%' }}>
-            <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={3000}>{response}</Snackbar>
+            <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={2000}>{response}</Snackbar>
             <Top>
                 <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />

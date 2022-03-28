@@ -102,7 +102,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           {/* <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button> */}
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
-          <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={3000}>{error}</Snackbar>
+          <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
         </Form>
       </View>
     </Provider>

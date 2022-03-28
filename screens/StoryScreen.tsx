@@ -103,7 +103,7 @@ const StoryScreen = () => {
             .then((result) => {
                 setStory(result.data.story);
                 if (result.data.tributeCompleted) {
-                    setSnackMessage(`You completed your daily tribute. Well done!`);
+                    setSnackMessage(`You completed your daily task. Well done!`);
                 }
                 setFormType('');
             })
@@ -134,7 +134,7 @@ const StoryScreen = () => {
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[], authorId: string) => {
-        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings }, { headers })
+        axios.put(`${LOCAL_HOST}/stories/page`, { pageId, storyId: story._id, pageRatings, authorId }, { headers })
             .then(result => {
                 addConfirmatioNotes(authorId);
                 setStory(result.data.story);
@@ -146,10 +146,10 @@ const StoryScreen = () => {
     }
 
     const onNewPagePressed = () => {
-        if (user.numberOfTablets >= 1 || (user.markedStoryId === story._id && !user.dailyCompleted)) {
+        if (user.coins >= 3 || (user.markedStoryId === story._id && !user.dailyCompleted)) {
             setFormType('newPage');
         } else {
-            setSnackMessage(`You need a tablet to write on. You can get tablets by completing the daily tribute.`)
+            setSnackMessage(`You need 3 coins to write a new page. You can get coins by completing the daily task.`)
         }
     }
 
@@ -259,7 +259,6 @@ const StoryScreen = () => {
         axios.post(`${LOCAL_HOST}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         if (story.authorName!=='Source') {
             note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
-            console.log([story.authorId]);
             axios.post(`${LOCAL_HOST}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         }
     }
@@ -320,7 +319,7 @@ const StoryScreen = () => {
             {addPageVisible && <Fab onPress={onNewPagePressed} />}
             <Button mode='contained' style={styles.level} color={Color[story.level?.code]} onPress={() => setFormType('rateLevel')}><Text style={{ fontSize: 18 }}>{story.level?.code}</Text></Button>
         </View>
-        <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={4000}>{snackMessage} </Snackbar>
+        <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={2000}>{snackMessage} </Snackbar>
     </Provider>
 }
 

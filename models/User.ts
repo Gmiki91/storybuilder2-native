@@ -4,7 +4,8 @@ export type User={
     email:string,
     active:boolean,
     dailyCompleted:boolean,
-    numberOfTablets:number,
+    coins:number,
+    frogcoins:number,
     lastActivity:number,
     markedStoryId:string,
 }
