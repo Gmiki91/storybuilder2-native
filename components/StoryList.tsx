@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { memo, useState, useEffect } from 'react';
-import { FlatList, StyleSheet, View, Text, ListRenderItem } from "react-native";
+import { FlatList, StyleSheet,ListRenderItem } from "react-native";
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Story } from "../models/Story";
 
@@ -15,7 +15,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const { token } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
-
+    const navigation = useNavigation();
     useEffect(() => {
         let mounted = true;
         axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => {
@@ -38,7 +38,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
         setFavoriteIds(newList);
         axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
     }
-    const navigation = useNavigation();
+   
     const goToStory = (storyId: string) => {
         navigation.dispatch(CommonActions.navigate({ name: 'StoryScreen', params: { storyId } }))
     }
@@ -62,12 +62,10 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     />
 }
 
-
-
 const styles = StyleSheet.create({
     list: {
         width: '100%'
     }
-
 })
+
 export default memo(StoryList);

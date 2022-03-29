@@ -3,4 +3,5 @@ export type Note = {
     message: string,
     code: 'A' | 'B' |'C', 
     storyId:string
+    unseen?:boolean;
 }

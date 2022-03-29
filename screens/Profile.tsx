@@ -13,9 +13,10 @@ import { Note } from "../models/Note";
 import moment from "moment";
 import { Top } from "../components/UI/Top";
 import { SadMessageBox } from "../components/UI/SadMessageBox";
+import About from "./About";
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
-type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout';
+type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout' | 'About';
 const Profile = () => {
     const { token, setToken } = useAuth();
     const headers = { Authorization: `Bearer ${token}` };
@@ -95,17 +96,19 @@ const Profile = () => {
                 <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="chart-bar" onPress={() => setTab('Stats')} style={{ marginLeft: '2%' }} color={tab === 'Stats' ? Color.cancelBtn : Color.button} />
+                <IconButton icon="help-circle-outline" onPress={() => setTab('About')} style={{ marginLeft: '2%' }} color={tab === 'About' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="exit-to-app" onPress={handleLogout} style={{ marginLeft: '2%' }} color={tab === 'Logout' ? Color.cancelBtn : Color.button} />
             </Top>
             <ScrollView >
                 {tab === 'Logout' && <SadMessageBox message="Good-bye!"/>}
                 {tab === 'Stats' && <Stats userProp={user}> </Stats>}
+                {tab === 'About' && <About/>}
                 {tab === 'Notifications' &&
                     <View style={styles.container}>
                         <View style={styles.card}>
                             {notifications.map((notification) =>
                                 <Pressable onPress={()=>goToStory(notification.storyId)} style={{ padding: '3%', marginBottom: '1%', borderRadius: 10, backgroundColor: Color[notification.code] }} key={notification.date}>
-                                    <Text>{notification.message}</Text>
+                                    <Text style={{fontWeight:notification.unseen? 'bold':'normal'}}>{notification.message}</Text>
                                     <Text style={{textAlign: 'right'}}>{moment.utc(notification.date).local().startOf('seconds').fromNow()}</Text>
                                 </Pressable>)}
                         </View>

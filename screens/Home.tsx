@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { StyleSheet, View, Text, Pressable, ImageBackground, Keyboard } from 'react-native';
-import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
+import { StyleSheet, View, Pressable, Keyboard } from 'react-native';
+import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator, Avatar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
 import StoryList from '../components/StoryList';
@@ -12,9 +12,10 @@ import { Filter } from '../components/forms/Filter';
 import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
-import { useIsFocused } from '@react-navigation/native';
+import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
 import { User } from '../models/User';
 import { Top } from '../components/UI/Top';
+import { Bell } from '../components/UI/Bell';
 
 const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 
@@ -36,6 +37,7 @@ const defaultSearchCriteria = {
 
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
+    const navigation = useNavigation();
     const isFocused = useIsFocused();
     const { token } = useAuth();
     const [user, setUser] = useState({} as User);
@@ -46,8 +48,7 @@ const Home = () => {
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
-    const [storiesWithPendings, setStoriesWithPendings] = useState<Story[]>([]);
-    const [tempStories, setTempStories] = useState<Story[]>([]);
+    const [newNotes, setNewNotes] = useState<boolean>();
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(true);
@@ -55,10 +56,10 @@ const Home = () => {
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
-            axios.get(`${LOCAL_HOST}/stories`, { headers })
+            axios.get(`${LOCAL_HOST}/notifications/check`, { headers })
                 .then(result => {
                     if (mounted)
-                        setStoriesWithPendings(result.data.stories);
+                        setNewNotes(result.data.isNew);
                 }).catch(error => setErrorMessage(error.response.data.message));
 
         }
@@ -149,15 +150,6 @@ const Home = () => {
             getUser();
         setShowModal('');
     }
-    const togglePendnigs = () => {
-        if (stories !== storiesWithPendings) {
-            setTempStories(stories);
-            setStories(storiesWithPendings);
-        }
-        else {
-            setStories(tempStories);
-        }
-    }
 
     const getForm = () => {
         if (showModal === 'Filter') {
@@ -169,6 +161,10 @@ const Home = () => {
         } else if (showModal === 'NewStory') {
             return <NewStory onCloseForm={newStoryClosed} />
         }
+    }
+
+    const goToProfile = () => {
+        navigation.dispatch(CommonActions.navigate({ name: 'Profile' }))
     }
     const form = getForm();
     const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
@@ -192,14 +188,14 @@ const Home = () => {
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
                 <Top >
-                    {storiesWithPendings.length !== 0 && <Pressable onPress={togglePendnigs} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
-                        <Text style={{ textDecorationLine: stories === storiesWithPendings ? 'underline' : 'none', color: 'red' }}>Pendings!</Text>
+                    {newNotes && <Pressable onPress={goToProfile} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
+                        <Bell />
                     </Pressable>}
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable style={{ paddingRight: '5%', paddingTop: '5%' }} onPress={() => setShowModal('Filter')} >
+                    <Pressable onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </Top>
@@ -227,6 +223,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderRadius: 40,
         backgroundColor: Color.main
-    }
+    },
+
 })
 export default memo(Home);
