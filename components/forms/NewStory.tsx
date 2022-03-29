@@ -7,7 +7,7 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { default as languages } from '../../assets/languages.json';
 import { useAuth } from '../../context/AuthContext';
-import { Color } from '../../Global';
+import { Color, API_URL } from '../../Global';
 import { Form } from '../UI/Form';
 import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
@@ -29,7 +29,6 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     const { token, setToken } = useAuth();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
 
-    const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
     const navigation = useNavigation();
 
     const handleNewStory = async (form: FieldValues) => {
@@ -41,7 +40,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             language: form.language || languages[0].name,
         }
 
-        const pageId = await axios.post(`${LOCAL_HOST}/pages/`, page, { headers }).then((result) => result.data.pageId)
+        const pageId = await axios.post(`${API_URL}/pages/`, page, { headers }).then((result) => result.data.pageId)
             .catch(() => setError('An error occured while saving the page'));
         const story = {
             title: form.title.trim(),
@@ -53,7 +52,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             word2: form.word2?.toLowerCase().trim(),
             word3: form.word3?.toLowerCase().trim()
         };
-        axios.post(`${LOCAL_HOST}/stories/`, story, { headers })
+        axios.post(`${API_URL}/stories/`, story, { headers })
             .then(result => {
                 const note: Note = {
                     date: Date.now(),
@@ -61,7 +60,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     code: 'B',
                     storyId: result.data.storyId
                 }
-                axios.post(`${LOCAL_HOST}/notifications/`, { note }, { headers })
+                axios.post(`${API_URL}/notifications/`, { note }, { headers })
                 if (tokenProp) {
                     setToken(tokenProp);
                     navigation.dispatch(CommonActions.navigate({ name: 'Home' }));

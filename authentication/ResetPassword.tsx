@@ -7,7 +7,8 @@ import { Button } from 'react-native-paper';
 import { RootStackParamList } from '../App';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { CustomInput } from '../components/UI/CustomInput';
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
+import { API_URL } from '../Global';
+
 type NavigationProp = {
     navigation: StackNavigationProp<RootStackParamList, 'ResetPassword'>;
   }
@@ -23,7 +24,7 @@ const ResetPassword:React.FC<NavigationProp> = ({ navigation }) => {
     const [isLoggedIn, setLoggedIn] = useState(false);
 
     const resetPassword = () => {
-        axios.patch(`${LOCAL_HOST}/users/resetPassword/${params.token}`, { password:password.trim() })
+        axios.patch(`${API_URL}/users/resetPassword/${params.token}`, { password:password.trim() })
             .then(result => {
                 setToken(result.data.data);
                 setLoggedIn(true);

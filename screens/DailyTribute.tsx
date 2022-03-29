@@ -6,11 +6,10 @@ import { useAuth } from '../context/AuthContext';
 import { useIsFocused, useNavigation, CommonActions } from '@react-navigation/native';
 import StoryCard from '../components/StoryCard';
 import { Story } from '../models/Story';
-import { Color } from '../Global';
+import { Color, API_URL } from '../Global';
 import { Timer } from '../components/UI/Timer';
 import { Coin } from '../components/UI/Coin';
 
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type Data = {
     story: Story,
     hoursLeft: number,
@@ -30,7 +29,7 @@ const DailyTribute = () => {
         let mounted = true;
         if (isFocused) {
             isLoading(true);
-            axios.get(`${LOCAL_HOST}/stories/tribute/data`, { headers })
+            axios.get(`${API_URL}/stories/tribute/data`, { headers })
                 .then(result => {
                     if (mounted) {
                         const { story, minutesLeft, hoursLeft } = result.data;

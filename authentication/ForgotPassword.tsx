@@ -5,15 +5,14 @@ import { Text, View  } from 'react-native';
 import { Form } from '../components/UI/Form';
 import AuthStyle from './AuthStyle';
 import { CustomInput } from '../components/UI/CustomInput';
-import { Color } from '../Global';
+import { Color, API_URL } from '../Global';
 
- const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [response, setResponse] = useState<string>();
 
     const resetPassword = () => {
-        axios.post(`${LOCAL_HOST}/users/forgotPassword`, { email:email.trim() })
+        axios.post(`${API_URL}/users/forgotPassword`, { email:email.trim() })
             .then(result => {
                 setResponse(result.data.message)
             })

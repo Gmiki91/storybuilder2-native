@@ -6,11 +6,11 @@ import { Story } from "../models/Story";
 
 import StoryCard from './StoryCard';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../Global';
 
 type Props = {
     stories: Story[];
 }
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 const StoryList: React.FC<Props> = ({ stories }) => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
     const { token } = useAuth();
@@ -18,7 +18,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     const navigation = useNavigation();
     useEffect(() => {
         let mounted = true;
-        axios.get(`${LOCAL_HOST}/users/favorites`, { headers }).then(result => {
+        axios.get(`${API_URL}/users/favorites`, { headers }).then(result => {
             if (mounted) {
                 setFavoriteIds(result.data.data);
             }
@@ -28,7 +28,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
 
     const addToFavorites = (storyId: string) => {
         setFavoriteIds(prevState => ([...prevState, storyId]))
-        axios.post(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+        axios.post(`${API_URL}/users/favorites`, { storyId }, { headers });
     }
 
     const removeFromFavorites = (storyId: string) => {
@@ -36,7 +36,7 @@ const StoryList: React.FC<Props> = ({ stories }) => {
         const index = newList.indexOf(storyId);
         newList.splice(index, 1);
         setFavoriteIds(newList);
-        axios.put(`${LOCAL_HOST}/users/favorites`, { storyId }, { headers });
+        axios.put(`${API_URL}/users/favorites`, { storyId }, { headers });
     }
    
     const goToStory = (storyId: string) => {

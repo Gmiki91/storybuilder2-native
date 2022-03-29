@@ -7,7 +7,7 @@ import { User } from "../models/User";
 import Stats from "../components/Stats";
 import { CustomInput } from "../components/UI/CustomInput";
 import { ActivityIndicator, Button,  IconButton, Snackbar } from "react-native-paper";
-import { Color } from "../Global";
+import { Color, API_URL } from "../Global";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Note } from "../models/Note";
 import moment from "moment";
@@ -15,7 +15,6 @@ import { Top } from "../components/UI/Top";
 import { SadMessageBox } from "../components/UI/SadMessageBox";
 import About from "./About";
 
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout' | 'About';
 const Profile = () => {
     const { token, setToken } = useAuth();
@@ -33,13 +32,13 @@ const Profile = () => {
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
-            axios.get(`${LOCAL_HOST}/users/`, { headers })
+            axios.get(`${API_URL}/users/`, { headers })
                 .then(result => {
                     if (mounted)
                         setUser(result.data.user);
                 }).catch(error => setResponse(error.response.data.message));
 
-            axios.get(`${LOCAL_HOST}/notifications/`, { headers })
+            axios.get(`${API_URL}/notifications/`, { headers })
                 .then(result => {
                     if (mounted)
                         setNotifications(result.data.notifications);
@@ -49,7 +48,7 @@ const Profile = () => {
     }, [isFocused]);
 
     const handlePasswordChange = () => {
-        axios.patch(`${LOCAL_HOST}/users/updatePassword`, { currentPassword, newPassword }, { headers })
+        axios.patch(`${API_URL}/users/updatePassword`, { currentPassword, newPassword }, { headers })
             .then(result => {
                 setResponse(result.data.message);
                 setToken(result.data.token);
@@ -59,9 +58,9 @@ const Profile = () => {
 
     const handleDeleteUser = () => {
 
-        axios.patch(`${LOCAL_HOST}/users/`, { deletePassword }, { headers })
+        axios.patch(`${API_URL}/users/`, { deletePassword }, { headers })
             .then(() => {
-                axios.delete(`${LOCAL_HOST}/stories/all`, { headers }).catch(error => setResponse(error.response.data.message));
+                axios.delete(`${API_URL}/stories/all`, { headers }).catch(error => setResponse(error.response.data.message));
                 AsyncStorage.removeItem('token');
                 setToken(undefined);
             })

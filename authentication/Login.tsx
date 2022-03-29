@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View, Pressable } from 'react-native';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -12,25 +12,57 @@ import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
 import { ErrorMessage } from '../components/UI/ErrorMessage';
 import { NewStory } from '../components/forms/NewStory';
+import * as Google from 'expo-auth-session/providers/google';
+import {API_URL} from '../Global'
 
-// import * as WebBrowser from 'expo-web-browser';
-// import * as Google from 'expo-auth-session/providers/google';
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
 }
 
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: "-",
+    iosClientId: "-",
+    expoClientId: ""
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  // const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const { setToken } = useAuth();
   const [savedToken, setSavedToken] = useState();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
-  const Local_host = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
+  useEffect(() => {
+    if (response?.type === "success") {
+      setLoading(true);
+      getUserData(response.authentication?.accessToken);
+    }
+  }, [response]);
+
+   const getUserData=async(accessToken:string|undefined)=>{
+    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      headers: { Authorization: `Bearer ${accessToken}`}
+    });
+
+    userInfoResponse.json().then(data => {
+      axios.post(`${API_URL}/users/loginGoogle`,{email:data.email, name:data.given_name})
+      .then(result => {
+       setLoading(false);
+        if (result.data.user.confirmed) {
+          setToken(result.data.token);
+        } else {
+          setShowModal(true);
+          setSavedToken(result.data.token);
+        }
+      })
+      .catch(error => {console.log(error.response.data.message)})
+    });
+  }
+
+
+
   const postLogin = (form: FieldValues) => {
     setLoading(true);
-    axios.post(`${Local_host}/users/login`, {
+    axios.post(`${API_URL}/users/login`, {
       userInput: form.name.trim(),
       password: form.password.trim()
     }).then(result => {
@@ -99,7 +131,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
             <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
           </Pressable>
           <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
-          {/* <Button color={Color.button} onPress={promptAsync} >Sign in w Google</Button> */}
+          <Button icon='google' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Login with Google</Button>
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
           <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>

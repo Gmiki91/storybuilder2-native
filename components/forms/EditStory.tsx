@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Text, View, StyleSheet } from "react-native"
 import { Button } from "react-native-paper";
 import { useAuth } from "../../context/AuthContext";
-import { Color } from "../../Global";
+import { Color,API_URL } from "../../Global";
 import { Story } from '../../models/Story';
 import { CustomInput } from '../UI/CustomInput';
 import {Form} from '../UI/Form';
@@ -12,7 +12,6 @@ type Props = {
     editable: boolean;
     onClose: () => void;
 }
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 export const EditStory = ({  onClose, story, editable }: Props) => {
     const [editing, isEditing] = useState(false);
     const [description, setDescription] = useState(story.description);
@@ -20,7 +19,7 @@ export const EditStory = ({  onClose, story, editable }: Props) => {
     const headers = { Authorization: `Bearer ${token}` };
     const editDescription = async () => {
         if (editing) {
-            await axios.put(`${LOCAL_HOST}/stories/one/${story._id}`,{description},{ headers });
+            await axios.put(`${API_URL}/stories/one/${story._id}`,{description},{ headers });
             isEditing(false)
         } else {
             isEditing(true)

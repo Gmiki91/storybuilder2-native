@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import moment from 'moment';
 import { BackButton } from './UI/BackButton';
-import { Color } from "../Global";
+import { Color, API_URL } from "../Global";
 import { Coin } from "./UI/Coin";
 type ParamList = {
     Params: {
@@ -35,7 +35,7 @@ type PageData = {
     langInfo: LangInfo[]
 }
 
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
+
 const Stats: React.FC<Props> = ({ userProp }) => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
     const { token } = useAuth();
@@ -48,7 +48,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
     useEffect(() => {
         let mounted = true
         if (params) {
-            axios.get(`${LOCAL_HOST}/users/user/${params.userId}`, { headers })
+            axios.get(`${API_URL}/users/user/${params.userId}`, { headers })
                 .then(result => {
                     if (mounted)
                         setUser(result.data.user);
@@ -64,7 +64,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
     useEffect(() => {
         let mounted = true;
         if (user) {
-            axios.get(`${LOCAL_HOST}/stories/many/${user._id}`, { headers })
+            axios.get(`${API_URL}/stories/many/${user._id}`, { headers })
                 .then(result => {
                     if (mounted)
                         setStoryData({
@@ -74,7 +74,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                         })
                 })
                 .catch(e => setError('Error while loading the user data.'));
-            axios.get(`${LOCAL_HOST}/pages/all/${user._id}`, { headers })
+            axios.get(`${API_URL}/pages/all/${user._id}`, { headers })
                 .then(result => {
                     if (mounted)
                         setPageData({

@@ -7,7 +7,7 @@ import StoryList from '../components/StoryList';
 import { SortBy } from '../components/SortBy';
 import { Story } from '../models/Story';
 import { useAuth } from '../context/AuthContext';
-import { Color } from '../Global';
+import { Color, API_URL} from '../Global';
 import { Filter } from '../components/forms/Filter';
 import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
@@ -17,7 +17,6 @@ import { User } from '../models/User';
 import { Top } from '../components/UI/Top';
 import { Bell } from '../components/UI/Bell';
 
-const LOCAL_HOST = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api';
 
 type SearchCriteria = {
     storyName: string,
@@ -56,7 +55,7 @@ const Home = () => {
     useEffect(() => {
         let mounted = true;
         if (isFocused) {
-            axios.get(`${LOCAL_HOST}/notifications/check`, { headers })
+            axios.get(`${API_URL}/notifications/check`, { headers })
                 .then(result => {
                     if (mounted)
                         setNewNotes(result.data.isNew);
@@ -68,7 +67,7 @@ const Home = () => {
 
     const getUser = useCallback(async () => {
         let mounted = true;
-        axios.get(`${LOCAL_HOST}/users/`, { headers })
+        axios.get(`${API_URL}/users/`, { headers })
             .then(result => {
                 if (mounted)
                     setUser(result.data.user);
@@ -80,7 +79,7 @@ const Home = () => {
         if (!loading) isLoading(true);
         Keyboard.dismiss()
         let mounted = true;
-        axios.post(`${LOCAL_HOST}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => {
+        axios.post(`${API_URL}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => {
             if (mounted) {
                 setStories(result.data.stories);
                 isLoading(false);
