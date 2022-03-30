@@ -26,7 +26,7 @@ const ResetPassword:React.FC<NavigationProp> = ({ navigation }) => {
     const resetPassword = () => {
         axios.patch(`${API_URL}/users/resetPassword/${params.token}`, { password:password.trim() })
             .then(result => {
-                setToken(result.data.data);
+                setToken(result.data.token);
                 setLoggedIn(true);
             })
             .catch(error => setError(error.response.data.message));

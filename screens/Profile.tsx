@@ -50,7 +50,7 @@ const Profile = () => {
     const handlePasswordChange = () => {
         axios.patch(`${API_URL}/users/updatePassword`, { currentPassword, newPassword }, { headers })
             .then(result => {
-                setResponse(result.data.message);
+                setResponse('Password has been changed!');
                 setToken(result.data.token);
             })
             .catch(error => setResponse(error.response.data.message));
