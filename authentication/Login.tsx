@@ -20,10 +20,10 @@ type NavigationProp = {
 }
 
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "-",
-    iosClientId: "-",
-    expoClientId: ""
+  const [, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: "584741243002-9lev2d7tqa3t0hmcih897r3moou66cir.apps.googleusercontent.com",
+    iosClientId: "584741243002-jmo14kldgqgcl146hvlqdudput99irpg.apps.googleusercontent.com",
+    expoClientId: "584741243002-uecbr1oj7obtpin2l3d884jnr80an3cp.apps.googleusercontent.com"
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -128,10 +128,10 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
           </View>
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
           <Pressable style={AuthStyle.forgotBtnContainer} onPress={() => navigation.navigate('ForgotPassword')}>
-            <Text style={AuthStyle.forgotBtn}>Forgot Password?</Text>
+            <Text style={AuthStyle.forgotBtn}>Forgot your password?</Text>
           </Pressable>
-          <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Login</Button>
-          <Button icon='google' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Login with Google</Button>
+          <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Log in</Button>
+          <Button color={'blue'} icon='google-plus' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Log in with Google</Button>
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
           <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
