@@ -21,7 +21,7 @@ type NavigationProp = {
 
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
   const [, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "584741243002-9lev2d7tqa3t0hmcih897r3moou66cir.apps.googleusercontent.com",
+    androidClientId: "584741243002-0oavofula7kcd8di3tfv0nef7s9q7g87.apps.googleusercontent.com",
     iosClientId: "584741243002-jmo14kldgqgcl146hvlqdudput99irpg.apps.googleusercontent.com",
     expoClientId: "584741243002-uecbr1oj7obtpin2l3d884jnr80an3cp.apps.googleusercontent.com"
   });
@@ -46,6 +46,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
     userInfoResponse.json().then(data => {
       axios.post(`${API_URL}/users/loginGoogle`,{email:data.email, name:data.given_name})
       .then(result => {
+        alert(result.data);
        setLoading(false);
         if (result.data.user.confirmed) {
           setToken(result.data.token);

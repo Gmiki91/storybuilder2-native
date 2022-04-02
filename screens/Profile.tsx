@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, ScrollView, StyleSheet, Alert, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Alert, Pressable, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
@@ -89,7 +89,7 @@ const Profile = () => {
     }
 
     return user ?
-        <View style={{ flex: 1, flexDirection: 'column', marginTop: '15%' }}>
+        <SafeAreaView style={{ flex: 1, flexDirection: 'column', marginTop: '5%'  }}>
             <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={2000}>{response}</Snackbar>
             <Top>
                 <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
@@ -125,7 +125,7 @@ const Profile = () => {
                         </View>
                     </View>}
             </ScrollView>
-        </View>
+        </SafeAreaView>
         : <ActivityIndicator style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }} size={'large'} animating={!user} color={Color.secondary} />
 }
 
