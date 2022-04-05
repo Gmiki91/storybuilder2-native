@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
 import { FieldValues } from 'react-hook-form';
-import { Color , API_URL} from '../Global';
+import { Color, API_URL } from '../Global';
 import { useAuth } from '../context/AuthContext';
 import { NewPage } from '../components/forms/NewPage';
 import { RateLevel } from '../components/forms/RateLevel';
@@ -89,24 +89,26 @@ const StoryScreen = () => {
         return () => { mounted = false }
     }, [story, pageType]);
 
-    const addPendingPage = async (form: FieldValues) => {
+    const addPendingPage = (form: FieldValues) => {
         const page = {
             text: form.text,
             language: story.language,
         }
-        const pageId = await axios.post(`${API_URL}/pages/`, page, { headers }).then((result) => result.data.pageId);
-        const body = { pageId, storyId: params.storyId };
-        if (user._id !== story.authorId) addNotes();
-
-        axios.post(`${API_URL}/stories/pendingPage`, body, { headers })
+        axios.post(`${API_URL}/pages/`, page, { headers })
             .then((result) => {
-                setStory(result.data.story);
-                if (result.data.tributeCompleted) {
-                    setSnackMessage(`You completed your daily task. Well done!`);
-                }
-                setFormType('');
+                const body = { pageId: result.data.pageId, storyId: params.storyId };
+                if (user._id !== story.authorId) addNotes();
+                axios.post(`${API_URL}/stories/pendingPage`, body, { headers })
+                    .then((result) => {
+                        setStory(result.data.story);
+                        setFormType('');
+                    })
+                    .catch(() => setSnackMessage('An error has occurred'));
+
+                if (result.data.tributeCompleted) setSnackMessage(`You completed your daily task. Well done!`);
             })
-            .catch(() => setSnackMessage('An error has occurred'));
+            .catch(() => setSnackMessage('An error has occured while submitting the page'));
+
     }
 
     // softdelete all pages except the current one
@@ -161,13 +163,13 @@ const StoryScreen = () => {
     const handleRateText = async (vote: number, confirming: boolean, pageId: string, ratings: Rate[], authorId: string) => {
         if (confirming) {
             if (vote === -1) removePage(pageId);
-            if (vote === 1){
+            if (vote === 1) {
                 Alert.alert(
                     "Accepting page",
                     "All other pending pages will be rejected. Are you sure?",
                     [
-                        { text: "Cancel"},
-                        { text: "Yes", onPress: () =>  confirmPage(pageId, ratings, authorId)}
+                        { text: "Cancel" },
+                        { text: "Yes", onPress: () => confirmPage(pageId, ratings, authorId) }
                     ]
                 );
             }
@@ -232,7 +234,7 @@ const StoryScreen = () => {
             code: 'A',
             storyId: story._id
         }
-      
+
         axios.post(`${API_URL}/notifications/${id}`, { note }, { headers });
     }
 
@@ -254,9 +256,9 @@ const StoryScreen = () => {
             code: 'B',
             storyId: story._id
         }
-       
+
         axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-        if (story.authorName!=='Source') {
+        if (story.authorName !== 'Source') {
             note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
             axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         }
@@ -270,6 +272,10 @@ const StoryScreen = () => {
             case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
         }
         return null;
+    }
+    const dismissModal = () => {
+        if (formType !== 'words')
+            setFormType('')
     }
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && story.open && pageStatus === 'confirmed';
@@ -295,7 +301,7 @@ const StoryScreen = () => {
         <Portal>
             <Modal
                 visible={formType !== '' || loading}
-                onDismiss={() => setFormType('')}>
+                onDismiss={dismissModal}>
                 {loading ? <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} /> : form}
             </Modal>
         </Portal>

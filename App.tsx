@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Home from './screens/Home';
 import Login from "./authentication/Login";
-import { ImageBackground } from 'react-native';
+import { ImageBackground, SafeAreaView, StatusBar } from 'react-native';
 import { useState, useEffect, } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Signup from "./authentication/Signup";
@@ -55,13 +55,14 @@ export default function App() {
 
 
   const VisibleTabs = () => (
-    <Tab.Navigator  screenOptions={() => ({
-      headerShown:false,
-      title: '',
+    <Tab.Navigator screenOptions={() => ({
+      headerShown: false,
       tabBarActiveTintColor: Color.cancelBtn,
-      tabBarInactiveTintColor: Color.button, tabBarStyle: { backgroundColor: Color.main }
+      tabBarInactiveTintColor: Color.button,
+      tabBarStyle: { backgroundColor: Color.main },
+
     })}>
-      <Tab.Screen  component={DailyTribute} name="Daily" options={{
+      <Tab.Screen component={DailyTribute} name="Daily" options={{
         tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="weather-sunny" size={size} color={color} />)
       }} />
       <Tab.Screen component={Home} name="Stories" options={{
@@ -74,7 +75,7 @@ export default function App() {
   )
 
   const HiddenTabs = (
-    <Stack.Navigator  screenOptions={{title: '', headerStyle: { height:0, backgroundColor: Color.B } }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen component={VisibleTabs} name="Home" />
       <Stack.Screen component={StoryScreen} name="StoryScreen" />
       <Stack.Screen component={Stats} name="Stats" />
@@ -82,7 +83,7 @@ export default function App() {
   )
 
   const LogIn = (
-    <Stack.Navigator  screenOptions={{ headerStyle: { height:0, backgroundColor: Color.B } }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen component={Login} name="Login" />
       <Stack.Screen component={Signup} name="Signup" />
       <Stack.Screen component={ResetPassword} name="ResetPassword" />
@@ -96,13 +97,16 @@ export default function App() {
   }
 
   return !loading && (
-      <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.png')}>
-    <AuthContext.Provider value={{ token, setToken }}>
-        <NavigationContainer theme={navTheme}>
-          {token ? HiddenTabs : LogIn}
-        </NavigationContainer>
-    </AuthContext.Provider>
-      </ImageBackground>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar backgroundColor={Color.B}/>
+      <AuthContext.Provider value={{ token, setToken }}>
+        <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.png')}>
+          <NavigationContainer theme={navTheme}>
+            {token ? HiddenTabs : LogIn}
+          </NavigationContainer>
+        </ImageBackground>
+      </AuthContext.Provider>
+    </SafeAreaView>
   );
 }
 
