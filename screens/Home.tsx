@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { StyleSheet, View, Pressable, Keyboard } from 'react-native';
-import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator, Avatar } from 'react-native-paper';
+import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState, useCallback, memo } from 'react';
 import StoryList from '../components/StoryList';
@@ -15,7 +15,6 @@ import { SadMessageBox } from '../components/UI/SadMessageBox';
 import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
 import { User } from '../models/User';
 import { Top } from '../components/UI/Top';
-import { Bell } from '../components/UI/Bell';
 
 
 type SearchCriteria = {
@@ -47,23 +46,9 @@ const Home = () => {
     const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [tempSearchCriteria, setTempSearchCriteria] = useState<SearchCriteria>(defaultSearchCriteria);
     const [stories, setStories] = useState<Story[]>([]);
-    const [newNotes, setNewNotes] = useState<boolean>();
     const [showModal, setShowModal] = useState<ModalType>('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, isLoading] = useState(true);
-
-    useEffect(() => {
-        let mounted = true;
-        if (isFocused) {
-            axios.get(`${API_URL}/notifications/check`, { headers })
-                .then(result => {
-                    if (mounted)
-                        setNewNotes(result.data.isNew);
-                }).catch(error => setErrorMessage(error.response.data.message));
-
-        }
-        return () => { mounted = false }
-    }, [isFocused]);
 
     const getUser = useCallback(async () => {
         let mounted = true;
@@ -187,9 +172,6 @@ const Home = () => {
                     onSubmitEditing={onStoryNameSearch}
                     value={searchTitle} />
                 <Top >
-                    {newNotes && <Pressable onPress={goToProfile} style={{ paddingLeft: '5%', flexDirection: 'row', alignItems: 'center', }} >
-                        <Bell />
-                    </Pressable>}
                     <SortBy
                         direction={sortDirection}
                         currentCriteria={sortBy}
@@ -198,12 +180,11 @@ const Home = () => {
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </Top>
-
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show' />
                     : <StoryList stories={stories} />}
 
-                <Fab onPress={onNewStoryClicked} />
+                <Fab label='Add story' onPress={onNewStoryClicked} />
             </View>
             <Snackbar onDismiss={() => setErrorMessage('')} visible={errorMessage !== ''} duration={2000}>{errorMessage}</Snackbar>
         </Provider>

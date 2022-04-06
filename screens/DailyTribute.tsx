@@ -37,7 +37,7 @@ const DailyTribute = () => {
                         isLoading(false)
                     }
                 })
-                .catch(error => setError('An error has occured'))
+                .catch(() => setError('An error has occured'))
         } else {
             isLoading(true);
         }

@@ -280,7 +280,7 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && story.open && pageStatus === 'confirmed';
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        ? story.pendingPageIds?.length > 0 && <Button  mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
         : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Confirmed: {story.pageIds.length}</Button>
 
     const form = getForm();
@@ -321,7 +321,7 @@ const StoryScreen = () => {
 
             {toggleStatus}
             <BackButton />
-            {addPageVisible && <Fab onPress={onNewPagePressed} />}
+            {addPageVisible && <Fab label='Add page' onPress={onNewPagePressed} />}
             <Button mode='contained' style={styles.level} color={Color[story.level?.code]} onPress={() => setFormType('rateLevel')}><Text style={{ fontSize: 18 }}>{story.level?.code}</Text></Button>
         </View>
         <Snackbar onDismiss={() => setSnackMessage('')} visible={snackMessage != ''} duration={2000}>{snackMessage} </Snackbar>
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         padding: '2%',
         backgroundColor: Color.main,
-        borderBottomWidth: 5,
+        borderBottomWidth: 3,
         borderWidth: 1,
         elevation: 3,
         shadowOffset: {
@@ -359,6 +359,9 @@ const styles = StyleSheet.create({
         marginTop: 25,
         right: 0,
         top: 0,
+        borderBottomWidth: 3,
+        borderWidth: 1,
+        borderColor: 'black',
     },
 
     scrollBottom: {
