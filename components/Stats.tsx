@@ -8,7 +8,6 @@ import { User } from "../models/User";
 import moment from 'moment';
 import { BackButton } from './UI/BackButton';
 import { Color, API_URL } from "../Global";
-import { Coin } from "./UI/Coin";
 type ParamList = {
     Params: {
         userId: string
@@ -100,8 +99,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                     <Text style={{ fontSize: 12, }}>Last activity: {moment.utc(user.lastActivity).local().startOf('seconds').fromNow()}</Text>
                     {!user.active && <Text style={{ fontSize: 12, }}>Inactive user</Text>}
                     <View style={{ flexDirection: 'row' }}>
-                        <Text >{user.coins}x </Text>
-                        <Coin />
+                        <Text >{user.coins}x coin(s)</Text>
                     </View>
                 </View>
                 <View style={styles.group}>

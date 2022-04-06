@@ -13,7 +13,7 @@ import { Note } from "../models/Note";
 import moment from "moment";
 import { Top } from "../components/UI/Top";
 import { SadMessageBox } from "../components/UI/SadMessageBox";
-import About from "./About";
+import About from "../components/About";
 
 type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout' | 'About';
 const Profile = () => {
@@ -89,7 +89,7 @@ const Profile = () => {
     }
 
     return user ?
-        <SafeAreaView style={{ flex: 1, flexDirection: 'column', marginTop: '5%'  }}>
+        <SafeAreaView style={{ flex: 1, flexDirection: 'column' }}>
             <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={2000}>{response}</Snackbar>
             <Top>
                 <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />

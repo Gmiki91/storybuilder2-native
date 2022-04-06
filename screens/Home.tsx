@@ -147,9 +147,6 @@ const Home = () => {
         }
     }
 
-    const goToProfile = () => {
-        navigation.dispatch(CommonActions.navigate({ name: 'Profile' }))
-    }
     const form = getForm();
     const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
 
@@ -176,7 +173,7 @@ const Home = () => {
                         direction={sortDirection}
                         currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable onPress={() => setShowModal('Filter')} >
+                    <Pressable style={styles.filter} onPress={() => setShowModal('Filter')} >
                         <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
                     </Pressable>
                 </Top>
@@ -194,7 +191,6 @@ const Home = () => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 30,
         flex: 1,
         alignItems: 'center',
     },
@@ -202,8 +198,16 @@ const styles = StyleSheet.create({
         width: '80%',
         height: 40,
         borderRadius: 40,
+        borderBottomWidth: 3,
+        borderWidth: 1,
         backgroundColor: Color.main
     },
+    filter:{
+        backgroundColor: Color.main,
+        borderBottomWidth: 3,
+        borderWidth: 1,
+        borderRadius: 10,
+    }
 
 })
 export default memo(Home);

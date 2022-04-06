@@ -28,8 +28,8 @@
       }
     },
     "android": {
-      "package": "com.glyphses",
-      "versionCode": 12,
+      "package": "com.storybuilder",
+      "versionCode": 13,
       "softwareKeyboardLayoutMode":"pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",

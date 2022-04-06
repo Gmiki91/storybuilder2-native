@@ -21,7 +21,15 @@ export const SortBy: React.FC<Props> = ({ direction, currentCriteria, criteriaCh
     const list = sorts.map(sort =>
         <SortElement key={sort.value} showIcon={currentCriteria === sort.value} icon={arrow} onPress={() => criteriaChanged(sort.value)} label={sort.label} />)
 
-    return <View style={{ flexDirection: 'row', alignItems: 'center', marginTop:'3%', marginBottom:'2%', backgroundColor: Color.main, borderRadius:20, }}>
+    return <View style={{ 
+        flexDirection: 'row',
+        alignItems: 'center', 
+        marginTop:'3%', 
+        marginBottom:'2%', 
+        backgroundColor: Color.main, 
+        borderBottomWidth: 3,
+        borderWidth: 1,
+        borderRadius:20, }}>
         {list}
     </View>
 } 

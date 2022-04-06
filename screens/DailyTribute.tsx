@@ -8,7 +8,6 @@ import StoryCard from '../components/StoryCard';
 import { Story } from '../models/Story';
 import { Color, API_URL } from '../Global';
 import { Timer } from '../components/UI/Timer';
-import { Coin } from '../components/UI/Coin';
 
 type Data = {
     story: Story,
@@ -58,8 +57,7 @@ const DailyTribute = () => {
         {data.story ?
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text>Contribute to this story to get 1 </Text>
-                    <Coin/>
+                    <Text>Contribute to this story to get 1 coin</Text>
                 </View>
                 <View style={styles.cardContainer}>
                     <StoryCard
@@ -87,7 +85,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     header: {
-        backgroundColor: Color.secondary, padding: 5, borderRadius: 5, marginBottom: 5, flexDirection: 'row', alignItems: 'center'
+        backgroundColor: Color.secondary, padding: 5, borderRadius: 5, marginBottom: 5, flexDirection: 'row', alignItems: 'center',borderBottomWidth: 3,
+        borderWidth: 1,
     },
     cardContainer: {
         width: '95%'
