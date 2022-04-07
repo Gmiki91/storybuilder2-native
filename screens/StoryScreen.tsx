@@ -28,8 +28,8 @@ type status = 'pending' | 'confirmed';
 type FormTypes = 'filter' | 'newPage' | 'rateLevel' | 'words' | 'editStory' | '';
 const StoryScreen = () => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
-    const { token } = useAuth();
-    const headers = { Authorization: `Bearer ${token}` };
+    const { authToken } = useAuth();
+    const headers = { Authorization: `Bearer ${authToken}` };
     const [user, setUser] = useState({} as User);
     const [story, setStory] = useState({} as Story);
     const [pages, setPages] = useState<Page[]>([]);
@@ -64,8 +64,12 @@ const StoryScreen = () => {
         if (!loading) setLoading(true);
         axios.get(`${API_URL}/stories/one/${params.storyId}`)
             .then(result => {
-                if (mounted)
-                    setStory(result.data.story)
+                if (mounted){
+                    setStory(result.data.story);
+                    if(result.data.story.pageIds.length>1){
+                        setCurrentInterval(result.data.story.pageIds.length)
+                    }
+                }
             })
             .catch(() => setSnackMessage('No story to display'));
         return () => { mounted = false }
@@ -93,6 +97,7 @@ const StoryScreen = () => {
         const page = {
             text: form.text,
             language: story.language,
+            storyId:params.storyId,
         }
         axios.post(`${API_URL}/pages/`, page, { headers })
             .then((result) => {

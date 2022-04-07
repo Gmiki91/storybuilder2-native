@@ -43,7 +43,7 @@ const navTheme = {
   },
 };
 export default function App() {
-  const [token, setAuthToken] = useState<string>();
+  const [authToken, setAuthToken] = useState<string>();
   const [newNotes, setNewNotes] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const getToken = async () => {
@@ -56,17 +56,21 @@ export default function App() {
     getToken();
   }, []);
 
+  useEffect(() => {
+   checkNews('');
+  }, [authToken]);
+
   const checkNews = useCallback((target: string | undefined) => {
-    if (target?.substring(0,7) === 'Profile') {
-      setNewNotes(0);
-    } else {
-      if (token) {
-        const headers = { Authorization: `Bearer ${token}` };
+    if(authToken){
+      if (target?.substring(0, 7) === 'Profile') {
+        setNewNotes(0);
+      } else {
+        const headers = { Authorization: `Bearer ${authToken}` };
         axios.get(`${API_URL}/notifications/check`, { headers })
           .then(result => setNewNotes(result.data.notes))
       }
     }
-  }, [])
+  }, [authToken])
 
   const VisibleTabs = () => (
     <Tab.Navigator
@@ -86,9 +90,9 @@ export default function App() {
         tabBarIcon: ({ color, size }) => <Foundation name="page-multiple" size={size} color={color} />
       }} />
       <Tab.Screen component={Profile} name="Profile" options={{
-        tabBarIcon: ({ color, size,focused }) => {
+        tabBarIcon: ({ color, size, focused }) => {
           if (newNotes === 0 || focused) return <MaterialCommunityIcons name="human-child" size={size} color={color} />
-          else if(newNotes !== 0) return <Bell size={size} color={color} notes={newNotes} />
+          else if (newNotes !== 0) return <Bell size={size} color={color} notes={newNotes} />
         }
       }} />
     </Tab.Navigator>
@@ -119,10 +123,10 @@ export default function App() {
   return !loading && (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={Color.B} />
-      <AuthContext.Provider value={{ token, setToken }}>
+      <AuthContext.Provider value={{ authToken, setToken }}>
         <ImageBackground resizeMode="repeat" style={{ flex: 1 }} source={require('./assets/background.png')}>
           <NavigationContainer theme={navTheme}>
-            {token ? HiddenTabs : LogIn}
+            {authToken ? HiddenTabs : LogIn}
           </NavigationContainer>
         </ImageBackground>
       </AuthContext.Provider>

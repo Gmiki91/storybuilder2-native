@@ -37,8 +37,8 @@ type PageData = {
 
 const Stats: React.FC<Props> = ({ userProp }) => {
     const { params } = useRoute<RouteProp<ParamList, 'Params'>>();
-    const { token } = useAuth();
-    const headers = { Authorization: `Bearer ${token}` };
+    const { authToken } = useAuth();
+    const headers = { Authorization: `Bearer ${authToken}` };
 
     const [user, setUser] = useState<User>();
     const [error, setError] = useState('');

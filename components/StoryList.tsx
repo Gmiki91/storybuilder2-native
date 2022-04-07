@@ -13,8 +13,8 @@ type Props = {
 }
 const StoryList: React.FC<Props> = ({ stories }) => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
-    const { token } = useAuth();
-    const headers = { Authorization: `Bearer ${token}` };
+    const { authToken } = useAuth();
+    const headers = { Authorization: `Bearer ${authToken}` };
     const navigation = useNavigation();
     useEffect(() => {
         let mounted = true;

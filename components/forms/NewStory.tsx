@@ -26,13 +26,13 @@ type Props = {
 export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
     const [selectedLevel, setSelectedLevel] = useState<LevelCode>('A');
     const [error, setError] = useState('');
-    const { token, setToken } = useAuth();
+    const { authToken, setToken } = useAuth();
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
 
     const navigation = useNavigation();
 
     const handleNewStory = async (form: FieldValues) => {
-        const realToken = token || tokenProp;
+        const realToken = authToken || tokenProp;
         const headers = { Authorization: `Bearer ${realToken}` };
 
         const page = {
@@ -68,7 +68,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     onCloseForm(true);
                 }
             })
-            .catch(error => setError('An error occured while saving the story'))
+            .catch(() => setError('An error occured while saving the story'))
     }
 
     return (
@@ -105,7 +105,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
             </View>
             <Divider />
-            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional)</Text>
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>Short description (optional, you can change this later)</Text>
             <Pressable style={styles.controllerContainer}>
                 <Controller
                     control={control}

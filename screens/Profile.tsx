@@ -17,8 +17,8 @@ import About from "../components/About";
 
 type Tab = 'Notifications' | 'Stats' | 'Settings' | 'Logout' | 'About';
 const Profile = () => {
-    const { token, setToken } = useAuth();
-    const headers = { Authorization: `Bearer ${token}` };
+    const { authToken, setToken } = useAuth();
+    const headers = { Authorization: `Bearer ${authToken}` };
     const [user, setUser] = useState<User>({} as User);
     const [notifications, setNotifications] = useState<Note[]>([])
     const [currentPassword, setCurrentPassword] = useState('');
@@ -93,8 +93,8 @@ const Profile = () => {
             <Snackbar onDismiss={() => setResponse('')} visible={response !== ''} duration={2000}>{response}</Snackbar>
             <Top>
                 <IconButton icon="alert-octagram" onPress={() => setTab('Notifications')} style={{ marginLeft: '2%' }} color={tab === 'Notifications' ? Color.cancelBtn : Color.button} />
-                <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="chart-bar" onPress={() => setTab('Stats')} style={{ marginLeft: '2%' }} color={tab === 'Stats' ? Color.cancelBtn : Color.button} />
+                <IconButton icon="cogs" onPress={() => setTab('Settings')} style={{ marginLeft: '2%' }} color={tab === 'Settings' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="help-circle-outline" onPress={() => setTab('About')} style={{ marginLeft: '2%' }} color={tab === 'About' ? Color.cancelBtn : Color.button} />
                 <IconButton icon="exit-to-app" onPress={handleLogout} style={{ marginLeft: '2%' }} color={tab === 'Logout' ? Color.cancelBtn : Color.button} />
             </Top>

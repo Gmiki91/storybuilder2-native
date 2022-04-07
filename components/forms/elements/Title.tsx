@@ -20,7 +20,7 @@ export const Title: React.FC<Props> = ({ control }) => {
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput
                         style={{ fontSize: 22 }}
-                        placeholder="Story title"
+                        placeholder="Story title (you can change this later)"
                         value={value}
                         onBlur={onBlur}
                         onChangeText={value => onChange(value)} />

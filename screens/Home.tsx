@@ -12,7 +12,7 @@ import { Filter } from '../components/forms/Filter';
 import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
-import { CommonActions, useIsFocused, useNavigation } from '@react-navigation/native';
+import {  useIsFocused, useNavigation } from '@react-navigation/native';
 import { User } from '../models/User';
 import { Top } from '../components/UI/Top';
 
@@ -37,9 +37,9 @@ type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
-    const { token } = useAuth();
+    const { authToken } = useAuth();
     const [user, setUser] = useState({} as User);
-    const headers = { Authorization: `Bearer ${token}` };
+    const headers = { Authorization: `Bearer ${authToken}` };
     const [searchTitle, setSearchTitle] = useState('');
     const [sortBy, setSortBy] = useState('title');
     const [sortDirection, setSortDirection] = useState(1);

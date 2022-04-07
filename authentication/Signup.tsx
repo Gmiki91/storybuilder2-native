@@ -31,8 +31,6 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
       if (result.status === 201) {
           setSavedToken(result.data.token);
           setShowModal(true);
-        
-        // navigate("/");
       } else {
         setIsError(true);
       }

@@ -15,8 +15,8 @@ type Data = {
     minutesLeft: number
 }
 const DailyTribute = () => {
-    const { token } = useAuth();
-    const headers = { Authorization: `Bearer ${token}` };
+    const { authToken } = useAuth();
+    const headers = { Authorization: `Bearer ${authToken}` };
     const isFocused = useIsFocused();
     const navigation = useNavigation();
 
