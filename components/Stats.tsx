@@ -8,6 +8,7 @@ import { User } from "../models/User";
 import moment from 'moment';
 import { BackButton } from './UI/BackButton';
 import { Color, API_URL } from "../Global";
+import { LanguageModel } from "../models/LanguageData";
 type ParamList = {
     Params: {
         userId: string
@@ -23,7 +24,7 @@ type StoryData = {
     upVotes: number,
 }
 type LangInfo = {
-    language: string,
+    language: LanguageModel,
     level: string,
     ratio: string
 }
@@ -113,7 +114,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                 {pageData.langInfo?.length !== 0 &&
                     <View>
                         <Text>Used languages:</Text>
-                        {pageData.langInfo?.map(obj => <Text key={obj.language}>{obj.language}: {obj.ratio}% - {obj.level}</Text>)}
+                        {pageData.langInfo?.map(obj => <Text key={obj.language.code}>{obj.language.text}: {obj.ratio}% - {obj.level}</Text>)}
                     </View>}
 
             </View>

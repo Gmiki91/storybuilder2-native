@@ -18,7 +18,7 @@ import { RadioButton } from '../UI/RadioButton';
 import { Snackbar } from 'react-native-paper';
 import { Note } from '../../models/Note';
 type Props = {
-    onCloseForm: (submitted:boolean) => void;
+    onCloseForm: (submitted: boolean) => void;
     tokenProp?: string
 }
 
@@ -36,7 +36,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
         const page = {
             text: form.text,
-            language: form.language || languages[0],
+            language: form.language || languages[0].code,
         }
 
         const pageId = await axios.post(`${API_URL}/pages/`, page, { headers }).then((result) => result.data.pageId)
@@ -44,7 +44,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
-            language: form.language || languages[0],
+            language: form.language || languages[0].code,
             pageId: pageId,
             level: selectedLevel,
             word1: form.word1?.toLowerCase().trim(),
@@ -75,6 +75,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             {tokenProp && <Text style={{ justifyContent: 'center' }}>Create your first story</Text>}
             <Title control={control} />
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
+            <Text style={{ paddingTop: 15 }}>Select your language and your proficiency</Text>
             <View style={styles.controllerContainer}>
                 <Controller
                     control={control}
@@ -85,12 +86,11 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                             onBlur={onBlur}
                             onValueChange={value => onChange(value)} >
                             {languages.map(language => {
-                                return <Picker.Item key={language} value={language} label={language} />
+                                return <Picker.Item key={language.text} value={language.code} label={`${language.code} ${language.text}`} />
                             })}
                         </Picker>
                     )} />
             </View>
-            <Divider />
             <View>
                 {levels.map(level => (
                     <RadioButton
@@ -118,17 +118,17 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                             onChangeText={value => onChange(value)} />
                     )} />
             </Pressable>
-            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>First page</Text>
+            <Text style={{ paddingLeft: 5, paddingTop: 15, paddingBottom: 5 }}>The beginning of your story</Text>
             <PageText newStory checkWords={() => { }} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
 
-            <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Here you can specify 3 mandatory words/phrases for the next page (optional):</Text>
+            <Text style={{ paddingLeft: 5, paddingTop: 15 }}>You can specify 3 mandatory words/phrases for the next page (optional)</Text>
             <Word name='word1' placeholder='#1' control={control} />
             <Word name='word2' placeholder='#2' control={control} />
             <Word name='word3' placeholder='#3' control={control} />
 
             <View style={styles.buttonContainer}>
-                {!tokenProp && <Button color={Color.cancelBtn} onPress={()=>onCloseForm(false)} >Cancel</Button>}
+                {!tokenProp && <Button color={Color.cancelBtn} onPress={() => onCloseForm(false)} >Cancel</Button>}
                 <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleNewStory)} >Submit</Button>
             </View>
             <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>

@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View,Text } from 'react-native';
 import { Controller, FieldValues, Control } from 'react-hook-form'
 import { CustomInput } from '../../UI/CustomInput';
 import styles from "./style"
@@ -9,6 +9,7 @@ export const Title: React.FC<Props> = ({ control }) => {
 
     return (
         <View style={styles.controllerContainer}>
+            <Text>Story title (you can change this later)</Text>
             <Controller
                 control={control}
                 name="title"
@@ -20,7 +21,7 @@ export const Title: React.FC<Props> = ({ control }) => {
                 render={({ field: { onChange, value, onBlur } }) => (
                     <CustomInput
                         style={{ fontSize: 22 }}
-                        placeholder="Story title (you can change this later)"
+                        placeholder="Write here..."
                         value={value}
                         onBlur={onBlur}
                         onChangeText={value => onChange(value)} />

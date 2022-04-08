@@ -1,9 +1,9 @@
 import moment from "moment";
 import { memo } from "react";
-import { Pressable, Text, View, StyleSheet, Image } from 'react-native'
+import { Pressable, Text, View, StyleSheet } from 'react-native'
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { Author } from "./Author";
-import { Color, FlagIcons } from '../Global';
+import { Color } from '../Global';
 import { Story } from "../models/Story"
 
 type Props = {
@@ -14,7 +14,6 @@ type Props = {
     addToFavorites: (storyId: string) => void,
     lastOne?: boolean
     hideFavorite?: boolean,
-
 }
 
 const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites, lastOne, hideFavorite }) => {
@@ -28,7 +27,6 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
         }
     }
     const listBottom = lastOne ? { marginBottom: '25%' } : null;
-
     return (
         <Pressable style={[styles.container, listBottom]} onPress={() => onPress(story._id)}>
 
@@ -43,11 +41,11 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                 </View>
                 <Text>{story.description}</Text>
                 <View style={styles.row}>
-                    <Image style={{ borderRadius: 10, height: 20, width: 20 }} source={FlagIcons[story.language]} />
+                    <Text style={{fontSize: 20 }}>{story.language.code}</Text>
                     <Author name={story.authorName} userId={story.authorId} />
                 </View>
                 <View style={styles.row}>
-                    <Text>{story.language}: {story.level.code}</Text>
+                    <Text>{story.language.text}: {story.level.code}</Text>
                     <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
                 </View>
                 <Text>Pages: {story.pageIds.length}</Text>

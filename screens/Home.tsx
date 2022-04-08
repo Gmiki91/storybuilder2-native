@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { StyleSheet, View, Pressable, Keyboard } from 'react-native';
-import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet, View, Keyboard } from 'react-native';
+import { Modal, Portal, Provider, Searchbar, Snackbar, ActivityIndicator, Button } from 'react-native-paper';
 import React, { useEffect, useState, useCallback, memo } from 'react';
 import StoryList from '../components/StoryList';
 import { SortBy } from '../components/SortBy';
@@ -12,7 +11,7 @@ import { Filter } from '../components/forms/Filter';
 import { NewStory } from '../components/forms/NewStory';
 import { Fab } from '../components/UI/Fab';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
-import {  useIsFocused, useNavigation } from '@react-navigation/native';
+import {  useIsFocused } from '@react-navigation/native';
 import { User } from '../models/User';
 import { Top } from '../components/UI/Top';
 
@@ -35,7 +34,6 @@ const defaultSearchCriteria = {
 
 type ModalType = 'Filter' | 'NewStory' | '';
 const Home = () => {
-    const navigation = useNavigation();
     const isFocused = useIsFocused();
     const { authToken } = useAuth();
     const [user, setUser] = useState({} as User);
@@ -148,7 +146,7 @@ const Home = () => {
     }
 
     const form = getForm();
-    const filterIcon = filtersOn() ? 'filter-plus' : 'filter';
+    const filterIcon = filtersOn() ? 'filter' : 'filter-outline';
 
     return (
         <Provider>
@@ -173,9 +171,11 @@ const Home = () => {
                         direction={sortDirection}
                         currentCriteria={sortBy}
                         criteriaChanged={handleSort} />
-                    <Pressable style={styles.filter} onPress={() => setShowModal('Filter')} >
-                        <MaterialCommunityIcons name={filterIcon} size={24} color='black' />
-                    </Pressable>
+                        <View style={styles.filter}>
+                    <Button  style={styles.filter} icon={filterIcon} color={Color.button} onPress={() => setShowModal('Filter')} >
+                    {filterIcon==='filter' ? 'Filtered' : 'Filter'}
+                    </Button>
+                    </View>
                 </Top>
                 {stories.length === 0
                     ? <SadMessageBox message='No stories to show' />
@@ -203,10 +203,10 @@ const styles = StyleSheet.create({
         backgroundColor: Color.main
     },
     filter:{
-        backgroundColor: Color.main,
         borderBottomWidth: 3,
         borderWidth: 1,
-        borderRadius: 10,
+        borderRadius:20,
+        backgroundColor:Color.main,
     }
 
 })
