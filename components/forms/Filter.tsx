@@ -1,5 +1,4 @@
-import { levels } from '../../models/LanguageLevels';
-import data from '../../assets/languages.json';
+import { levels,languages } from '../../models/LanguageData';
 import { Form } from '../UI/Form';
 import { Text, View, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -53,7 +52,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         <Text>Selected languages:</Text>
         <View style={{ flexDirection: 'column'}}>
             {filters.languages.map(lang =>
-                <Chip style={{  backgroundColor: Color.secondary}}key={lang} onPress={() => handleRemove('languages', lang)} onClose={() => handleRemove('languages', lang)}>
+                <Chip style={{backgroundColor: Color.secondary}}key={lang} onPress={() => handleRemove('languages', lang)} onClose={() => handleRemove('languages', lang)}>
                     <Text>{lang}</Text>
                 </Chip>
             )}
@@ -61,7 +60,8 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         <Picker
             selectedValue={filters.languages[filters.languages.length - 1]}
             onValueChange={e => { handleChange('languages', e) }} >
-            {data.map(lang => <Picker.Item key={lang.code} value={lang.name} label={lang.name} />)}
+            {languages.map(lang =>
+                 <Picker.Item key={lang} value={lang} label={lang} />)}
         </Picker>
 
         <Divider />

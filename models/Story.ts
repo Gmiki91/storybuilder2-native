@@ -1,10 +1,10 @@
-import { Level } from "./LanguageLevels";
+import { Level,Language } from "./LanguageData";
 type Rate ='Terrible'|'Bad'|'Mixed'|'Good'|'Excellent';
 export type Story = {
     _id:string;
     title: string;
     description: string;
-    language: string;
+    language: Language;
     level: Level;
     authorId: string;
     authorName: string;

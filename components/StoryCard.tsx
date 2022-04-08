@@ -1,10 +1,10 @@
-import { Story } from "../models/Story"
-import { Pressable, Text, View, StyleSheet } from 'react-native'
-import { Color } from '../Global';
-import { Author } from "./Author";
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import moment from "moment";
 import { memo } from "react";
+import { Pressable, Text, View, StyleSheet, Image } from 'react-native'
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Author } from "./Author";
+import { Color, FlagIcons } from '../Global';
+import { Story } from "../models/Story"
 
 type Props = {
     story: Story,
@@ -12,12 +12,12 @@ type Props = {
     onPress: (storyId: string) => void,
     removeFromFavorites: (storyId: string) => void,
     addToFavorites: (storyId: string) => void,
-    lastOne?:boolean
+    lastOne?: boolean
     hideFavorite?: boolean,
 
 }
 
-const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites,lastOne, hideFavorite }) => {
+const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorites, removeFromFavorites, lastOne, hideFavorite }) => {
     const getColor = (rating: string) => {
         switch (rating) {
             case 'Excellent': return '#058700';
@@ -27,9 +27,10 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
             case 'Terrible': return '#870000';
         }
     }
-    const listBottom = lastOne? {marginBottom:'25%'}:null;
+    const listBottom = lastOne ? { marginBottom: '25%' } : null;
+
     return (
-        <Pressable style={[styles.container,listBottom]} onPress={() => onPress(story._id)}>
+        <Pressable style={[styles.container, listBottom]} onPress={() => onPress(story._id)}>
 
             <View style={{ padding: 15 }}>
                 <View style={styles.row}>
@@ -41,10 +42,13 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                     </View>}
                 </View>
                 <Text>{story.description}</Text>
-                <Author name={story.authorName} userId={story.authorId} />
+                <View style={styles.row}>
+                    <Image style={{ borderRadius: 10, height: 20, width: 20 }} source={FlagIcons[story.language]} />
+                    <Author name={story.authorName} userId={story.authorId} />
+                </View>
                 <View style={styles.row}>
                     <Text>{story.language}: {story.level.code}</Text>
-                <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
+                    <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
                 </View>
                 <Text>Pages: {story.pageIds.length}</Text>
                 <View style={styles.row}>

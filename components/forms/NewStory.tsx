@@ -5,7 +5,6 @@ import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { Divider, Button } from 'react-native-paper';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import { default as languages } from '../../assets/languages.json';
 import { useAuth } from '../../context/AuthContext';
 import { Color, API_URL } from '../../Global';
 import { Form } from '../UI/Form';
@@ -13,7 +12,7 @@ import { CustomInput } from '../UI/CustomInput';
 import { ErrorMessage } from '../../components/UI/ErrorMessage';
 import { PageText } from './elements/PageText';
 import { Title } from './elements/Title';
-import { levels, LevelCode } from '../../models/LanguageLevels';
+import { levels, languages, LevelCode } from '../../models/LanguageData';
 import { Word } from './elements/Word';
 import { RadioButton } from '../UI/RadioButton';
 import { Snackbar } from 'react-native-paper';
@@ -37,7 +36,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
         const page = {
             text: form.text,
-            language: form.language || languages[0].name,
+            language: form.language || languages[0],
         }
 
         const pageId = await axios.post(`${API_URL}/pages/`, page, { headers }).then((result) => result.data.pageId)
@@ -45,7 +44,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
-            language: form.language || languages[0].name,
+            language: form.language || languages[0],
             pageId: pageId,
             level: selectedLevel,
             word1: form.word1?.toLowerCase().trim(),
@@ -86,7 +85,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                             onBlur={onBlur}
                             onValueChange={value => onChange(value)} >
                             {languages.map(language => {
-                                return <Picker.Item key={language.code} value={language.name} label={language.name} />
+                                return <Picker.Item key={language} value={language} label={language} />
                             })}
                         </Picker>
                     )} />

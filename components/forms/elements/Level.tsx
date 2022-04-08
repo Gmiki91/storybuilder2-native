@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Controller, FieldValues, Control } from 'react-hook-form'
-import { levels } from '../../../models/LanguageLevels';
+import { levels } from '../../../models/LanguageData';
 import { CheckBox } from '../../UI/CheckBox';
 
 import styles from "./style";

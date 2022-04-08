@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { Form } from '../UI/Form';
 import { Color } from '../../Global';
-import { Level, levels } from '../../models/LanguageLevels';
+import { Level, levels } from '../../models/LanguageData';
 type Props = {
     level: Level;
     onSubmit: (rate: string) => void;
