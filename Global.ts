@@ -1,5 +1,3 @@
-import { ImageSourcePropType } from "react-native";
-
 export const Color = {
 
     main: '#fce3b3',
@@ -16,51 +14,6 @@ export const Color = {
     'A': '#32a83c',
     'B': '#dea749',
     'C': '#de4949',
-}
-
-export const FlagIcons = {
-    Arabic: require(`./assets/flags/Arabic.png`) as ImageSourcePropType,
-    Bulgarian: require(`./assets/flags/Bulgarian.png`) as ImageSourcePropType,
-    Chinese: require(`./assets/flags/Chinese.png`) as ImageSourcePropType,
-    Croatian: require(`./assets/flags/Croatian.png`) as ImageSourcePropType,
-    Czech: require(`./assets/flags/Czech.png`) as ImageSourcePropType,
-    Danish: require(`./assets/flags/Danish.png`) as ImageSourcePropType,
-    Dutch: require(`./assets/flags/Dutch.png`) as ImageSourcePropType,
-    English: require(`./assets/flags/English.png`) as ImageSourcePropType,
-    Esperanto: require(`./assets/flags/Esperanto.png`) as ImageSourcePropType,
-    Estonian: require(`./assets/flags/Estonian.png`) as ImageSourcePropType,
-    Finnish: require(`./assets/flags/Finnish.png`) as ImageSourcePropType,
-    French: require(`./assets/flags/French.png`) as ImageSourcePropType,
-    German: require(`./assets/flags/German.png`) as ImageSourcePropType,
-    Greek: require(`./assets/flags/Greek.png`) as ImageSourcePropType,
-    Hebrew: require(`./assets/flags/Hebrew.png`) as ImageSourcePropType,
-    Hindi: require(`./assets/flags/Hindi.png`) as ImageSourcePropType,
-    Hungarian: require(`./assets/flags/Hungarian.png`) as ImageSourcePropType,
-    Irish: require(`./assets/flags/Irish.png`) as ImageSourcePropType,
-    Italian: require(`./assets/flags/Italian.png`) as ImageSourcePropType,
-    Japanese: require(`./assets/flags/Japanese.png`) as ImageSourcePropType,
-    Kazakh: require(`./assets/flags/Kazakh.png`) as ImageSourcePropType,
-    Korean: require(`./assets/flags/Korean.png`) as ImageSourcePropType,
-    Latvian: require(`./assets/flags/Latvian.png`) as ImageSourcePropType,
-    Lithuanian: require(`./assets/flags/Lithuanian.png`) as ImageSourcePropType,
-    Macedonian: require(`./assets/flags/Macedonian.png`) as ImageSourcePropType,
-    Malay: require(`./assets/flags/Malay.png`) as ImageSourcePropType,
-    Norwegian: require(`./assets/flags/Norwegian.png`) as ImageSourcePropType,
-    Persian: require(`./assets/flags/Persian.png`) as ImageSourcePropType,
-    Polish: require(`./assets/flags/Polish.png`) as ImageSourcePropType,
-    Portuguese: require(`./assets/flags/Portuguese.png`) as ImageSourcePropType,
-    Romanian: require(`./assets/flags/Romanian.png`) as ImageSourcePropType,
-    Russian: require(`./assets/flags/Russian.png`) as ImageSourcePropType,
-    Serbian: require(`./assets/flags/Serbian.png`) as ImageSourcePropType,
-    Slovak: require(`./assets/flags/Slovak.png`) as ImageSourcePropType,
-    Slovene: require(`./assets/flags/Slovene.png`) as ImageSourcePropType,
-    Spanish: require(`./assets/flags/Spanish.png`) as ImageSourcePropType,
-    Swedish: require(`./assets/flags/Swedish.png`) as ImageSourcePropType,
-    Thai: require(`./assets/flags/Thai.png`) as ImageSourcePropType,
-    Turkish: require(`./assets/flags/Turkish.png`) as ImageSourcePropType,
-    Ukrainian: require(`./assets/flags/Ukrainian.png`) as ImageSourcePropType,
-    Vietnamese: require(`./assets/flags/Vietnamese.png`) as ImageSourcePropType,
-    Welsh: require(`./assets/flags/Welsh.png`) as ImageSourcePropType,
 }
 
 export const API_URL = 'https://8t84fca4l8.execute-api.eu-central-1.amazonaws.com/dev/api'
