@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { FieldValues } from 'react-hook-form';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
 import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
@@ -59,21 +59,22 @@ const StoryScreen = () => {
     }, [isFocused]);
 
     // init story
-    useEffect(() => {
-        let mounted = true
-        if (!loading) setLoading(true);
+    const loadStory = useCallback(() => {
         axios.get(`${API_URL}/stories/one/${params.storyId}`)
             .then(result => {
-                if (mounted) {
-                    setStory(result.data.story);
-                    if (result.data.story.pageIds.length > 1) {
-                        setCurrentInterval(result.data.story.pageIds.length)
-                    }
+                setStory(result.data.story);
+                if (result.data.story.pageIds.length > 1) {
+                    setCurrentInterval(result.data.story.pageIds.length)
                 }
             })
             .catch(() => setSnackMessage('No story to display'));
-        return () => { mounted = false }
     }, [params.storyId])
+
+    useEffect(() => {
+        loadStory();
+    }, [params.storyId])
+
+
 
     //init pages
     useEffect(() => {
@@ -266,12 +267,17 @@ const StoryScreen = () => {
         axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
     }
 
+    const closeEditForm = (isChanged: boolean) => {
+        if (isChanged)
+            loadStory()
+        setFormType('')
+    }
     const getForm = () => {
         switch (formType) {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={story.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
             case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
-            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={() => setFormType('')} />
+            case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={closeEditForm} />
         }
         return null;
     }
