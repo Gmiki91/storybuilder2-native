@@ -2,7 +2,7 @@ export type Language = 'Arabic' | 'Bulgarian' | 'Chinese' | 'Croatian' | 'Czech'
     'Esperanto' | 'Estonian' | 'Finnish' | 'French' | 'German' | 'Greek' | 'Hebrew' | 'Hindi' | 'Hungarian' | 'Irish' |
     'Italian' | 'Japanese' | 'Kazakh' | 'Korean' | 'Latvian' | 'Lithuanian' | 'Macedonian' | 'Malay' | 'Norwegian' |
     'Polish' | 'Portuguese' | 'Romanian' | 'Russian' | 'Serbian' | 'Slovak' | 'Slovene' | 'Spanish' | 'Swedish' |
-    'Turkish' | 'Ukrainian' | 'Vietnamese' 
+    'Turkish' | 'Ukrainian' | 'Vietnamese';
 export type LanguageModel = {
     text: Language,
     code: string,
@@ -16,7 +16,7 @@ export const languages: LanguageModel[] = [
     {text:'Czech',code:'🇨🇿'},
     {text:'Danish',code:'🇩🇰'},
     {text:'Dutch',code:'🇳🇱'},
-    {text:'Esperanto',code:'🏴'},
+    {text:'Esperanto',code:''},
     {text:'Estonian',code:'🇪🇪'},
     {text:'Finnish',code:'🇫🇮'},
     {text:'French',code:'🇫🇷'},

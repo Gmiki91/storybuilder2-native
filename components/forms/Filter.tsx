@@ -1,4 +1,4 @@
-import { levels,languages,LanguageModel } from '../../models/LanguageData';
+import { levels, languages } from '../../models/LanguageData';
 import { Form } from '../UI/Form';
 import { Text, View, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -24,12 +24,14 @@ type Props = {
 export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClearForm }) => {
 
     const handleChange = (filter: 'levels' | 'languages', value: string) => {
-        const originalValues = [...filters[filter]];
-        if (!originalValues.includes(value)) {
-            originalValues.push(value);
-            const updatedFilters = { ...filters };
-            updatedFilters[filter] = originalValues;
-            changeFilter(updatedFilters);
+        if (value) {
+            const originalValues = [...filters[filter]];
+            if (!originalValues.includes(value)) {
+                originalValues.push(value);
+                const updatedFilters = { ...filters };
+                updatedFilters[filter] = originalValues;
+                changeFilter(updatedFilters);
+            }
         }
     }
 
@@ -42,17 +44,17 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         changeFilter(updatedFilters);
     }
 
-    const handleLevel=(checked:boolean, value:string)=>{
-        if(checked) handleChange('levels', value)
-        else handleRemove('levels',value)
-          
+    const handleLevel = (checked: boolean, value: string) => {
+        if (checked) handleChange('levels', value)
+        else handleRemove('levels', value)
+
     }
 
     return <Form>
         <Text>Selected languages:</Text>
-        <View style={{ flexDirection: 'column'}}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
             {filters.languages.map(lang =>
-                <Chip style={{backgroundColor: Color.secondary}} key={lang} onPress={() => handleRemove('languages', lang)} onClose={() => handleRemove('languages', lang)}>
+                <Chip style={{ backgroundColor: Color.secondary, width: '25%', }} key={lang} onPress={() => handleRemove('languages', lang)} onClose={() => handleRemove('languages', lang)}>
                     <Text>{lang}</Text>
                 </Chip>
             )}
@@ -60,15 +62,16 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
         <Picker
             selectedValue={filters.languages[filters.languages.length - 1]}
             onValueChange={e => { handleChange('languages', e) }} >
+            <Picker.Item label='Select a language' />
             {languages.map(lang =>
-                 <Picker.Item key={lang.code} value={lang.text} label={`${lang.code} ${lang.text}`} />)}
+                <Picker.Item key={lang.code} value={lang.code} label={`${lang.code} ${lang.text}`} />)}
         </Picker>
 
         <Divider />
 
         <Text>Selected levels:</Text>
-        {levels.map(level => <CheckBox onPress={(checked)=>handleLevel(checked, level.code)} key={level.code} checked={filters.levels.indexOf(level.code)!==-1} label={`${level.code} - ${level.text}`} />)}
-    
+        {levels.map(level => <CheckBox onPress={(checked) => handleLevel(checked, level.code)} key={level.code} checked={filters.levels.indexOf(level.code) !== -1} label={`${level.code} - ${level.text}`} />)}
+
         <Divider />
         <Text>Stories:</Text>
         <View style={styles.buttonContainer}>
