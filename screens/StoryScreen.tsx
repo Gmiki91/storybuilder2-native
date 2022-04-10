@@ -1,23 +1,23 @@
 import axios from 'axios';
+import { FieldValues } from 'react-hook-form';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
-import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
-import { FieldValues } from 'react-hook-form';
+import { Modal, Portal, Provider, Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { Color, API_URL } from '../Global';
 import { useAuth } from '../context/AuthContext';
-import { NewPage } from '../components/forms/NewPage';
-import { RateLevel } from '../components/forms/RateLevel';
-import { PageCard } from '../components/PageCard';
-import { Fab } from '../components/UI/Fab';
-import Carousel from '../components/UI/Carousel';
 import { SadMessageBox } from '../components/UI/SadMessageBox';
+import { EditStory } from '../components/forms/EditStory';
+import { RateLevel } from '../components/forms/RateLevel';
 import { BackButton } from '../components/UI/BackButton';
+import { NewPage } from '../components/forms/NewPage';
+import { PageCard } from '../components/PageCard';
 import { Words } from '../components/forms/Words';
+import Carousel from '../components/UI/Carousel';
+import { Fab } from '../components/UI/Fab';
 import { Page, Rate } from '../models/Page';
 import { Story } from '../models/Story';
 import { User } from '../models/User';
-import { EditStory } from '../components/forms/EditStory';
 import { Note } from '../models/Note';
 
 type ParamList = {
@@ -64,9 +64,9 @@ const StoryScreen = () => {
         if (!loading) setLoading(true);
         axios.get(`${API_URL}/stories/one/${params.storyId}`)
             .then(result => {
-                if (mounted){
+                if (mounted) {
                     setStory(result.data.story);
-                    if(result.data.story.pageIds.length>1){
+                    if (result.data.story.pageIds.length > 1) {
                         setCurrentInterval(result.data.story.pageIds.length)
                     }
                 }
@@ -97,7 +97,7 @@ const StoryScreen = () => {
         const page = {
             text: form.text,
             language: story.language,
-            storyId:params.storyId,
+            storyId: params.storyId,
         }
         axios.post(`${API_URL}/pages/`, page, { headers })
             .then((result) => {
@@ -261,12 +261,9 @@ const StoryScreen = () => {
             code: 'B',
             storyId: story._id
         }
-
         axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-        if (story.authorName !== 'Source') {
-            note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
-            axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-        }
+        note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
+        axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
     }
 
     const getForm = () => {
@@ -285,7 +282,7 @@ const StoryScreen = () => {
     const onLastPage = story[pageType]?.length > 0 ? currentInterval === story[pageType].length - 1 : true;
     const addPageVisible = onLastPage && story.open && pageStatus === 'confirmed';
     const toggleStatus = pageStatus === 'confirmed'
-        ? story.pendingPageIds?.length > 0 && <Button  mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
+        ? story.pendingPageIds?.length > 0 && <Button mode='contained' color={Color.main} onPress={() => toggleItems('pending')} >Pending: {story.pendingPageIds.length}</Button>
         : <Button style={{ marginTop: '5%' }} mode='contained' color={Color.main} onPress={() => toggleItems('confirmed')} >Confirmed: {story.pageIds.length}</Button>
 
     const form = getForm();
