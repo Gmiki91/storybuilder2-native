@@ -1,28 +1,33 @@
 import { useEffect, useRef } from "react";
-import { NativeSyntheticEvent,StyleSheet, Pressable, TextInput, TextInputFocusEventData,StyleProp,ViewStyle, TextStyle } from "react-native";
+import { NativeSyntheticEvent, StyleSheet, Pressable, TextInput, TextInputFocusEventData, StyleProp, TextStyle } from "react-native";
 import { useKeyboard } from "../../hooks/KeyboardVisible";
 
 type Props = {
     value?: string,
     placeholder?: string
-    multiline?:boolean
-    secureTextEntry?:boolean
+    multiline?: boolean
+    secureTextEntry?: boolean
     style?: StyleProp<TextStyle>
     onBlur?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void,
-    onChangeText?: (event: string) => void
+    onChangeText: (event: string) => void
 }
-export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style,secureTextEntry, onBlur, onChangeText }) => {
+export const CustomInput: React.FC<Props> = ({ value, placeholder, multiline, style, secureTextEntry, onBlur, onChangeText }) => {
     const isKeyBoardOpen = useKeyboard();
     const ref = useRef<TextInput>(null);
     const onPressDescription = () => {
         ref.current?.focus()
-      }
+    }
 
     useEffect(() => {
         if (!isKeyBoardOpen) {
             ref.current?.blur()
         }
     }, [isKeyBoardOpen]);
+
+    const onChange = (event: string) => {
+        if (event.substring(event.length - 2) !== '  ')
+            onChangeText(event)
+    }
 
     const linestyle = multiline ? styles.multiline : styles.oneline
     return <Pressable onPress={onPressDescription}>
@@ -34,19 +39,19 @@ export const CustomInput: React.FC<Props> = ({ value,placeholder,multiline,style
             placeholder={placeholder}
             value={value}
             onBlur={onBlur}
-            onChangeText={onChangeText} />
+            onChangeText={onChange} />
     </Pressable>
 
 }
 
 const styles = StyleSheet.create({
     multiline: {
-        height: 200,borderWidth: 1, textAlign: 'left', textAlignVertical:'top', padding:5, marginBottom:5
+        height: 200, borderWidth: 1, textAlign: 'left', textAlignVertical: 'top', padding: 5, marginBottom: 5
     },
-    oneline:{
-        padding:5,
-        textAlignVertical:'bottom',
-        borderBottomWidth:1
+    oneline: {
+        padding: 5,
+        textAlignVertical: 'bottom',
+        borderBottomWidth: 1
 
     }
 })

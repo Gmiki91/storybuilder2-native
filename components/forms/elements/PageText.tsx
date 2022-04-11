@@ -14,6 +14,7 @@ export const PageText: React.FC<Props> = ({ control, checkWords,newStory }) => {
     const [hideButton, setHideButton] = useState<boolean>(false);
     const [charCount, setCharCount] = useState(0);
     const maxChar = newStory ? 2800 : 280;
+    const minChar = 28;
     const getRandomSentence = () => {
         const sentence = sentences.data[Math.floor(Math.random() * sentences.data.length)].sentence;
         setRandomSentence(sentence);
@@ -27,13 +28,13 @@ export const PageText: React.FC<Props> = ({ control, checkWords,newStory }) => {
 
     return (
         <View style={styles.controllerContainer}>
-             <Text style={maxChar<charCount ? {color:'red'}:{color:'black'}} >{charCount}/{maxChar}</Text>
+             <Text style={(maxChar<charCount || minChar>charCount)  ? {color:'red'}:{color:'black'}} >{charCount}/{maxChar}</Text>
             <Controller
                 control={control}
                 name="text"
                 rules={{
                     required: { value: true, message: 'Required' },
-                    minLength: { value: 10, message: 'Minimum length is 10 characters' },
+                    minLength: { value: 10, message: `Minimum length is ${minChar} characters` },
                     maxLength: { value: maxChar, message: `Maximum length is ${maxChar} characters` },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
