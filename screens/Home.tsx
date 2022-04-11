@@ -61,16 +61,16 @@ const Home = () => {
     const getList = useCallback(async () => {
         if (!loading) isLoading(true);
         Keyboard.dismiss()
-        let mounted = true;
-        axios.post(`${API_URL}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers }).then(result => {
-            if (mounted) {
+        const controller = new AbortController();
+        axios.post(`${API_URL}/stories/all`, { ...searchCriteria, sortBy, sortDirection, searchTitle }, { headers, signal:controller.signal }).then(result => {
+         
                 setStories(result.data.stories);
                 isLoading(false);
                 setShowModal('');
-            }
+    
         })
             .catch(() => setErrorMessage('An error occured while loading the stories'));
-        return () => { mounted = false }
+        return () => { controller.abort() }
     }, [searchCriteria, sortBy, sortDirection]);
 
     //  Isfocused is needed if new page is added in storyscreen, which needs to be shown in the StoryCard

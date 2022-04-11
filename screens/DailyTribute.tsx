@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react'
 import { View, Text, StyleSheet } from "react-native"
-import { Provider, Modal, Portal, ActivityIndicator, Snackbar} from 'react-native-paper';
+import { Provider, Modal, Portal, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
 import { useIsFocused, useNavigation, CommonActions } from '@react-navigation/native';
 import StoryCard from '../components/StoryCard';
@@ -25,22 +25,22 @@ const DailyTribute = () => {
     const [loading, isLoading] = useState(true);
 
     useEffect(() => {
-        let mounted = true;
+        const controller = new AbortController();
         if (isFocused) {
             isLoading(true);
-            axios.get(`${API_URL}/stories/tribute/data`, { headers })
+            axios.get(`${API_URL}/stories/tribute/data`, { headers,  signal: controller.signal })
                 .then(result => {
-                    if (mounted) {
                         const { story, minutesLeft, hoursLeft } = result.data;
                         setData({ story, hoursLeft, minutesLeft });
                         isLoading(false)
-                    }
                 })
                 .catch(() => setError('An error has occured'))
         } else {
             isLoading(true);
         }
-        return () => { mounted = false }
+        return () => {
+            controller.abort()
+        }
     }, [isFocused]);
 
     const openStory = (storyId: string) => {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     header: {
-        backgroundColor: Color.secondary, padding: 5, borderRadius: 5, marginBottom: 5, flexDirection: 'row', alignItems: 'center',borderBottomWidth: 3,
+        backgroundColor: Color.secondary, padding: 5, borderRadius: 5, marginBottom: 5, flexDirection: 'row', alignItems: 'center', borderBottomWidth: 3,
         borderWidth: 1,
     },
     cardContainer: {
