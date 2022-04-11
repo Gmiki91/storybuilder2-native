@@ -41,23 +41,20 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                 </View>
                 <Text>{story.description}</Text>
                 <View style={styles.row}>
-                    <Text style={{fontSize: 20 }}>{story.language.code}</Text>
+                    <Text style={{ fontSize: 20 }}>{story.language.code}</Text>
                     <Author name={story.authorName} userId={story.authorId} />
                 </View>
                 <View style={styles.row}>
                     <Text>{story.language.text}: {story.level.code}</Text>
-                    <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
+                    {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} ({story.rating.total} votes)</Text>}
                 </View>
                 <Text>Pages: {story.pageIds.length}</Text>
                 <View style={styles.row}>
                     <Text>Pending: {story.pendingPageIds.length}</Text>
                     {!story.open && <FontAwesome name="lock" size={24} color="black" />}
-                    <View style={{ flexDirection: 'row' }}>
-                        {story.rating.total > 10 && <Text style={{ color: getColor(story.rating.average), fontStyle: 'italic' }}>{story.rating.average} ({story.rating.total} votes)</Text>}
-                    </View>
+                    <Text>Last update: {moment.utc(story.updatedAt).local().startOf('seconds').fromNow()}</Text>
                 </View>
             </View>
-
         </Pressable>
     )
 }
