@@ -74,7 +74,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                         })
                 })
                 .catch(e => setError('Error while loading the user data.'));
-            axios.get(`${API_URL}/pages/all/${user._id}`, { headers })
+            axios.get(`${API_URL}/pages/data/${user._id}`, { headers })
                 .then(result => {
                     if (mounted)
                         setPageData({

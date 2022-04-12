@@ -94,12 +94,15 @@ const StoryScreen = () => {
         return () => { mounted = false }
     }, [story, pageType]);
 
-    const addPendingPage = (form: FieldValues) => {
+    const addPendingPage = async(form: FieldValues) => {
         const page = {
             text: form.text,
             language: story.language,
             storyId: params.storyId,
         }
+        const previousStoryLength = story.pageIds.length;
+        const updatedStory = await axios.get(`${API_URL}/stories/one/${params.storyId}`).then((result) => result.data.story)
+        if(updatedStory.pageIds.length===previousStoryLength){
         axios.post(`${API_URL}/pages/`, page, { headers })
             .then((result) => {
                 const body = { pageId: result.data.pageId, storyId: params.storyId };
@@ -114,7 +117,10 @@ const StoryScreen = () => {
                 if (result.data.tributeCompleted) setSnackMessage(`You completed your daily task. Well done!`);
             })
             .catch(() => setSnackMessage('An error has occured while submitting the page'));
-
+        }else{
+            setStory(updatedStory);
+            setSnackMessage('A page has been accepted while you were typing. Please check the new contribution by refreshing the story.')
+        }
     }
 
     // softdelete all pages except the current one
@@ -128,7 +134,7 @@ const StoryScreen = () => {
 
     const removePage = (pageId: string) => {
         //remove page document
-        axios.patch(`${API_URL}/pages/${pageId}`, { storyId: story._id }, { headers })
+        axios.patch(`${API_URL}/pages/one/${pageId}`, { storyId: story._id }, { headers })
             .then(result => addRejectNotes([result.data.authorId]))
             .catch(() => setSnackMessage('An error has occured while removing the page'));
         //remove pageId from story
