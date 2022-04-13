@@ -72,7 +72,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
     return (
         <Form>
-            {tokenProp && <Text style={{ justifyContent: 'center' }}>Create your first story</Text>}
+            {tokenProp && <Text style={{ fontSize:16,textAlign: 'center',marginBottom:'3%' }}>Create your first story</Text>}
             <Title control={control} />
             {errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
             <Text style={{ paddingTop: 15 }}>Select your language and your proficiency</Text>

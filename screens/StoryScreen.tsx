@@ -41,21 +41,18 @@ const StoryScreen = () => {
     const [snackMessage, setSnackMessage] = useState('');
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
     const isFocused = useIsFocused();
-
+    
     // init user
     useEffect(() => {
-        let mounted = true
         if (isFocused) {
             axios.get(`${API_URL}/users/`, { headers })
                 .then(result => {
-                    if (mounted)
                         setUser(result.data.user)
                 })
                 .catch(() => setSnackMessage('No user to display'));
         } else {
             setLoading(true);
         }
-        return () => { mounted = false }
     }, [isFocused]);
 
     // init story
@@ -78,26 +75,21 @@ const StoryScreen = () => {
 
     //init pages
     useEffect(() => {
-        let mounted = true
         const storyLength = story[pageType]?.length - 1;
         if (storyLength >= 0) {
             if (!loading) setLoading(true);
             axios.get(`${API_URL}/pages/many/${story[pageType]}`)
                 .then(result => {
-                    if (mounted) {
                         setPages(result.data.pages);
                         setLoading(false);
-                    }
                 })
                 .catch(() => setSnackMessage('No pages to display'));
         }
-        return () => { mounted = false }
     }, [story, pageType]);
-
     const addPendingPage = async(form: FieldValues) => {
         const page = {
             text: form.text,
-            language: story.language,
+            language: story.language.code,
             storyId: params.storyId,
         }
         const previousStoryLength = story.pageIds.length;
@@ -111,10 +103,13 @@ const StoryScreen = () => {
                     .then((result) => {
                         setStory(result.data.story);
                         setFormType('');
+                        setUser({...user,coins:user.coins-3});
                     })
                     .catch(() => setSnackMessage('An error has occurred'));
 
-                if (result.data.tributeCompleted) setSnackMessage(`You completed your daily task. Well done!`);
+                if (result.data.tributeCompleted){
+                 setSnackMessage(`You completed your daily task. Well done!`);
+                }
             })
             .catch(() => setSnackMessage('An error has occured while submitting the page'));
         }else{

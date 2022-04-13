@@ -17,13 +17,9 @@ const StoryList: React.FC<Props> = ({ stories }) => {
     const headers = { Authorization: `Bearer ${authToken}` };
     const navigation = useNavigation();
     useEffect(() => {
-        let mounted = true;
         axios.get(`${API_URL}/users/favorites`, { headers }).then(result => {
-            if (mounted) {
                 setFavoriteIds(result.data.data);
-            }
         });
-        return () => { mounted = false }
     }, []);
 
     const addToFavorites = (storyId: string) => {

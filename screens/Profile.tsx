@@ -30,21 +30,17 @@ const Profile = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        let mounted = true;
         if (isFocused) {
             axios.get(`${API_URL}/users/`, { headers })
                 .then(result => {
-                    if (mounted)
                         setUser(result.data.user);
                 }).catch(error => setResponse(error.response.data.message));
 
             axios.get(`${API_URL}/notifications/`, { headers })
                 .then(result => {
-                    if (mounted)
                         setNotifications(result.data.notifications);
                 }).catch(error => setResponse(error.response.data.message));
         }
-        return () => { mounted = false }
     }, [isFocused]);
 
     const handlePasswordChange = () => {

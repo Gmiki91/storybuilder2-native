@@ -49,13 +49,10 @@ const Home = () => {
     const [loading, isLoading] = useState(true);
 
     const getUser = useCallback(async () => {
-        let mounted = true;
         axios.get(`${API_URL}/users/`, { headers })
             .then(result => {
-                if (mounted)
                     setUser(result.data.user);
             }).catch(error => setErrorMessage(error.response.data.message));
-        return () => { mounted = false }
     }, []);
 
     const getList = useCallback(async () => {

@@ -46,27 +46,21 @@ const Stats: React.FC<Props> = ({ userProp }) => {
     const [storyData, setStoryData] = useState<StoryData>({} as StoryData);
     const [pageData, setPageData] = useState<PageData>({} as PageData);
     useEffect(() => {
-        let mounted = true
         if (params) {
             axios.get(`${API_URL}/users/user/${params.userId}`, { headers })
                 .then(result => {
-                    if (mounted)
                         setUser(result.data.user);
                 })
                 .catch(e => setError('Error while loading the user data.'));
         } else {
-            if (mounted)
                 setUser(userProp)
         }
-        return () => { mounted = false }
     }, [params, userProp]);
 
     useEffect(() => {
-        let mounted = true;
         if (user) {
             axios.get(`${API_URL}/stories/many/${user._id}`, { headers })
                 .then(result => {
-                    if (mounted)
                         setStoryData({
                             size: result.data.size,
                             totalVotes: result.data.totalVotes,
@@ -76,7 +70,6 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                 .catch(e => setError('Error while loading the user data.'));
             axios.get(`${API_URL}/pages/data/${user._id}`, { headers })
                 .then(result => {
-                    if (mounted)
                         setPageData({
                             size: result.data.size,
                             totalVotes: result.data.totalVotes,
@@ -86,7 +79,6 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                 })
                 .catch(e => setError('Error while loading the user data.'));
         }
-        return () => { mounted = false }
     }, [user])
     const storyRating = storyData.totalVotes !== 0 ? `${(storyData.upVotes / storyData.totalVotes * 100).toFixed()}%` : null
     const pageRating = pageData.totalVotes !== 0 ? `${(pageData.upVotes / pageData.totalVotes * 100).toFixed()}%` : null
