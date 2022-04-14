@@ -52,15 +52,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             word3: form.word3?.toLowerCase().trim()
         };
         axios.post(`${API_URL}/stories/`, story, { headers })
-            .then(result => {
-                const note: Note = {
-                    date: Date.now(),
-                    message: `Story "${form.title.trim()}" has been added`,
-                    code: 'B',
-                    storyId: result.data.storyId,
-                    unseen:false,
-                }
-                axios.post(`${API_URL}/notifications/`, { note }, { headers })
+            .then(() => {
                 if (tokenProp) {
                     setToken(tokenProp);
                     navigation.dispatch(CommonActions.navigate({ name: 'Home' }));

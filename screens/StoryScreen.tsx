@@ -41,13 +41,13 @@ const StoryScreen = () => {
     const [snackMessage, setSnackMessage] = useState('');
     const pageType = pageStatus === 'pending' ? 'pendingPageIds' : 'pageIds';
     const isFocused = useIsFocused();
-    
+
     // init user
     useEffect(() => {
         if (isFocused) {
             axios.get(`${API_URL}/users/`, { headers })
                 .then(result => {
-                        setUser(result.data.user)
+                    setUser(result.data.user)
                 })
                 .catch(() => setSnackMessage('No user to display'));
         } else {
@@ -80,13 +80,13 @@ const StoryScreen = () => {
             if (!loading) setLoading(true);
             axios.get(`${API_URL}/pages/many/${story[pageType]}`)
                 .then(result => {
-                        setPages(result.data.pages);
-                        setLoading(false);
+                    setPages(result.data.pages);
+                    setLoading(false);
                 })
                 .catch(() => setSnackMessage('No pages to display'));
         }
     }, [story, pageType]);
-    const addPendingPage = async(form: FieldValues) => {
+    const addPendingPage = async (form: FieldValues) => {
         const page = {
             text: form.text,
             language: story.language.code,
@@ -94,25 +94,25 @@ const StoryScreen = () => {
         }
         const previousStoryLength = story.pageIds.length;
         const updatedStory = await axios.get(`${API_URL}/stories/one/${params.storyId}`).then((result) => result.data.story)
-        if(updatedStory.pageIds.length===previousStoryLength){
-        axios.post(`${API_URL}/pages/`, page, { headers })
-            .then((result) => {
-                const body = { pageId: result.data.pageId, storyId: params.storyId };
-                if (user._id !== story.authorId) addNotes();
-                axios.post(`${API_URL}/stories/pendingPage`, body, { headers })
-                    .then((result) => {
-                        setStory(result.data.story);
-                        setFormType('');
-                        setUser({...user,coins:user.coins-3});
-                    })
-                    .catch(() => setSnackMessage('An error has occurred'));
+        if (updatedStory.pageIds.length === previousStoryLength) {
+            axios.post(`${API_URL}/pages/`, page, { headers })
+                .then((result) => {
+                    const body = { pageId: result.data.pageId, storyId: params.storyId };
+                    if (user._id !== story.authorId) addNotes();
+                    axios.post(`${API_URL}/stories/pendingPage`, body, { headers })
+                        .then((result) => {
+                            setStory(result.data.story);
+                            setFormType('');
+                            setUser({ ...user, coins: user.coins - 3 });
+                        })
+                        .catch(() => setSnackMessage('An error has occurred'));
 
-                if (result.data.tributeCompleted){
-                 setSnackMessage(`You completed your daily task. Well done!`);
-                }
-            })
-            .catch(() => setSnackMessage('An error has occured while submitting the page'));
-        }else{
+                    if (result.data.tributeCompleted) {
+                        setSnackMessage(`You completed your daily task. Well done!`);
+                    }
+                })
+                .catch(() => setSnackMessage('An error has occured while submitting the page'));
+        } else {
             setStory(updatedStory);
             setSnackMessage('A page has been accepted while you were typing. Please check the new contribution by refreshing the story.')
         }
@@ -142,12 +142,12 @@ const StoryScreen = () => {
     }
 
     const confirmPage = (pageId: string, pageRatings: Rate[], authorId: string) => {
+        setFormType('words');
         axios.put(`${API_URL}/stories/page`, { pageId, storyId: story._id, pageRatings, authorId }, { headers })
             .then(result => {
-                addConfirmatioNotes(authorId);
+                if (authorId !== user._id) addConfirmatioNotes(authorId);
                 setStory(result.data.story);
                 setPageStatus('confirmed');
-                setFormType('words');
             })
             .catch(() => setSnackMessage('An error has occured'));
         story.pendingPageIds.length > 1 && removePendingPages(pageId);  //remove all other pending pages   
@@ -240,7 +240,7 @@ const StoryScreen = () => {
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been accepted.`,
             code: 'A',
             storyId: story._id,
-            unseen:true
+            unseen: true
         }
 
         axios.post(`${API_URL}/notifications/${id}`, { note }, { headers });
@@ -252,9 +252,12 @@ const StoryScreen = () => {
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been rejected.`,
             code: 'C',
             storyId: story._id,
-            unseen:true
+            unseen: true
         }
-
+        const index = arr.indexOf(user._id);
+        if(index!==-1){
+            arr.splice(index,1);
+        }
         axios.post(`${API_URL}/notifications/${arr.join(',')}`, { note }, { headers });
     }
 
@@ -264,12 +267,12 @@ const StoryScreen = () => {
             message: `You've submitted page #${story.pageIds.length} for story "${story.title}". It is pending confirmation.`,
             code: 'B',
             storyId: story._id,
-            unseen:false
+            unseen: false
         }
-        axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-        note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
-        note.unseen=true;
-        axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
+            axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
+            note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
+            note.unseen = true;
+            axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
     }
 
     const closeEditForm = (isChanged: boolean) => {
@@ -281,7 +284,7 @@ const StoryScreen = () => {
         switch (formType) {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={story.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
-            case 'words': return <Words onSubmit={setWords}/>
+            case 'words': return <Words onSubmit={setWords} />
             case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={closeEditForm} />
         }
         return null;

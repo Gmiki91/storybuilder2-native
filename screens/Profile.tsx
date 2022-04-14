@@ -101,11 +101,12 @@ const Profile = () => {
                 {tab === 'Notifications' &&
                     <View style={styles.container}>
                         <View style={styles.card}>
-                            {notifications.map((notification) =>
+                            {notifications.length>0 ? notifications.map((notification) =>
                                 <Pressable onPress={()=>goToStory(notification.storyId)} style={{ padding: '3%', marginBottom: '1%', borderRadius: 10, backgroundColor: Color[notification.code] }} key={notification.date}>
                                     <Text style={{fontWeight:notification.unseen? 'bold':'normal'}}>{notification.message}</Text>
                                     <Text style={{textAlign: 'right'}}>{moment.utc(notification.date).local().startOf('seconds').fromNow()}</Text>
-                                </Pressable>)}
+                                </Pressable>)
+                                :<Text  style={{ textAlign: 'center' }}>No notifications yet</Text>}
                         </View>
                     </View>}
                 {tab === 'Settings' &&
