@@ -225,8 +225,8 @@ const StoryScreen = () => {
     const setWords = (arr: string[]) => {
         const body = {
             storyId: params.storyId,
-            word1: arr[0]?.toLocaleLowerCase().trim(),
-            word2: arr[1]?.toLocaleLowerCase().trim(),
+            word1: arr[0].toLocaleLowerCase().trim(),
+            word2: arr[1].toLocaleLowerCase().trim(),
             word3: arr[2]?.toLocaleLowerCase().trim()
         }
         axios.put(`${API_URL}/stories/`, body, { headers })
@@ -239,7 +239,8 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been accepted.`,
             code: 'A',
-            storyId: story._id
+            storyId: story._id,
+            unseen:true
         }
 
         axios.post(`${API_URL}/notifications/${id}`, { note }, { headers });
@@ -250,7 +251,8 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been rejected.`,
             code: 'C',
-            storyId: story._id
+            storyId: story._id,
+            unseen:true
         }
 
         axios.post(`${API_URL}/notifications/${arr.join(',')}`, { note }, { headers });
@@ -261,10 +263,12 @@ const StoryScreen = () => {
             date: Date.now(),
             message: `You've submitted page #${story.pageIds.length} for story "${story.title}". It is pending confirmation.`,
             code: 'B',
-            storyId: story._id
+            storyId: story._id,
+            unseen:false
         }
         axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
         note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
+        note.unseen=true;
         axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
     }
 
@@ -277,7 +281,7 @@ const StoryScreen = () => {
         switch (formType) {
             case 'newPage': return <NewPage words={[story.word1, story.word2, story.word3]} onSubmit={(f) => addPendingPage(f)} onClose={() => setFormType('')} />
             case 'rateLevel': return <RateLevel level={story.level} onSubmit={handleRateLevel} onClose={() => setFormType('')} />
-            case 'words': return <Words onSubmit={setWords} onClose={() => setFormType('')} />
+            case 'words': return <Words onSubmit={setWords}/>
             case 'editStory': return <EditStory editable={story.authorId === user._id} story={story} onClose={closeEditForm} />
         }
         return null;

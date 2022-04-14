@@ -7,25 +7,23 @@ import { Word } from './elements/Word';
 
 type Props = {
     onSubmit: (array: string[]) => void;
-    onClose?: () => void;
 }
 
-export const Words: React.FC<Props> = ({ onSubmit, onClose }) => {
-    const { control, handleSubmit } = useForm({ mode: 'onBlur' });
+export const Words: React.FC<Props> = ({ onSubmit }) => {
+    const { control, handleSubmit, formState: {  isValid } } = useForm({ mode: 'onBlur' });
 
     const handleForm = (f: FieldValues) => {
-        const array = [f.word1?.toLowerCase(), f.word2?.toLowerCase(), f.word3?.toLowerCase()];
+        const array = [f.word1.toLowerCase(), f.word2.toLowerCase(), f.word3?.toLowerCase()];
         onSubmit(array);
     }
 
     return <Form>
-        <Text>Want to add mandatory words/phrases for the next page? </Text>
-        <Word name='word1' placeholder='#1'  control={control} />
-        <Word name='word2' placeholder='#2' control={control} />
-        <Word name='word3' placeholder='#3' control={control} />
+        <Text>Add 2+1 words/phrases for the next page</Text>
+        <Word required name='word1' placeholder='#1' control={control} />
+        <Word required name='word2' placeholder='#2' control={control} />
+        <Word name='word3' placeholder='#3 (optional)' control={control} />
         <View style={styles.buttonContainer}>
-            <Button color={Color.cancelBtn} onPress={onClose}>Nah</Button>
-            <Button color={Color.button} onPress={handleSubmit(handleForm)}>Ok</Button>
+            <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(handleForm)}>Ok</Button>
         </View>
     </Form>
 };

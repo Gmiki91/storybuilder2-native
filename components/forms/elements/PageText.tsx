@@ -28,7 +28,7 @@ export const PageText: React.FC<Props> = ({ control, checkWords,newStory }) => {
 
     return (
         <View style={styles.controllerContainer}>
-             <Text style={(maxChar<charCount || minChar>charCount)  ? {color:'red'}:{color:'black'}} >{charCount}/{maxChar}</Text>
+             <Text style={(maxChar<charCount || minChar>charCount)  ? {color:'red'}:{color:'green'}} >{charCount}/{maxChar}</Text>
             <Controller
                 control={control}
                 name="text"

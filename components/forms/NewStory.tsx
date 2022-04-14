@@ -47,8 +47,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             language: form.language || languages[0].code,
             pageId: pageId,
             level: selectedLevel,
-            word1: form.word1?.toLowerCase().trim(),
-            word2: form.word2?.toLowerCase().trim(),
+            word1: form.word1.toLowerCase().trim(),
+            word2: form.word2.toLowerCase().trim(),
             word3: form.word3?.toLowerCase().trim()
         };
         axios.post(`${API_URL}/stories/`, story, { headers })
@@ -57,7 +57,8 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                     date: Date.now(),
                     message: `Story "${form.title.trim()}" has been added`,
                     code: 'B',
-                    storyId: result.data.storyId
+                    storyId: result.data.storyId,
+                    unseen:false,
                 }
                 axios.post(`${API_URL}/notifications/`, { note }, { headers })
                 if (tokenProp) {
@@ -122,10 +123,12 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
             <PageText newStory checkWords={() => { }} control={control} />
             {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
 
-            <Text style={{ paddingLeft: 5, paddingTop: 15 }}>You can specify 3 mandatory words/phrases for the next page (optional)</Text>
-            <Word name='word1' placeholder='#1' control={control} />
-            <Word name='word2' placeholder='#2' control={control} />
-            <Word name='word3' placeholder='#3' control={control} />
+            <Text style={{ paddingLeft: 5, paddingTop: 15 }}>Add 2+1 words/phrases to include on the next page</Text>
+            <Word required name='word1' placeholder='#1' control={control} />
+            {errors.word1 && <ErrorMessage>{errors.title.message}</ErrorMessage>}
+            <Word required name='word2' placeholder='#2' control={control} />
+            {errors.word1 && <ErrorMessage>{errors.title.message}</ErrorMessage>}
+            <Word name='word3' placeholder='#3 (optional)' control={control} />
 
             <View style={styles.buttonContainer}>
                 {!tokenProp && <Button color={Color.cancelBtn} onPress={() => onCloseForm(false)} >Cancel</Button>}
