@@ -24,7 +24,7 @@ export const languages: LanguageModel[] = [
     { text: 'Greek', code: '🇬🇷' },
     // {text:'Hebrew',code:'🇮🇱'},
     // {text:'Hindi',code:'🇮🇳'},
-    // {text:'Hungarian',code:'🇭🇺'},
+    {text:'Hungarian',code:'🇭🇺'},
     // {text:'Irish',code:'🇮🇪'},
     { text: 'Italian', code: '🇮🇹' },
     { text: 'Japanese', code: '🇯🇵' },

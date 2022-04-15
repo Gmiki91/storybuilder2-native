@@ -42,7 +42,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
     <View style={{ ...styles.container, width: `${100 / totalPageNumber}%` }}>
       <ImageBackground resizeMode="stretch"  style={{padding:'3%', flex:1, margin:'1%' }} source={require('../assets/pagecard.jpg')}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Text style={{ paddingLeft: 20, paddingRight: 20, paddingTop:20, flex: 1, fontSize:16, textAlignVertical:'center', textAlign: 'justify' }} >{page.text}</Text>
+          <Text style={{ paddingLeft: 20, paddingRight: 20, flex: 1, fontSize:16, textAlignVertical:'center', textAlign: 'justify' }} >{page.text}</Text>
           <View style={styles.footer}>
             <View style={{ flexDirection: 'row' }}>
               {likeButton}

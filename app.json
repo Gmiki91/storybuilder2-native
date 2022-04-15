@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.storybuilder",
-      "versionCode": 23,
+      "versionCode": 25,
       "softwareKeyboardLayoutMode":"pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",

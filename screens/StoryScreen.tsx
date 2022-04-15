@@ -254,10 +254,6 @@ const StoryScreen = () => {
             storyId: story._id,
             unseen: true
         }
-        const index = arr.indexOf(user._id);
-        if(index!==-1){
-            arr.splice(index,1);
-        }
         axios.post(`${API_URL}/notifications/${arr.join(',')}`, { note }, { headers });
     }
 

@@ -27,7 +27,7 @@ export const Carousel: React.FC<Props> = ({ length, currentInterval, pageType,ju
   }, [pageType,jump,currentInterval])
 
   return (
-    <View style={{ height: '50%' }}>
+    <View style={{ height: '70%' }}>
       <ScrollView
         ref={scrollRef}
         horizontal={true}

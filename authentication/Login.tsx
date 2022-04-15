@@ -132,7 +132,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
             <Text style={AuthStyle.forgotBtn}>Forgot your password?</Text>
           </Pressable>
           <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Log in</Button>
-          {/* <Button color={'blue'} icon='google-plus' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Log in with Google</Button> */}
+          <Button color={'blue'} icon='google-plus' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Log in with Google</Button>
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
           <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
