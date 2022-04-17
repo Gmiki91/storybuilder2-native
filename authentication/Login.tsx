@@ -12,54 +12,58 @@ import { Color } from '../Global';
 import { CustomInput } from '../components/UI/CustomInput';
 import { ErrorMessage } from '../components/UI/ErrorMessage';
 import { NewStory } from '../components/forms/NewStory';
-import * as Google from 'expo-auth-session/providers/google';
+import * as GoogleSignIn from 'expo-google-sign-in';
 import {API_URL} from '../Global'
 
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Login'>;
 }
-
 const Login: React.FC<NavigationProp> = ({ navigation }) => {
-  const [, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "584741243002-0oavofula7kcd8di3tfv0nef7s9q7g87.apps.googleusercontent.com",
-    iosClientId: "584741243002-jmo14kldgqgcl146hvlqdudput99irpg.apps.googleusercontent.com",
-    expoClientId: "584741243002-uecbr1oj7obtpin2l3d884jnr80an3cp.apps.googleusercontent.com"
-  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { setToken } = useAuth();
   const [savedToken, setSavedToken] = useState();
   const { control, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onBlur' });
+  
   useEffect(() => {
-    if (response?.type === "success") {
-      setLoading(true);
-      getUserData(response.authentication?.accessToken);
+    initAsync();
+  }, []);
+
+  const initAsync = async () => {
+    await GoogleSignIn.initAsync({
+      clientId: '584741243002-0oavofula7kcd8di3tfv0nef7s9q7g87.apps.googleusercontent.com',
+    });
+    _syncUserWithStateAsync();
+  };
+
+  const _syncUserWithStateAsync = async () => {
+    const user = await GoogleSignIn.signInSilentlyAsync();
+    if(user){
+      axios.post(`${API_URL}/users/loginGoogle`,{email:user.email})
+          .then(result => {
+           setLoading(false);
+            if (result.data.user.confirmed) {
+              setToken(result.data.token);
+            } else {
+              setShowModal(true);
+              setSavedToken(result.data.token);
+            }
+          })
     }
-  }, [response]);
+  };
 
-   const getUserData=async(accessToken:string|undefined)=>{
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}`}
-    });
-
-    userInfoResponse.json().then(data => {
-      axios.post(`${API_URL}/users/loginGoogle`,{email:data.email, name:data.given_name})
-      .then(result => {
-        alert(result.data);
-       setLoading(false);
-        if (result.data.user.confirmed) {
-          setToken(result.data.token);
-        } else {
-          setShowModal(true);
-          setSavedToken(result.data.token);
-        }
-      })
-      .catch(error => setError(error.response.data.message))
-    });
-  }
-
-
+  const signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type } = await GoogleSignIn.signInAsync();
+      if (type === 'success') {
+        _syncUserWithStateAsync();
+      }
+    } catch ({ message }) {
+      alert('login: Error:' + message);
+    }
+  };
 
   const postLogin = (form: FieldValues) => {
     setLoading(true);
@@ -132,7 +136,7 @@ const Login: React.FC<NavigationProp> = ({ navigation }) => {
             <Text style={AuthStyle.forgotBtn}>Forgot your password?</Text>
           </Pressable>
           <Button disabled={!isValid} color={Color.button} onPress={handleSubmit(postLogin)}>Log in</Button>
-          <Button color={'blue'} icon='google-plus' onPress={() => { promptAsync({ useProxy: true, showInRecents: true }) }}>Log in with Google</Button>
+          <Button color={'blue'} icon='google-plus' onPress={signInAsync}>Log in with Google</Button>
           <Text style={{ margin: 10, textAlign: 'center' }}>or</Text>
           <Button color={Color.button} onPress={() => navigation.navigate('Signup')} >Sign up</Button>
           <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>

@@ -2,6 +2,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, ScrollView, StyleSheet, Alert, Pressable, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from "react";
+import * as GoogleSignIn from 'expo-google-sign-in';
 import { useAuth } from "../context/AuthContext";
 import { User } from "../models/User";
 import Stats from "../components/Stats";
@@ -81,6 +82,7 @@ const Profile = () => {
 
     const confirmed = async () => {
         setToken(undefined);
+        await GoogleSignIn.signOutAsync();
         await AsyncStorage.removeItem('token');
     }
 
