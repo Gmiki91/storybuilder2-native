@@ -5,7 +5,7 @@ import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { Author } from "./Author";
 import { Color } from '../Global';
 import { Story } from "../models/Story"
-
+import { CustomText } from './UI/CustomText';
 type Props = {
     story: Story,
     favoriteIds: string[],
@@ -32,7 +32,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
 
             <View style={{ padding: 15 }}>
                 <View style={styles.row}>
-                    <Text style={styles.title}>{story.title}</Text>
+                    <CustomText lang={story.language.code} style={styles.title}>{story.title}</CustomText>
                     {!hideFavorite && <View style={{ padding: 5 }} >
                         {favoriteIds.includes(story._id) ?
                             <Pressable onPress={() => removeFromFavorites(story._id)}><MaterialIcons name="favorite" size={36} color={Color.dislikeButton2} /></Pressable> :

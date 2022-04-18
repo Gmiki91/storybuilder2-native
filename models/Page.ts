@@ -6,5 +6,6 @@ export type Page = {
     text: string,
     authorId: string,
     authorName: string,
+    language:string,
     ratings: [Rate]
 }
