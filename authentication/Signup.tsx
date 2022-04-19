@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { ActivityIndicator, Modal, Portal, Provider } from 'react-native-paper';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, Text, Linking } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useForm, Controller, FieldValues } from 'react-hook-form'
 import { RootStackParamList } from '../App';
@@ -13,12 +13,14 @@ import { CustomInput } from '../components/UI/CustomInput';
 import { ErrorMessage } from '../components/UI/ErrorMessage';
 import { NewStory } from '../components/forms/NewStory';
 import * as GoogleSignIn from 'expo-google-sign-in';
+import { Checkbox } from "react-native-paper";
 
 type NavigationProp = {
   navigation: StackNavigationProp<RootStackParamList, 'Signup'>;
 }
 const Signup: React.FC<NavigationProp> = ({ navigation }) => {
   const [isError, setIsError] = useState(false);
+  const [isChecked, setChecked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [savedToken, setSavedToken] = useState();
   const [loading, setLoading] = useState(false);
@@ -84,8 +86,8 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
       <View style={{ marginTop: '40%' }}>
         <Portal>
           <Modal
-             visible={loading || showModal}>
-              {showModal ? <NewStory tokenProp={savedToken} onCloseForm={() => { }} />:<ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />}
+            visible={loading || showModal}>
+            {showModal ? <NewStory tokenProp={savedToken} onCloseForm={() => { }} /> : <ActivityIndicator size={'large'} animating={loading} color={Color.secondary} />}
           </Modal>
         </Portal>
         <Form>
@@ -145,8 +147,20 @@ const Signup: React.FC<NavigationProp> = ({ navigation }) => {
               )} />
           </View>
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
-          <Button color={Color.button} disabled={!isValid} onPress={handleSubmit(postSignup)}>Sign up</Button>
-          <Button color={'blue'} icon='google-plus' onPress={signUpAsync}>Sign up with Google</Button>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <Checkbox
+              color={Color.secondary}
+              status={isChecked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setChecked(!isChecked);
+              }} />
+            <Text style={{fontSize:10}}>I agree to the </Text>
+            <Text style={{fontSize:10, textDecorationLine: 'underline'}} onPress={() => Linking.openURL('https://www.glyphses.com/terms')}>terms and conditions</Text>
+            <Text style={{fontSize:10}}> and the </Text>
+            <Text style={{fontSize:10, textDecorationLine: 'underline'}} onPress={() => Linking.openURL('https://www.glyphses.com/privacy')}>privacy policy.</Text>
+          </View>
+          <Button color={Color.button} disabled={!isValid || !isChecked} onPress={handleSubmit(postSignup)}>Sign up</Button>
+          <Button color={'blue'} disabled={!isChecked} icon='google-plus' onPress={signUpAsync}>Sign up with Google</Button>
           <Pressable onPress={() => navigation.navigate('Login')} style={{ marginTop: 10, alignItems: 'center' }}><Text>Already have an account?</Text></Pressable>
         </Form>
         <Snackbar onDismiss={() => setIsError(false)} visible={isError} duration={2000}>Username or email already taken</Snackbar>

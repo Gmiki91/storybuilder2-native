@@ -11,7 +11,7 @@ const About = () => (
         <Text>⭐Have 3 page accepted to get a new story</Text>
         <Text style={{marginTop:'10%', textAlign:'center'}}>Got any questions or feedback?</Text>
         <Text style={{textAlign:'center'}}>Want a language added?</Text>
-        <Text style={{textAlign:'center'}}>You found a bug?!</Text>
+        <Text style={{textAlign:'center'}}>Found a bug?!</Text>
         <Text style={{marginTop:'3%',textAlign:'center'}}>admin@glyphses.com</Text>
     </View>)
 export default About;
