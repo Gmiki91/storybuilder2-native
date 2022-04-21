@@ -106,7 +106,7 @@ const Stats: React.FC<Props> = ({ userProp }) => {
                 {pageData.langInfo?.length !== 0 &&
                     <View>
                         <Text>Used languages:</Text>
-                        {pageData.langInfo?.map(obj => <Text key={obj.language.code}>{obj.language.text}: {obj.ratio}% - {obj.level}</Text>)}
+                        {pageData.langInfo?.map(obj => <Text key={obj.language.text}>{obj.language.text}: {obj.ratio}% - {obj.level}</Text>)}
                     </View>}
 
             </View>

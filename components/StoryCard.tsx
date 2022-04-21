@@ -32,7 +32,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
 
             <View style={{ padding: 15 }}>
                 <View style={styles.row}>
-                    <CustomText lang={story.language.code} style={styles.title}>{story.title}</CustomText>
+                    <CustomText lang={story.language.text} style={styles.title}>{story.title}</CustomText>
                     {!hideFavorite && <View style={{ padding: 5 }} >
                         {favoriteIds.includes(story._id) ?
                             <Pressable onPress={() => removeFromFavorites(story._id)}><MaterialIcons name="favorite" size={36} color={Color.dislikeButton2} /></Pressable> :

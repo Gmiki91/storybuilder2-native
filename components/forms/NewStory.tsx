@@ -16,7 +16,6 @@ import { levels, languages, LevelCode } from '../../models/LanguageData';
 import { Word } from './elements/Word';
 import { RadioButton } from '../UI/RadioButton';
 import { Snackbar } from 'react-native-paper';
-import { Note } from '../../models/Note';
 type Props = {
     onCloseForm: (submitted: boolean) => void;
     tokenProp?: string
@@ -36,7 +35,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
 
         const page = {
             text: form.text,
-            language: form.language || languages[0].code,
+            language: form.language || languages[0].text,
         }
 
         const pageId = await axios.post(`${API_URL}/pages/`, page, { headers }).then((result) => result.data.pageId)
@@ -44,7 +43,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
         const story = {
             title: form.title.trim(),
             description: form.description?.trim(),
-            language: form.language || languages[0].code,
+            language: form.language || languages[0].text,
             pageId: pageId,
             level: selectedLevel,
             word1: form.word1.toLowerCase().trim(),
@@ -79,7 +78,7 @@ export const NewStory: React.FC<Props> = ({ onCloseForm, tokenProp }) => {
                             onBlur={onBlur}
                             onValueChange={value => onChange(value)} >
                             {languages.map(language => {
-                                return <Picker.Item key={language.text} value={language.code} label={`${language.code} ${language.text}`} />
+                                return <Picker.Item key={language.text} value={language.text} label={`${language.code} ${language.text}`} />
                             })}
                         </Picker>
                     )} />

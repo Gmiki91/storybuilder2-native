@@ -64,7 +64,7 @@ export const Filter: React.FC<Props> = ({ filters, changeFilter, onApply, onClea
             onValueChange={e => { handleChange('languages', e) }} >
             <Picker.Item label='Select a language' />
             {languages.map(lang =>
-                <Picker.Item key={lang.code} value={lang.code} label={`${lang.code} ${lang.text}`} />)}
+                <Picker.Item key={lang.text} value={lang.text} label={`${lang.code} ${lang.text}`} />)}
         </Picker>
 
         <Divider />

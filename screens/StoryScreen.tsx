@@ -89,7 +89,7 @@ const StoryScreen = () => {
     const addPendingPage = async (form: FieldValues) => {
         const page = {
             text: form.text,
-            language: story.language.code,
+            language: story.language.text,
             storyId: params.storyId,
         }
         const previousStoryLength = story.pageIds.length;

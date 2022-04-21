@@ -72,7 +72,7 @@ const DailyTribute = () => {
             </View>
             :
             <View style={styles.container}>
-                <Timer text={'until next story'} minutes={data.minutesLeft} hours={data.hoursLeft} />
+                <Timer text={'until the next story'} minutes={data.minutesLeft} hours={data.hoursLeft} />
             </View>}
         <Snackbar onDismiss={() => setError('')} visible={error !== ''} duration={2000}>{error}</Snackbar>
     </Provider>
