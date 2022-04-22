@@ -42,7 +42,7 @@ const StoryCard: React.FC<Props> = ({ story, onPress, favoriteIds, addToFavorite
                 <Text>{story.description}</Text>
                 <View style={styles.row}>
                     <Text style={{ fontSize: 20 }}>{story.language.code}</Text>
-                    <Author name={story.authorName} userId={story.authorId} />
+                    {story.open && <Author name={story.authorName} userId={story.authorId} />}
                 </View>
                 <View style={styles.row}>
                     <Text>{story.language.text}: {story.level.code}</Text>

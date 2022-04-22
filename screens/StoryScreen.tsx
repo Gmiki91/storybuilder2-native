@@ -305,6 +305,7 @@ const StoryScreen = () => {
             userId={user._id}
             ownContent={user._id === (page.authorId || story.authorId)}
             toConfirm={pageStatus === 'pending' && story.authorId === user._id}
+            archived={!story.open}
             onRateText={(rate, confirming) => handleRateText(rate, confirming, page._id, page.ratings, page.authorId)}
             jump={jumpTo}
         />

@@ -3,7 +3,7 @@ type Props = {
     lang:string
     style?: StyleProp<TextStyle>
 }
-const rtlLanguages = ['ar', 'fa', 'he']
+const rtlLanguages = ['Arabic', 'Persian', 'Hebrew', 'Yiddish'];
 export const CustomText: React.FC<Props> = ({ lang, style, children }) => {
     const dir = rtlLanguages.indexOf(lang)===-1 ? styles.ltr : styles.rtl
     return <Text style={[style,dir]}>{children}</Text>

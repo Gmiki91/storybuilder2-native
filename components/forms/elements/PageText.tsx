@@ -13,7 +13,7 @@ export const PageText: React.FC<Props> = ({ control, checkWords,newStory }) => {
     const [randomSentence, setRandomSentence] = useState<string>('Write here...');
     const [hideButton, setHideButton] = useState<boolean>(false);
     const [charCount, setCharCount] = useState(0);
-    const maxChar = newStory ? 2800 : 280;
+    const maxChar = newStory ? 2800 : 560;
     const minChar = 28;
     const getRandomSentence = () => {
         const sentence = sentences.data[Math.floor(Math.random() * sentences.data.length)].sentence;

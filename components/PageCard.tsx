@@ -13,10 +13,11 @@ type Props = {
   userId: String;
   ownContent: boolean;
   toConfirm: boolean;
+  archived:boolean;
   onRateText: (rate: number, confirming: boolean) => void;
   jump: (amount: number) => void;
 }
-export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm, onRateText, jump }) => {
+export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, userId, ownContent, toConfirm,archived, onRateText, jump }) => {
 
   const rateByUser = page.ratings.find(rating => rating.userId === userId);
   const getVote = (n: number) => {
@@ -50,7 +51,7 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
               <Text style={{ alignSelf: 'center', textAlign: 'center', width: 20 }}>{rating}</Text>
               {dislikeButton}
             </View>
-            {!toConfirm && author}
+            {!toConfirm && !archived && author}
           </View>
           {toConfirm && author}
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 5 }}>
