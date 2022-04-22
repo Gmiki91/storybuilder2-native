@@ -37,9 +37,9 @@ export const NewPage: React.FC<Props> = ({ onSubmit, onClose, words }) => {
   return (
     <Form>
       <View style={styles.words}>
-      {!isEmpty(words[0]) ? word1 ? <Text style={{color:'green'}}>{words[0]} <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[0]} <AntDesign name="closecircle"/></Text>:null}
-      {!isEmpty(words[1]) ? word2 ? <Text style={{color:'green'}}>{words[1]}  <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[1]} <AntDesign name="closecircle"/></Text>:null}
-      {!isEmpty(words[2]) ? word3 ? <Text style={{color:'green'}}>{words[2]}  <AntDesign name="checkcircle" /></Text> :  <Text style={{color:'red'}}>{words[2]} <AntDesign name="closecircle"/></Text>:null}
+      {!isEmpty(words[0]) ? word1 ? <Text onPress={()=>setWord1(false)} style={{color:'green'}}>{words[0]} <AntDesign name="checkcircle" /></Text> :  <Text onPress={()=>setWord1(true)} style={{color:'red'}}>{words[0]} <AntDesign name="closecircle"/></Text>:null}
+      {!isEmpty(words[1]) ? word2 ? <Text onPress={()=>setWord2(false)} style={{color:'green'}}>{words[1]}  <AntDesign name="checkcircle" /></Text> :  <Text onPress={()=>setWord2(true)}  style={{color:'red'}}>{words[1]} <AntDesign name="closecircle"/></Text>:null}
+      {!isEmpty(words[2]) ? word3 ? <Text  onPress={()=>setWord3(false)} style={{color:'green'}}>{words[2]}  <AntDesign name="checkcircle" /></Text> :  <Text onPress={()=>setWord3(true)}  style={{color:'red'}}>{words[2]} <AntDesign name="closecircle"/></Text>:null}
       </View>
      <PageText checkWords={changeText} control={control}/>
       {errors.text && <ErrorMessage>{errors.text.message}</ErrorMessage>}
