@@ -237,7 +237,7 @@ const StoryScreen = () => {
     const addConfirmatioNotes = (id: string) => {
         const note = {
             date: Date.now(),
-            message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been accepted.`,
+            message: `Your submition for page #${story.pageIds.length+1} for story "${story.title}" has been accepted.`,
             code: 'A',
             storyId: story._id,
             unseen: true
@@ -249,7 +249,7 @@ const StoryScreen = () => {
     const addRejectNotes = (arr: string[]) => {
         const note = {
             date: Date.now(),
-            message: `Your submition for page #${story.pageIds.length} for story "${story.title}" has been rejected.`,
+            message: `Your submition for page #${story.pageIds.length+1} for story "${story.title}" has been rejected.`,
             code: 'C',
             storyId: story._id,
             unseen: true
@@ -260,13 +260,13 @@ const StoryScreen = () => {
     const addNotes = () => {
         const note: Note = {
             date: Date.now(),
-            message: `You've submitted page #${story.pageIds.length} for story "${story.title}". It is pending confirmation.`,
+            message: `You've submitted page #${story.pageIds.length+1} for story "${story.title}". It is pending confirmation.`,
             code: 'B',
             storyId: story._id,
             unseen: false
         }
             axios.post(`${API_URL}/notifications`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
-            note.message = `Page #${story.pageIds.length} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
+            note.message = `Page #${story.pageIds.length+1} has been submitted to your story "${story.title}". It is waiting your confirmation.`;
             note.unseen = true;
             axios.post(`${API_URL}/notifications/${story.authorId}`, { note }, { headers }).catch(error => setSnackMessage(error.response.data.message))
     }
