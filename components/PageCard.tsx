@@ -60,9 +60,9 @@ export const PageCard: React.FC<Props> = ({ page, pageNumber, totalPageNumber, u
     : <IconButton icon='arrow-down-bold-circle-outline' disabled={ownContent && !toConfirm} color={dislikeButtonColor} size={20} onPress={() => getVote(-1)} />
   const rating = page.ratings.reduce((sum, rating) => sum + rating.rate, 0);
   const author = <Author style={{ padding: 15 }} name={page.authorName} userId={page.authorId} />
-  const corrections = page.corrections.map(correction => <View style={{ flexDirection: 'row' }} key={correction.correction}>
+  const corrections = page.corrections.map(correction => <View style={{ flexDirection: 'row', width:'100%', alignItems: 'flex-start', flexWrap:'wrap'}} key={correction.correction}>
     <Text style={{ color: Color.C }}>{correction.error} </Text>
-    <Text style={{ color: 'black' }}>{' ==>  '}</Text>
+    <Text style={{ color: 'black' }}>{' -> '}</Text>
     <Text style={{ color: Color.A }}>{correction.correction}</Text>
   </View>)
   return (

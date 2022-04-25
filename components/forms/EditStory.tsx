@@ -34,16 +34,23 @@ export const EditStory = ({ onClose, story, editable }: Props) => {
         }
     }
 
+    const archive = () =>{
+        axios.patch(`${API_URL}/stories/one/${story._id}`, { open:!story.open }, { headers }).then(()=> {
+            onClose(true);
+        })
+    }
+
     return <Form>
         <View style={styles.container}>
             {editing ? <CustomInput value={title} onChangeText={setTitle}>{title}</CustomInput> : <Text style={{ fontSize: 24, marginBottom: '5%' }}>{story.title}</Text>}
             {error && <ErrorMessage>{error}</ErrorMessage>}
             {editing ? <CustomInput multiline value={description} onChangeText={setDescription}>{description}</CustomInput> : <Text>{description}</Text>}
             <View style={styles.buttonContainer}>
-                <Button color={Color.cancelBtn} onPress={()=>onClose(false)} >Close</Button>
                 {editable && <Button color={Color.button} onPress={edit}>{editing ? 'Done editing' : 'Edit'}</Button>}
+                {editable && <Button color={story.open ? Color.C:Color.A} onPress={archive}>{story.open ? 'Archive story' : 'Reopen story'}</Button>}
             </View>
         </View>
+        <Button style={styles.cancelButton} color={Color.cancelBtn} onPress={() => onClose(false)}>X</Button>
     </Form>
 }
 
@@ -54,9 +61,14 @@ const styles = StyleSheet.create({
         paddingRight: 5,
     },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         marginBottom: 10,
         marginTop: 10,
+    },
+    cancelButton: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
     }
 })
